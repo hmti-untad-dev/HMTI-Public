@@ -15,7 +15,7 @@ type Props = {
 /** Pembungkus section standar: judul, tombol "See more", dan latar selang-seling. */
 export function Section({ id, eyebrow, title, action, tone = 'default', children }: Props) {
   return (
-    <section id={id} className={tone === 'alt' ? 'bg-surface-alt' : ''} style={{ paddingBlock: 'var(--spacing-section)' }}>
+    <section id={id} className={`scroll-mt-16 ${tone === 'alt' ? 'bg-surface-alt' : ''}`} style={{ paddingBlock: 'var(--spacing-section)' }}>
       <Container>
         {(title || action) && (
           <header className="mb-8 flex flex-wrap items-end justify-between gap-4">

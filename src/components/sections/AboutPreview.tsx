@@ -6,9 +6,9 @@ import { Section } from '../ui/Section'
 
 const TOPICS = [
   { href: '/tentang#sejarah', label: 'Sejarah' },
-  { href: '/tentang#visi', label: 'Visi' },
-  { href: '/tentang#misi', label: 'Misi' },
-  { href: '/tentang#lagu', label: 'Lagu' },
+  { href: '/tentang#visi-misi', label: 'Visi dan Misi' },
+  { href: '/tentang#lambang', label: 'Makna Lambang' },
+  { href: '/tentang#mars', label: 'Mars' },
 ]
 
 export async function AboutPreview() {

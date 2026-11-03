@@ -34,3 +34,84 @@
     flex: 0 0 auto;
   }
 }
+
+/* Gerak untuk penjelajah lambang. Semua dimatikan bila pengguna memilih gerak dikurangi. */
+@media (prefers-reduced-motion: no-preference) {
+  .lx-draw {
+    stroke-dasharray: 100;
+    animation: lx-draw 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .lx-fade {
+    animation: lx-fade 0.45s ease-out both;
+  }
+  .lx-scan {
+    animation: lx-scan 1.1s cubic-bezier(0.45, 0, 0.2, 1) both;
+  }
+  .lx-rise {
+    animation: lx-rise 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .lx-tick {
+    transform-origin: 50px 50px;
+    animation: lx-spin 60s linear infinite;
+  }
+  .lx-pop {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: lx-pop 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+}
+@keyframes lx-draw {
+  from {
+    stroke-dashoffset: 100;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes lx-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes lx-scan {
+  0% {
+    transform: translateY(-14px);
+    opacity: 0;
+  }
+  15%,
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(114px);
+    opacity: 0;
+  }
+}
+@keyframes lx-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes lx-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes lx-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

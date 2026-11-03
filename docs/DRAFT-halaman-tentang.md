@@ -1,4 +1,23 @@
-# DRAFT — Halaman Tentang (menunggu ACC, belum dieksekusi)
+# Halaman Tentang — DIEKSEKUSI (2026-11-04)
+
+Kode: `src/app/(site)/tentang/page.tsx`, teks di `src/content/tentang.ts`, logo interaktif di `src/components/tentang/LogoExplorer.tsx` + `src/content/lambang.ts`.
+
+## Keputusan yang dipakai
+- Nama: "program studi S1 Teknik Informatika". Baris Purna (semula "Jurusan Teknologi Informasi") diseragamkan.
+- Sejarah: teks dari web lama, dirapikan. **Ini sejarah Program Studi, bukan sejarah HMTI**; judulnya "Sejarah Program Studi". Sejarah berdirinya himpunan belum ada.
+- Atribut (pakaian dinas, bendera, slayer, KTA): dihapus.
+- DPA: dari AD/ART Pasal 13 (GBHO tidak membahas DPA).
+- Mars: pemutar `public/audio/mars-hmti.mp3` + tautan YouTube; lirik apa adanya dari AD/ART (ejaan "Menjujung" dipertahankan).
+- Dokumen publik: AD/ART 2026 dan GBHO 2025 di `public/dokumen/`. SOP dan Masukan-Saran tidak dipublikasikan.
+- Tambahan: makna lambang berupa penjelajah interaktif (klik lambang). Pemetaan unsur ke bagian gambar adalah tafsiran visual; koordinat bisa digeser di `src/content/lambang.ts`.
+
+## Perlu dicek manusia
+- Angka dan nomor SK pada sejarah (diambil apa adanya dari web lama). "XXII." pada nomor LAM INFOKOM tampak seperti salah ketik (mungkin XXII/2022).
+- "31 dosen" tanpa tahun data; bisa kedaluwarsa.
+- Tafsiran unsur lambang: USB = batang dan panah, Open Source = cincin terbuka di kiri, Lingkaran Satelit = titik kecil di pangkal sinyal.
+
+---
+# (Arsip) Draft awal
 
 Sumber: AD/ART 2026, GBHO 2025, SOP 2026. Tanda `[ISI]` = tidak ada di dokumen, perlu kamu isi. Tanda ❓ = perlu keputusanmu.
 Edit langsung file ini atau balas di chat; kode baru ditulis setelah kamu ACC.
@@ -18,11 +37,11 @@ Edit langsung file ini atau balas di chat; kode baru ditulis setelah kamu ACC.
 
 ## 1. Header
 **Tentang HMTI UNTAD**
-Wadah mahasiswa Jurusan Teknologi Informasi, Fakultas Teknik, Universitas Tadulako untuk berkontribusi secara aktif, partisipatif, dan demokratis.
-❓ Penulisan resmi: "Teknik Informatika" (nama himpunan) atau "Teknologi Informasi" (nama jurusan di AD/ART)? Draft ini memakai keduanya apa adanya.
+Wadah mahasiswa program studi S1 Teknik Informatika, Fakultas Teknik, Universitas Tadulako untuk berkontribusi secara aktif, partisipatif, dan demokratis.
+❓ Penulisan resmi: "Teknik Informatika" 
 
 ## 2. Siapa kami
-HMTI UNTAD adalah pusat koordinasi mahasiswa Jurusan Teknologi Informasi Universitas Tadulako. Himpunan ini dibentuk agar mahasiswa dapat berkumpul, bekerja sama secara rasional, sistematis, dan terkendali untuk mencapai tujuan bersama.
+HMTI UNTAD adalah pusat koordinasi mahasiswa program studi S1 Teknik Informatika Universitas Tadulako. Himpunan ini dibentuk agar mahasiswa dapat berkumpul, bekerja sama secara rasional, sistematis, dan terkendali untuk mencapai tujuan bersama.
 HMTI UNTAD juga menaungi komunitas yang dibentuk dari minat dan bakat mahasiswa, serta terbuka bekerja sama dengan individu maupun institusi yang sejalan dengan asas dan tujuannya.
 *Sekretariat: Laboratorium Informatika, Universitas Tadulako · hmti.untad@gmail.com*
 
@@ -47,7 +66,7 @@ HMTI UNTAD juga menaungi komunitas yang dibentuk dari minat dan bakat mahasiswa,
 ## 5. Asas, maksud, dan tujuan
 **Asas:** Pancasila, Tri Dharma Perguruan Tinggi, dan Kekeluargaan.
 **Maksud dan tujuan:**
-1. Wadah mahasiswa Jurusan Teknologi Informasi agar berkumpul dan bekerja sama secara rasional, sistematis, dan terkendali.
+1. Wadah mahasiswa studi S1 Teknik Informatika agar berkumpul dan bekerja sama secara rasional, sistematis, dan terkendali.
 2. Wadah yang menaungi komunitas-komunitas yang dibentuk HMTI UNTAD.
 3. Meningkatkan kualitas mahasiswa dalam bidang akademik dan non-akademik.
 4. Bekerja sama atau berkolaborasi dengan individu maupun institusi yang sesuai asas dan tujuan.
@@ -55,7 +74,7 @@ HMTI UNTAD juga menaungi komunitas yang dibentuk dari minat dan bakat mahasiswa,
 
 ## 6. Jenjang keanggotaan
 **Pasif → Muda → Biasa → Demisioner → Purna**
-- **Pasif:** mahasiswa Jurusan Teknologi Informasi yang telah mengikuti Pengenalan HMTI UNTAD secara resmi.
+- **Pasif:** mahasiswa studi S1 Teknik Informatika yang telah mengikuti Pengenalan HMTI UNTAD secara resmi.
 - **Muda:** anggota pasif yang telah melewati proses ALGOMATIK.
 - **Biasa:** anggota muda yang telah mengikuti dan menjalankan kewajiban pada waktu yang ditentukan Dewan Eksekutif.
 - **Demisioner:** anggota biasa yang telah selesai periode kepengurusan angkatan kadernya.
@@ -69,6 +88,10 @@ HMTI UNTAD juga menaungi komunitas yang dibentuk dari minat dan bakat mahasiswa,
 - **Enam departemen:** tautan ke halaman Kepengurusan.
 
 ## 8. Sejarah
+`[Perbaiki kalimat dan kata-katanya]`
+Program Studi S1 Teknik Informatika Universitas Tadulako, lahir dari tonggak bersejarah pada 16 April 2012 dengan SK Pendirian No. 2428/UN28/LK/2012. Sejak itu, kami menjadi magnet bagi calon mahasiswa, diakui melalui Keputusan Menteri No. 092/P/2014 pada 5 Maret 2014. Program Studi ini tidak hanya mencetak sarjana, tetapi membentuk pemimpin masa depan di dunia informatika.
+
+Minat yang konsisten dari calon mahasiswa melalui SNMPTN dan SBMPTN menjadi cermin keunggulan kami. Didukung oleh tim dosen berjumlah 31 orang, Program Studi Teknik Informatika Fakultas Teknik memastikan pengembangan ilmu dan keterampilan yang optimal. Prestasi kami semakin mengkilap dengan peringkat akreditasi "baik sekali" berdasarkan Keputusan LAM INFOKOM No. 133/SK/LAM-INFOKOM/Ak/S/XXII./2022. Bergabunglah dengan kami, di mana sejarah, minat, dan prestasi bersatu dalam meretas masa depan gemilang di dunia Teknik Informatika. Selamat bergabung di perjalanan inspiratif kami!
 `[ISI]` Dokumen tidak memuat tahun berdiri atau kisah pendirian. Tulis 1–3 paragraf, atau kirim bahannya dan saya rapikan. Bila belum ada, section ini disembunyikan dulu.
 
 ## 9. Mars HMTI UNTAD
@@ -93,11 +116,7 @@ Catatan: lirik saya salin apa adanya dari AD/ART, termasuk ejaan "Menjujung". �
 ❓ **Audio:** (a) pemutar dari file `Mars HMTI.mp3` yang kamu kirim (2 MB, sudah ada di repo), plus tautan YouTube di bawahnya; atau (b) embed YouTube saja. **Rekomendasi: (a)**, karena tidak memuat skrip pihak ketiga dan tetap jalan bila video dihapus.
 
 ## 10. Atribut
-- **Pakaian dinas:** hitam dengan bahu biru; bendera merah putih di lengan kanan, lambang HMTI di lengan kiri; tulisan nama himpunan di punggung (putih, Times New Roman); nama anggota di dada kanan.
-- **Bendera:** biru tua, lambang di tengah, rasio 2:3, berpita rumbai putih.
-- **Slayer:** biru tua, 120 × 60 cm, lambang di sudut bawah.
-- **KTA:** landscape, biru tua dan putih, memuat nama, NIM, nomor algomatik, program studi, dan tanda tangan Ketua Umum.
-❓ Tampilkan gambar atribut? Gambarnya ada di AD/ART (PDF); saya bisa mengekstrak jika kamu setuju, atau kamu kirim file aslinya (lebih tajam).
+tidak perlu
 
 ## 11. Dokumen
 ❓ Mana yang boleh diunduh publik?
@@ -114,4 +133,5 @@ Catatan: lirik saya salin apa adanya dari AD/ART, termasuk ejaan "Menjujung". �
 4. Mars: file audio (rekomendasi) atau YouTube? Ejaan "Menjujung"?
 5. Gambar atribut: ekstrak dari PDF atau kamu kirim file?
 6. Dokumen publik: sesuai usul di atas?
-7. Tugas DPA dalam kalimat sederhana.
+7. Tugas DPA dalam kalimat sederhana./buatkan secara umumnya bedasarkan gbho aja
+

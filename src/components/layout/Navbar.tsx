@@ -9,7 +9,7 @@ export function Navbar({ orgName }: { orgName: string }) {
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-surface/90 backdrop-blur">
       <Container className="flex h-16 items-center justify-between gap-4">
-        <Link href="/" className="flex items-center gap-3 font-display text-lg font-bold text-ink">
+        <Link href="/" className="flex shrink-0 items-center gap-2.5 whitespace-nowrap font-display text-base font-bold text-ink sm:gap-3 sm:text-lg">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/brand/hmti-logo.webp" alt="" width={36} height={36} className="size-9 rounded-full" />
           {orgName}
