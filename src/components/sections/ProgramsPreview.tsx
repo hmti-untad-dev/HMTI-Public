@@ -1,6 +1,7 @@
 import { getPrograms } from '@/lib/data'
 import { ProgramCard } from '../cards/ProgramCard'
 import { Empty } from '../ui/Empty'
+import { Reveal } from '../ui/Reveal'
 import { Section } from '../ui/Section'
 
 export async function ProgramsPreview() {
@@ -10,13 +11,13 @@ export async function ProgramsPreview() {
       {programs.length === 0 ? (
         <Empty>Belum ada kegiatan unggulan.</Empty>
       ) : (
-        <ul className="grid grid-cols-2 gap-6 md:grid-cols-4">
+        <Reveal as="ul" stagger className="grid grid-cols-2 gap-6 md:grid-cols-4">
           {programs.slice(0, 4).map((p) => (
             <li key={p.id}>
               <ProgramCard program={p} />
             </li>
           ))}
-        </ul>
+        </Reveal>
       )}
     </Section>
   )

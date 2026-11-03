@@ -177,7 +177,7 @@ for (const [i, a] of [
 }
 
 for (const [i, f] of [
-  { question: 'Siapa yang bisa menjadi anggota HMTI UNTAD?', answer: 'Mahasiswa Jurusan Teknologi Informasi Fakultas Teknik Universitas Tadulako yang telah mengikuti Pengenalan HMTI UNTAD secara resmi menjadi anggota pasif. Setelah melewati proses ALGOMATIK, menjadi anggota muda.' },
+  { question: 'Siapa yang bisa menjadi anggota HMTI UNTAD?', answer: 'Mahasiswa program studi S1 Teknik Informatika Universitas Tadulako yang telah mengikuti Pengenalan HMTI UNTAD secara resmi menjadi anggota pasif. Setelah melewati proses ALGOMATIK, menjadi anggota muda.' },
   { question: 'Bagaimana cara meminjam atau menyewa inventaris?', answer: 'Ajukan lewat halaman Layanan. Anggota yang terdaftar di ALGOMATIK tidak dikenai biaya sewa. Pihak eksternal wajib membawa surat resmi, menyertakan foto KTP/KTM, membayar DP 50%, dan menandatangani lembar perjanjian. Keterlambatan pengembalian dikenai denda.' },
   { question: 'Bagaimana cara mengajukan kerja sama atau media partner?', answer: 'Ajukan lewat layanan Kerja Sama atau Media Partner di halaman Layanan, lengkap dengan surat resmi dari instansi atau organisasi Anda.' },
   { question: 'Di mana sekretariat HMTI UNTAD?', answer: 'Di Laboratorium Informatika, Universitas Tadulako. Email: hmti.untad@gmail.com.' },

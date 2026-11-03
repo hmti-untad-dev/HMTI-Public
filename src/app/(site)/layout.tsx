@@ -4,7 +4,8 @@ import type { ReactNode } from 'react'
 import '@/styles/globals.css'
 import { Footer } from '@/components/layout/Footer'
 import { Navbar } from '@/components/layout/Navbar'
-import { getSiteSettings } from '@/lib/data'
+import { BackToTop } from '@/components/ui/BackToTop'
+import { getNavData, getSiteSettings } from '@/lib/data'
 
 // Konten berasal dari CMS dan berubah kapan saja; skeleton merender tiap request.
 // Ganti ke ISR + revalidasi dari hook Payload bila trafik menuntut.
@@ -32,16 +33,17 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function SiteLayout({ children }: { children: ReactNode }) {
-  const settings = await getSiteSettings()
+  const [settings, nav] = await Promise.all([getSiteSettings(), getNavData()])
   return (
     <html lang="id" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body className="flex min-h-dvh flex-col">
-        <Navbar orgName={settings.orgName || 'HMTI'} />
+        <Navbar orgName={settings.orgName || 'HMTI'} departments={nav.departments} archivedYears={nav.archivedYears} />
         <main className="flex-1">{children}</main>
         <Footer settings={settings} />
+        <BackToTop />
       </body>
     </html>
   )

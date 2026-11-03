@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 
 import { Button } from './Button'
 import { Container } from './Container'
+import { Reveal } from './Reveal'
 
 type Props = {
   id?: string
@@ -17,6 +18,7 @@ export function Section({ id, eyebrow, title, action, tone = 'default', children
   return (
     <section id={id} className={`scroll-mt-16 ${tone === 'alt' ? 'bg-surface-alt' : ''}`} style={{ paddingBlock: 'var(--spacing-section)' }}>
       <Container>
+        <Reveal>
         {(title || action) && (
           <header className="mb-8 flex flex-wrap items-end justify-between gap-4">
             <div>
@@ -31,6 +33,7 @@ export function Section({ id, eyebrow, title, action, tone = 'default', children
           </header>
         )}
         {children}
+        </Reveal>
       </Container>
     </section>
   )

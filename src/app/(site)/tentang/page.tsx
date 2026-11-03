@@ -3,6 +3,7 @@ import Link from 'next/link'
 
 import { LogoExplorer } from '@/components/tentang/LogoExplorer'
 import { PageHeader } from '@/components/ui/PageHeader'
+import { Reveal } from '@/components/ui/Reveal'
 import { Section } from '@/components/ui/Section'
 import {
   ASAS,
@@ -22,6 +23,7 @@ import {
   TUJUAN,
   VISI_GBHO,
 } from '@/content/tentang'
+import { JTI_LINKS } from '@/lib/nav'
 import { pad } from '@/lib/format'
 import { getActivePeriod, getDocuments, getSiteSettings, mediaOf } from '@/lib/data'
 
@@ -124,7 +126,7 @@ export default async function AboutPage() {
       </Section>
 
       <Section id="keanggotaan" title="Jenjang keanggotaan">
-        <ol className="grid gap-4 md:grid-cols-5">
+        <Reveal as="ol" stagger className="grid gap-4 md:grid-cols-5">
           {JENJANG.map((j, i) => (
             <li key={j.name} className="relative rounded-card border border-line bg-surface-raised p-5">
               <p className="font-mono text-xs text-ink-muted">{pad(i + 1)}</p>
@@ -137,11 +139,11 @@ export default async function AboutPage() {
               )}
             </li>
           ))}
-        </ol>
+        </Reveal>
       </Section>
 
       <Section id="struktur" tone="alt" title="Struktur organisasi">
-        <ul className="grid gap-4 md:grid-cols-2">
+        <Reveal as="ul" stagger className="grid gap-4 md:grid-cols-2">
           {STRUKTUR.map((s) => (
             <li key={s.name} className="rounded-card border border-line bg-surface-raised p-6">
               <h3 className="font-display text-xl font-semibold">{s.name}</h3>
@@ -153,7 +155,7 @@ export default async function AboutPage() {
               )}
             </li>
           ))}
-        </ul>
+        </Reveal>
       </Section>
 
       <Section id="sejarah" title={SEJARAH_JUDUL}>
@@ -192,6 +194,30 @@ export default async function AboutPage() {
             ))}
           </div>
         </div>
+      </Section>
+
+      <Section id="jti" tone="alt" title="Jurusan dan program studi">
+        <p className="max-w-2xl text-lg text-ink-muted">
+          HMTI UNTAD bernaung di program studi S1 Teknik Informatika, Jurusan Teknologi Informasi, Fakultas Teknik. Informasi
+          akademik resmi seperti kurikulum, dosen, dan fasilitas ada di situs jurusan.
+        </p>
+        <Reveal as="ul" stagger className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {JTI_LINKS.map((l) => (
+            <li key={l.href}>
+              <a
+                href={l.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="dither flex min-h-14 items-center justify-between gap-3 overflow-hidden rounded-card border border-line bg-surface-raised px-5 py-3 text-ink transition-colors hover:border-brand"
+              >
+                <span>{l.label}</span>
+                <span aria-hidden="true" className="text-ink-muted">
+                  ↗
+                </span>
+              </a>
+            </li>
+          ))}
+        </Reveal>
       </Section>
 
       <Section id="dokumen" title="Dokumen">

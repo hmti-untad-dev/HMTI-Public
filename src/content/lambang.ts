@@ -50,8 +50,8 @@ export const LAMBANG_PARTS: LambangPart[] = [
     id: 'usb',
     short: 'USB',
     name: 'Universal Serial Bus (USB)',
-    meaning: 'Penghubung dan pemersatu anggota himpunan.',
-    shape: { kind: 'box', x: 37, y: 46.5, w: 40, h: 18 },
+    meaning: 'Penghubung dan pemersatu anggota himpunan. Simbol USB mencakup keseluruhan glyph, termasuk sinyal, cincin open source, dan lingkaran satelit di dalamnya.',
+    shape: { kind: 'box', x: 23.2, y: 34.2, w: 53.6, h: 31.2 },
   },
   {
     id: 'sinyal',

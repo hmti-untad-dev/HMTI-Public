@@ -83,12 +83,12 @@ export function CabinetShowcase({ orgName, year, groups }: Props) {
             </h2>
 
             {/* Poster */}
-            <figure className="relative mt-8 aspect-[4/5] overflow-hidden rounded-lg border border-line bg-surface-raised">
+            <figure className="relative mt-8 aspect-[4/5] overflow-hidden rounded-lg border border-line bg-scrim">
               {current.photoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={current.photoUrl} alt={current.name} className="absolute inset-0 size-full object-cover" />
               ) : (
-                <div className="absolute inset-0 flex items-center justify-center font-mono text-xs uppercase tracking-widest text-ink-muted">
+                <div className="absolute inset-0 flex items-center justify-center font-mono text-xs uppercase tracking-widest text-white/60">
                   foto {current.name}
                 </div>
               )}

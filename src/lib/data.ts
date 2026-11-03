@@ -16,6 +16,19 @@ export const getSiteSettings = cache(async () => {
   return payload.findGlobal({ slug: 'site-settings', depth: 1 })
 })
 
+/** Data ringan untuk menu navigasi: departemen dan tahun periode arsip. */
+export const getNavData = cache(async () => {
+  const payload = await getClient()
+  const [{ docs: departments }, { docs: periods }] = await Promise.all([
+    payload.find({ collection: 'departments', sort: 'order', limit: 20, depth: 0 }),
+    payload.find({ collection: 'periods', sort: '-year', limit: 20, depth: 0 }),
+  ])
+  return {
+    departments: departments.map((d) => ({ name: d.name, slug: d.slug })),
+    archivedYears: periods.filter((p) => p.status === 'archived').map((p) => p.year),
+  }
+})
+
 export const getPeriods = cache(async () => {
   const payload = await getClient()
   const { docs } = await payload.find({ collection: 'periods', sort: '-year', limit: 50, depth: 1 })

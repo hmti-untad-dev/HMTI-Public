@@ -115,3 +115,107 @@
     transform: scale(1);
   }
 }
+
+/* ---------- Reveal saat masuk layar (pasangan: components/ui/Reveal.tsx) ---------- */
+/* Tanpa JS atau gerak-dikurangi: konten langsung tampil. */
+@media (prefers-reduced-motion: no-preference) {
+  [data-rv] {
+    transition:
+      opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  [data-rv='fade'][data-state='pending'] {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  [data-rv='stagger'] > * {
+    transition:
+      opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: calc(var(--i, 0) * 70ms);
+  }
+  [data-rv='stagger'][data-state='pending'] > * {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  [data-rv='stagger'] > :nth-child(1) { --i: 0; }
+  [data-rv='stagger'] > :nth-child(2) { --i: 1; }
+  [data-rv='stagger'] > :nth-child(3) { --i: 2; }
+  [data-rv='stagger'] > :nth-child(4) { --i: 3; }
+  [data-rv='stagger'] > :nth-child(5) { --i: 4; }
+  [data-rv='stagger'] > :nth-child(6) { --i: 5; }
+  [data-rv='stagger'] > :nth-child(7) { --i: 6; }
+  [data-rv='stagger'] > :nth-child(8) { --i: 7; }
+}
+
+/* ---------- Sapuan dither saat hover (navbar) ---------- */
+@property --sw {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+.dither {
+  position: relative;
+  isolation: isolate;
+}
+.dither::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  --dc: color-mix(in srgb, var(--link) 38%, transparent);
+  background-image:
+    linear-gradient(45deg, var(--dc) 25%, transparent 25%, transparent 75%, var(--dc) 75%),
+    linear-gradient(45deg, var(--dc) 25%, transparent 25%, transparent 75%, var(--dc) 75%);
+  background-size: 4px 4px;
+  background-position: 0 0, 2px 2px;
+  --sw: 0;
+  /* tepi sapuan bergerak dari kiri luar ke kanan; --sw=0 berarti sepenuhnya tersembunyi */
+  mask-image: linear-gradient(90deg, #000 calc(var(--sw) * 1% - 16%), transparent calc(var(--sw) * 1%));
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(var(--sw) * 1% - 16%), transparent calc(var(--sw) * 1%));
+}
+.dither:hover::before,
+.dither:focus-visible::before,
+.dither[aria-expanded='true']::before,
+.dither[data-open='true']::before {
+  --sw: 118;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .dither::before {
+    transition: --sw 0.42s steps(12, end);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dither::before {
+    --sw: 0;
+    opacity: 0;
+  }
+  .dither:hover::before,
+  .dither[aria-expanded='true']::before {
+    opacity: 1;
+    --sw: 118;
+  }
+}
+
+/* ---------- FAQ gelembung: buka-tutup dengan tinggi mulus ---------- */
+.faq-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+.faq-body[data-open='true'] {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+.faq-body > div {
+  overflow: hidden;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .faq-body {
+    transition:
+      grid-template-rows 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 0.3s ease;
+  }
+}
