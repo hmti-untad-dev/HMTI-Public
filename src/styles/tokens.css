@@ -1,0 +1,33 @@
+/*
+ * DESIGN TOKENS — satu-satunya tempat gaya visual didefinisikan.
+ * Ganti nilai di sini untuk mengubah tampilan seluruh situs. Semua komponen memakai
+ * utility Tailwind yang diturunkan dari token ini (bg-brand, text-ink, rounded-card, ...),
+ * bukan warna/ukuran hard-coded.
+ *
+ * Nilai di bawah PLACEHOLDER (biru netral mengikuti wireframe) sampai referensi desain final masuk.
+ */
+@theme {
+  /* Warna */
+  --color-brand: #2f6fb5;
+  --color-brand-strong: #1f4f87;
+  --color-brand-soft: #dbe8f6;
+  --color-ink: #0f172a;
+  --color-ink-muted: #475569;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f1f5f9;
+  --color-line: #cbd5e1;
+  --color-accent: #f59e0b;
+
+  /* Tipografi (stack sistem; ganti dengan next/font bila font sudah dipilih) */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: var(--font-sans);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Bentuk */
+  --radius-card: 1rem;
+  --radius-control: 0.625rem;
+
+  /* Ritme layout */
+  --spacing-section: 5rem;
+  --container-site: 72rem;
+}
