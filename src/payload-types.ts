@@ -75,15 +75,18 @@ export interface Config {
     memberships: Membership;
     programs: Program;
     editions: Edition;
+    'special-days': SpecialDay;
     achievements: Achievement;
     testimonials: Testimonial;
     articles: Article;
     albums: Album;
+    'best-photos': BestPhoto;
     faqs: Faq;
     documents: Document;
     partners: Partner;
     services: Service;
     'service-requests': ServiceRequest;
+    'chat-messages': ChatMessage;
     inventory: InventoryItem;
     loans: Loan;
     'payload-kv': PayloadKv;
@@ -101,15 +104,18 @@ export interface Config {
     memberships: MembershipsSelect<false> | MembershipsSelect<true>;
     programs: ProgramsSelect<false> | ProgramsSelect<true>;
     editions: EditionsSelect<false> | EditionsSelect<true>;
+    'special-days': SpecialDaysSelect<false> | SpecialDaysSelect<true>;
     achievements: AchievementsSelect<false> | AchievementsSelect<true>;
     testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
     articles: ArticlesSelect<false> | ArticlesSelect<true>;
     albums: AlbumsSelect<false> | AlbumsSelect<true>;
+    'best-photos': BestPhotosSelect<false> | BestPhotosSelect<true>;
     faqs: FaqsSelect<false> | FaqsSelect<true>;
     documents: DocumentsSelect<false> | DocumentsSelect<true>;
     partners: PartnersSelect<false> | PartnersSelect<true>;
     services: ServicesSelect<false> | ServicesSelect<true>;
     'service-requests': ServiceRequestsSelect<false> | ServiceRequestsSelect<true>;
+    'chat-messages': ChatMessagesSelect<false> | ChatMessagesSelect<true>;
     inventory: InventorySelect<false> | InventorySelect<true>;
     loans: LoansSelect<false> | LoansSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
@@ -339,6 +345,10 @@ export interface Edition {
    * Dipakai pada bagian "Progres Program Kerja" di situs.
    */
   status: 'rencana' | 'berjalan' | 'selesai' | 'ditunda';
+  /**
+   * Dipakai heatmap: makin banyak sesi terisi dalam sehari, makin pekat kotaknya. Kosongkan bila belum jelas (dihitung 1 sesi).
+   */
+  sessions?: ('pagi' | 'siang' | 'sore' | 'malam')[] | null;
   startDate?: string | null;
   endDate?: string | null;
   location?: string | null;
@@ -381,6 +391,29 @@ export interface Album {
         id?: string | null;
       }[]
     | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "special-days".
+ */
+export interface SpecialDay {
+  id: number;
+  /**
+   * Contoh: Hari H I-Fest, Dies Natalis HMTI.
+   */
+  title: string;
+  date: string;
+  /**
+   * Centang untuk hari jadi atau peringatan tahunan: bintang muncul di tanggal yang sama setiap tahun.
+   */
+  recurring?: boolean | null;
+  description?: string | null;
+  /**
+   * Halaman kegiatan terkait, mis. /kegiatan/i-fest/2026.
+   */
+  link?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -451,6 +484,24 @@ export interface Article {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * Maksimal 7 foto per tahun.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "best-photos".
+ */
+export interface BestPhoto {
+  id: number;
+  image: number | Media;
+  /**
+   * Tulisan tangan di bawah foto, singkat saja.
+   */
+  caption: string;
+  year: number;
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -568,6 +619,18 @@ export interface ServiceRequest {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "chat-messages".
+ */
+export interface ChatMessage {
+  id: number;
+  email: string;
+  message: string;
+  status?: ('baru' | 'dibalas') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "inventory".
  */
 export interface InventoryItem {
@@ -651,6 +714,10 @@ export interface PayloadLockedDocument {
         value: number | Edition;
       } | null)
     | ({
+        relationTo: 'special-days';
+        value: number | SpecialDay;
+      } | null)
+    | ({
         relationTo: 'achievements';
         value: number | Achievement;
       } | null)
@@ -665,6 +732,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'albums';
         value: number | Album;
+      } | null)
+    | ({
+        relationTo: 'best-photos';
+        value: number | BestPhoto;
       } | null)
     | ({
         relationTo: 'faqs';
@@ -685,6 +756,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'service-requests';
         value: number | ServiceRequest;
+      } | null)
+    | ({
+        relationTo: 'chat-messages';
+        value: number | ChatMessage;
       } | null)
     | ({
         relationTo: 'inventory';
@@ -892,6 +967,7 @@ export interface EditionsSelect<T extends boolean = true> {
   program?: T;
   period?: T;
   status?: T;
+  sessions?: T;
   startDate?: T;
   endDate?: T;
   location?: T;
@@ -899,6 +975,19 @@ export interface EditionsSelect<T extends boolean = true> {
   cover?: T;
   album?: T;
   registrationUrl?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "special-days_select".
+ */
+export interface SpecialDaysSelect<T extends boolean = true> {
+  title?: T;
+  date?: T;
+  recurring?: T;
+  description?: T;
+  link?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -964,6 +1053,18 @@ export interface AlbumsSelect<T extends boolean = true> {
         caption?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "best-photos_select".
+ */
+export interface BestPhotosSelect<T extends boolean = true> {
+  image?: T;
+  caption?: T;
+  year?: T;
+  order?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1048,6 +1149,17 @@ export interface ServiceRequestsSelect<T extends boolean = true> {
         note?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "chat-messages_select".
+ */
+export interface ChatMessagesSelect<T extends boolean = true> {
+  email?: T;
+  message?: T;
+  status?: T;
   updatedAt?: T;
   createdAt?: T;
 }

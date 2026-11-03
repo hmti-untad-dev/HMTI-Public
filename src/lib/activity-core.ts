@@ -6,17 +6,39 @@ const dayFmt = new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year: 'numeric',
 
 export const dayKey = (iso: string | Date) => dayFmt.format(typeof iso === 'string' ? new Date(iso) : iso)
 
-export type ActivityItem = { kind: 'kegiatan' | 'berita'; title: string; href: string }
+/** Sesi dalam sehari. Heatmap menghitung berapa sesi yang terisi, jadi skalanya selalu 0 sampai 4. */
+export const DAYPARTS = [
+  { key: 'pagi', label: 'Pagi', range: '04.00–10.59' },
+  { key: 'siang', label: 'Siang', range: '11.00–14.59' },
+  { key: 'sore', label: 'Sore', range: '15.00–17.59' },
+  { key: 'malam', label: 'Malam', range: '18.00–03.59' },
+] as const
+export type Daypart = (typeof DAYPARTS)[number]['key']
+
+const hourFmt = new Intl.DateTimeFormat('en-GB', { timeZone: TZ, hour: '2-digit', hourCycle: 'h23' })
+export function daypartOf(iso: string | Date): Daypart {
+  const h = Number(hourFmt.format(typeof iso === 'string' ? new Date(iso) : iso))
+  return h >= 4 && h < 11 ? 'pagi' : h >= 11 && h < 15 ? 'siang' : h >= 15 && h < 18 ? 'sore' : 'malam'
+}
+
+/** `slots` kosong = sesi belum diisi admin; tetap dihitung sebagai satu sesi. */
+export type ActivityItem = { kind: 'kegiatan' | 'berita'; title: string; href: string; slots: Daypart[] }
 export type ActivityMap = Record<string, ActivityItem[]>
+
+export type Landmark = { title: string; description: string | null; href: string | null; upcoming: boolean }
+export type LandmarkMap = Record<string, Landmark[]>
+
+/** Sesi yang terisi pada satu hari. */
+export const slotsOf = (items: ActivityItem[]): Set<Daypart> => new Set(items.flatMap((i) => i.slots))
+
+/** 0 = kosong; 1 sampai 4 = jumlah sesi (pagi, siang, sore, malam) yang terisi. Ada aktivitas tanpa sesi = 1. */
+export const dayLevel = (items: ActivityItem[]) => (items.length === 0 ? 0 : Math.min(4, Math.max(1, slotsOf(items).size)))
 
 export const addDays = (key: string, n: number) => {
   const d = new Date(`${key}T00:00:00Z`)
   d.setUTCDate(d.getUTCDate() + n)
   return d.toISOString().slice(0, 10)
 }
-
-/** 0 kosong, 1-4 relatif terhadap hari tersibuk (`max`), agar skala warna terpakai penuh walau datanya sedikit. */
-export const levelOf = (n: number, max: number) => (n <= 0 ? 0 : Math.max(1, Math.ceil((n / Math.max(1, max)) * 4)))
 
 /** Minggu Senin-Minggu; sel di luar tahun berisi null. */
 export function buildWeeks(year: number): (string | null)[][] {

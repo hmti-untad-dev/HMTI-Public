@@ -2,13 +2,13 @@ import Link from 'next/link'
 
 import type { ProkerGroup, ProkerStatus } from '@/lib/activity-core'
 
-const STATUS: Record<ProkerStatus, { label: string; dot: string; bar: string }> = {
+export const STATUS: Record<ProkerStatus, { label: string; dot: string; bar: string }> = {
   selesai: { label: 'Selesai', dot: 'border-link bg-link', bar: 'bg-link' },
   berjalan: { label: 'Berjalan', dot: 'border-link bg-link/35', bar: 'bg-link/45' },
   rencana: { label: 'Rencana', dot: 'border-ink-muted bg-surface', bar: 'bg-line' },
   ditunda: { label: 'Ditunda', dot: 'rotate-45 border-dashed border-ink-muted bg-surface', bar: 'bg-inactive' },
 }
-const ORDER: ProkerStatus[] = ['selesai', 'berjalan', 'rencana', 'ditunda']
+export const ORDER: ProkerStatus[] = ['selesai', 'berjalan', 'rencana', 'ditunda']
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des']
 const shortDate = new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'short', timeZone: 'UTC' })
 

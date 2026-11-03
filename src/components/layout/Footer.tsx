@@ -2,6 +2,7 @@ import Link from 'next/link'
 
 import type { SiteSetting } from '@/payload-types'
 import { JTI_URL, NAV_ITEMS } from '@/lib/nav'
+import { Teemo } from '../mascot/Teemo'
 import { Container } from '../ui/Container'
 import { SocialIcon } from '../ui/SocialIcon'
 import { AsciiWordmark } from './AsciiWordmark'
@@ -18,7 +19,7 @@ export function Footer({ settings }: { settings: SiteSetting }) {
         <AsciiWordmark text={settings.orgName || 'HMTI UNTAD'} />
       </Container>
 
-      <Container className="grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1.2fr_1.2fr]">
+      <Container className="grid gap-10 pb-20 pt-12 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1.2fr_1.2fr]">
         <div>
           <div className="flex items-center gap-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -97,8 +98,9 @@ export function Footer({ settings }: { settings: SiteSetting }) {
         </div>
       </Container>
 
-      <div className="border-t border-line">
-        <Container className="flex flex-col gap-3 py-5 text-xs text-ink-muted sm:flex-row sm:items-center sm:justify-between">
+      <div className="relative border-t border-line">
+        <Container className="relative flex flex-col gap-3 py-5 text-xs text-ink-muted sm:flex-row sm:items-center sm:justify-between">
+          <Teemo className="absolute bottom-full left-4 sm:left-6" />
           <p>
             © {new Date().getFullYear()} {settings.orgName}. Seluruh hak cipta dilindungi.
           </p>

@@ -4,6 +4,7 @@ import type { ReactNode } from 'react'
 import '@/styles/globals.css'
 import { Footer } from '@/components/layout/Footer'
 import { Navbar } from '@/components/layout/Navbar'
+import { SleepyOverlay } from '@/components/mascot/SleepyOverlay'
 import { BackToTop } from '@/components/ui/BackToTop'
 import { getNavData, getSiteSettings } from '@/lib/data'
 
@@ -44,6 +45,7 @@ export default async function SiteLayout({ children }: { children: ReactNode }) 
         <main className="flex-1">{children}</main>
         <Footer settings={settings} />
         <BackToTop />
+        <SleepyOverlay />
       </body>
     </html>
   )

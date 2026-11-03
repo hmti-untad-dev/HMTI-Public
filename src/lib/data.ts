@@ -169,6 +169,19 @@ export async function getAlbums(year?: number) {
   })
 }
 
+/** Foto pilihan "The Best of" untuk carousel polaroid, urut sesuai kolom Urutan di admin. */
+export async function getBestPhotos(year?: number) {
+  const payload = await getClient()
+  const { docs } = await payload.find({
+    collection: 'best-photos',
+    where: year ? { year: { equals: year } } : undefined,
+    sort: ['order', 'createdAt'],
+    limit: 100,
+    depth: 1,
+  })
+  return docs
+}
+
 export async function getAlbum(slug: string) {
   const payload = await getClient()
   const { docs } = await payload.find({ collection: 'albums', where: { slug: { equals: slug } }, limit: 1, depth: 2 })

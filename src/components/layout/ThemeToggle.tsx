@@ -30,7 +30,7 @@ export function ThemeToggle() {
       onClick={toggle}
       aria-label={isDark ? 'Ganti ke tema terang' : 'Ganti ke tema gelap'}
       aria-pressed={theme === null ? undefined : isDark}
-      className="flex size-10 items-center justify-center rounded-control border border-line text-ink transition-colors hover:border-brand"
+      className="dither flex w-12 items-center justify-center text-ink sm:w-14"
     >
       <svg viewBox="0 0 24 24" className="size-[18px]" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         {isDark ? (

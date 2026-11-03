@@ -1,6 +1,6 @@
 import type { Department, Program } from '@/payload-types'
-import { type ActivityItem, type ActivityMap, type ProkerGroup, addDays, dayKey } from './activity-core'
-import { getClient } from './data'
+import { type ActivityItem, type ActivityMap, type LandmarkMap, type ProkerGroup, addDays, dayKey, daypartOf } from './activity-core'
+import { getClient, getPeriods } from './data'
 
 /** Aktivitas per hari dalam satu tahun: edisi kegiatan (termasuk rentang hari) dan berita terbit. */
 export async function getActivity(year: number): Promise<ActivityMap> {
@@ -28,7 +28,7 @@ export async function getActivity(year: number): Promise<ActivityMap> {
   for (const e of editions.docs) {
     if (!e.startDate) continue
     const program = typeof e.program === 'object' ? e.program : null
-    const item: ActivityItem = { kind: 'kegiatan', title: e.title, href: program ? `/kegiatan/${program.slug}/${year}` : '/kegiatan' }
+    const item: ActivityItem = { kind: 'kegiatan', title: e.title, href: program ? `/kegiatan/${program.slug}/${year}` : '/kegiatan', slots: e.sessions ?? [] }
     const start = dayKey(e.startDate)
     const end = e.endDate ? dayKey(e.endDate) : start
     // Rentang maksimal 14 hari agar data salah ketik tidak mengisi setahun penuh.
@@ -39,9 +39,33 @@ export async function getActivity(year: number): Promise<ActivityMap> {
     }
   }
   for (const a of articles.docs) {
-    if (a.publishedAt) push(dayKey(a.publishedAt), { kind: 'berita', title: a.title, href: `/berita/${a.slug}` })
+    if (a.publishedAt) push(dayKey(a.publishedAt), { kind: 'berita', title: a.title, href: `/berita/${a.slug}`, slots: [daypartOf(a.publishedAt)] })
   }
   return map
+}
+
+/** Hari penting himpunan pada satu tahun. Yang berulang muncul di tanggal yang sama tiap tahun. */
+export async function getLandmarks(year: number): Promise<LandmarkMap> {
+  const payload = await getClient()
+  const { docs } = await payload.find({ collection: 'special-days', limit: 300, depth: 0, pagination: false })
+  const today = dayKey(new Date())
+  const map: LandmarkMap = {}
+  for (const d of docs) {
+    const [y, m, day] = dayKey(d.date).split('-')
+    if (!d.recurring && Number(y) !== year) continue
+    const key = `${year}-${m}-${day}`
+    if (new Date(`${key}T00:00:00Z`).getUTCMonth() + 1 !== Number(m)) continue // 29 Februari di tahun biasa
+    ;(map[key] ??= []).push({ title: d.title, description: d.description ?? null, href: d.link ?? null, upcoming: key > today })
+  }
+  return map
+}
+
+/** Tahun yang bisa dipilih pada heatmap: tahun semua periode, tahun ini, dan tahun hari penting sekali-jadi. */
+export async function getActivityYears(): Promise<number[]> {
+  const [periods, payload] = await Promise.all([getPeriods(), getClient()])
+  const { docs } = await payload.find({ collection: 'special-days', where: { recurring: { equals: false } }, limit: 300, depth: 0, pagination: false })
+  const years = new Set<number>([new Date().getFullYear(), ...periods.map((p) => p.year), ...docs.map((d) => Number(dayKey(d.date).slice(0, 4)))])
+  return [...years].sort((a, b) => a - b)
 }
 
 /** Edisi kegiatan satu periode dikelompokkan per departemen penyelenggara (urutan departemen dari CMS). */

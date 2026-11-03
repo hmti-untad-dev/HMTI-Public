@@ -24,8 +24,8 @@ export async function TeamPreview() {
         <Empty>Data pengurus belum diisi.</Empty>
       ) : (
         <div className="snap-row justify-start lg:justify-center">
-          {ordered.map((m) => (
-            <PersonCard key={m.id} member={m} />
+          {ordered.map((m, i) => (
+            <PersonCard key={m.id} member={m} index={i + 1} total={ordered.length} />
           ))}
         </div>
       )}

@@ -6,6 +6,7 @@
  * Pengelompokan departemen (internal = diawasi Ketua I, eksternal = diawasi Ketua II) sudah dikonfirmasi pengurus.
  */
 import { getPayload } from 'payload'
+import sharp from 'sharp'
 
 import config from '../src/payload.config'
 
@@ -117,17 +118,17 @@ for (const d of depts) {
 
 // --- Program kerja & edisi ---
 // Nama program dari dokumen MUBES (struktur 2025/2026); TANGGAL dan STATUS adalah data contoh.
-type Seed = { name: string; short?: string; slug: string; dept: string; summary: string; start: string; end?: string; status: 'rencana' | 'berjalan' | 'selesai' | 'ditunda'; featured?: boolean }
+type Seed = { name: string; short?: string; slug: string; dept: string; summary: string; start: string; end?: string; status: 'rencana' | 'berjalan' | 'selesai' | 'ditunda'; featured?: boolean; sessions?: ('pagi' | 'siang' | 'sore' | 'malam')[] }
 const programDefs: Seed[] = [
-  { name: 'Informatics Festival', short: 'I-Fest', slug: 'i-fest', dept: 'rinoya', summary: 'Festival teknologi tahunan.', start: '2026-09-26', end: '2026-09-28', status: 'selesai', featured: true },
-  { name: 'Pengabdian Masyarakat', short: 'PenMas', slug: 'penmas', dept: 'rinoya', summary: 'Program pengabdian kepada masyarakat.', start: '2026-06-20', end: '2026-06-22', status: 'selesai', featured: true },
-  { name: 'Dies Natalis', short: 'Dies', slug: 'dies', dept: 'rinoya', summary: 'Perayaan hari jadi himpunan.', start: '2026-03-14', end: '2026-03-16', status: 'selesai', featured: true },
-  { name: 'Interaksi Bulanan Mahasiswa', short: 'IBM', slug: 'ibm', dept: 'intelektual', summary: 'Forum bulanan pengembangan intelektual mahasiswa.', start: '2026-02-15', status: 'selesai', featured: true },
-  { name: 'Penalaran Keilmuan', slug: 'penalaran-keilmuan', dept: 'intelektual', summary: 'Kajian keilmuan dan riset bidang teknologi.', start: '2026-04-20', status: 'selesai' },
-  { name: 'ALGOMATIK', slug: 'algomatik', dept: 'kaderisasi', summary: 'Proses kaderisasi menuju anggota muda.', start: '2026-05-09', end: '2026-05-11', status: 'selesai' },
-  { name: 'Latihan Kepemimpinan', short: 'LK', slug: 'latihan-kepemimpinan', dept: 'kaderisasi', summary: 'Pelatihan kepemimpinan anggota.', start: '2026-08-14', end: '2026-08-16', status: 'selesai' },
+  { name: 'Informatics Festival', short: 'I-Fest', slug: 'i-fest', dept: 'rinoya', summary: 'Festival teknologi tahunan.', start: '2026-12-01', end: '2026-12-03', status: 'rencana', featured: true, sessions: ['pagi', 'siang', 'sore', 'malam'] },
+  { name: 'Pengabdian Masyarakat', short: 'PenMas', slug: 'penmas', dept: 'rinoya', summary: 'Program pengabdian kepada masyarakat.', start: '2026-06-20', end: '2026-06-22', status: 'selesai', featured: true, sessions: ['pagi', 'siang', 'sore'] },
+  { name: 'Dies Natalis', short: 'Dies', slug: 'dies', dept: 'rinoya', summary: 'Perayaan hari jadi himpunan.', start: '2026-03-14', end: '2026-03-16', status: 'selesai', featured: true, sessions: ['siang', 'malam'] },
+  { name: 'Interaksi Bulanan Mahasiswa', short: 'IBM', slug: 'ibm', dept: 'intelektual', summary: 'Forum bulanan pengembangan intelektual mahasiswa.', start: '2026-02-15', status: 'selesai', featured: true, sessions: ['malam'] },
+  { name: 'Penalaran Keilmuan', slug: 'penalaran-keilmuan', dept: 'intelektual', summary: 'Kajian keilmuan dan riset bidang teknologi.', start: '2026-04-20', status: 'selesai', sessions: ['siang', 'sore'] },
+  { name: 'ALGOMATIK', slug: 'algomatik', dept: 'kaderisasi', summary: 'Proses kaderisasi menuju anggota muda.', start: '2026-05-09', end: '2026-05-11', status: 'selesai', sessions: ['pagi', 'siang', 'sore', 'malam'] },
+  { name: 'Latihan Kepemimpinan', short: 'LK', slug: 'latihan-kepemimpinan', dept: 'kaderisasi', summary: 'Pelatihan kepemimpinan anggota.', start: '2026-08-14', end: '2026-08-16', status: 'selesai', sessions: ['pagi', 'sore'] },
   { name: 'Musyawarah Besar', short: 'MUBES', slug: 'mubes', dept: 'kaderisasi', summary: 'Sidang umum anggota: pertanggungjawaban dan pemilihan Ketua Umum.', start: '2026-12-19', end: '2026-12-21', status: 'rencana' },
-  { name: 'Mimbar Akbar dan Advokasi', slug: 'mimbar-akbar', dept: 'humas', summary: 'Wadah diskusi dan advokasi isu mahasiswa.', start: '2026-04-05', status: 'selesai' },
+  { name: 'Mimbar Akbar dan Advokasi', slug: 'mimbar-akbar', dept: 'humas', summary: 'Wadah diskusi dan advokasi isu mahasiswa.', start: '2026-04-05', status: 'selesai', sessions: ['sore', 'malam'] },
   { name: 'Interaksi Sosial Media', short: 'ISM', slug: 'ism', dept: 'humas', summary: 'Pengelolaan konten dan platform digital himpunan.', start: '2026-07-01', end: '2026-12-20', status: 'berjalan' },
   { name: 'PERMIKOMNAS', slug: 'permikomnas', dept: 'humas', summary: 'Keikutsertaan pada forum nasional ilmu komputer.', start: '2026-10-24', status: 'ditunda' },
   { name: 'HMTI Shop', slug: 'hmti-shop', dept: 'ekonomi-kreatif', summary: 'Usaha merchandise himpunan.', start: '2026-10-01', end: '2026-12-31', status: 'berjalan' },
@@ -147,12 +148,23 @@ for (const [i, def] of programDefs.entries()) {
       program: program.id,
       period: p2026.id,
       status: def.status,
+      sessions: def.sessions,
       startDate: `${def.start}T00:00:00.000+08:00`,
       endDate: def.end ? `${def.end}T00:00:00.000+08:00` : undefined,
       location: 'Lokasi (contoh)',
     },
   })
 }
+
+// --- Hari penting (bintang di heatmap) ---
+await payload.create({
+  collection: 'special-days',
+  data: { title: 'Hari H I-Fest', date: '2026-12-03T00:00:00.000+08:00', recurring: false, description: 'Puncak Informatics Festival, festival teknologi tahunan.', link: '/kegiatan/i-fest/2026' },
+})
+await payload.create({
+  collection: 'special-days',
+  data: { title: 'Puncak Dies Natalis (contoh)', date: '2026-03-16T00:00:00.000+08:00', recurring: false, description: 'Tanggal contoh; ganti dengan hari jadi yang sebenarnya.', link: '/kegiatan/dies/2026' },
+})
 
 // --- Konten ---
 for (const [i, a] of [
@@ -197,6 +209,25 @@ for (const [i, a] of [
   { title: 'Dokumentasi Kegiatan 2025', year: 2025, bestOfYear: true },
 ].entries()) {
   await payload.create({ collection: 'albums', data: { ...a, slug: `album-contoh-${i + 1}` } })
+}
+
+// Foto "The Best of" contoh: gambar gradasi dibuat lokal (belum ada foto asli).
+const tints: [string, string][] = [['#3e4094', '#b4d6fe'], ['#5253ad', '#e3e5f1'], ['#2a2b57', '#9cc4f5'], ['#3e4094', '#cfe3fb'], ['#121212', '#5253ad'], ['#5253ad', '#b4d6fe'], ['#2a2b57', '#cfe3fb']]
+async function sampleImage(n: number) {
+  const [a, b] = tints[n % tints.length]
+  const dots = Array.from({ length: 14 }, (_, i) => `<circle cx="${(i * 97 + n * 53) % 800}" cy="${(i * 151 + n * 71) % 800}" r="${30 + ((i * 13) % 50)}" fill="#fff" opacity="0.10"/>`).join('')
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><rect width="800" height="800" fill="url(#g)"/>${dots}<text x="400" y="430" font-size="64" font-family="sans-serif" fill="#fff" fill-opacity="0.85" text-anchor="middle">Foto contoh ${n + 1}</text></svg>`
+  const data = await sharp(Buffer.from(svg)).png().toBuffer()
+  return payload.create({ collection: 'media', data: { alt: `Foto contoh ${n + 1}` }, file: { data, mimetype: 'image/png', name: `foto-contoh-${n + 1}.png`, size: data.length } })
+}
+const bestCaptions = ['I-Fest hari pertama', 'Ngabdi di desa', 'Rapat kerja', 'Dies Natalis', 'ALGOMATIK', 'Latihan Kepemimpinan', 'Foto bersama']
+for (const [i, caption] of bestCaptions.entries()) {
+  const img = await sampleImage(i)
+  await payload.create({ collection: 'best-photos', data: { image: img.id, caption: `${caption} (contoh)`, year: 2026, order: i } })
+}
+for (const [i, caption] of ['Mubes 2025', 'Pelantikan', 'Buka puasa bersama'].entries()) {
+  const img = await sampleImage(i + 3)
+  await payload.create({ collection: 'best-photos', data: { image: img.id, caption: `${caption} (contoh)`, year: 2025, order: i } })
 }
 
 for (const [i, f] of [

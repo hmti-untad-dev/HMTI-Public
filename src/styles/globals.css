@@ -149,6 +149,10 @@
 }
 
 /* ---------- Sapuan dither saat hover (navbar) ---------- */
+/*
+ * Kotak dither 6px menyapu dari kiri ke kanan setinggi penuh sel, dengan intensitas biru naik per anak tangga
+ * (deret aritmatika 12/24/36/48/60%, terpisah, bukan gradien mulus). Maksimum 60% dijaga agar teks tetap >= 4.5:1.
+ */
 @property --sw {
   syntax: '<number>';
   inherits: false;
@@ -163,28 +167,28 @@
   position: absolute;
   inset: 0;
   z-index: -1;
-  border-radius: inherit;
   pointer-events: none;
-  --dc: color-mix(in srgb, var(--link) 38%, transparent);
+  --dc: color-mix(in srgb, var(--brand) 60%, transparent);
   background-image:
     linear-gradient(45deg, var(--dc) 25%, transparent 25%, transparent 75%, var(--dc) 75%),
     linear-gradient(45deg, var(--dc) 25%, transparent 25%, transparent 75%, var(--dc) 75%);
-  background-size: 4px 4px;
-  background-position: 0 0, 2px 2px;
+  background-size: 6px 6px;
+  background-position: 0 0, 3px 3px;
+  --stairs: linear-gradient(90deg, rgb(0 0 0 / 0.2) 0 20%, rgb(0 0 0 / 0.4) 20% 40%, rgb(0 0 0 / 0.6) 40% 60%, rgb(0 0 0 / 0.8) 60% 80%, #000 80% 100%);
+  mask-image: var(--stairs);
+  -webkit-mask-image: var(--stairs);
   --sw: 0;
-  /* tepi sapuan bergerak dari kiri luar ke kanan; --sw=0 berarti sepenuhnya tersembunyi */
-  mask-image: linear-gradient(90deg, #000 calc(var(--sw) * 1% - 16%), transparent calc(var(--sw) * 1%));
-  -webkit-mask-image: linear-gradient(90deg, #000 calc(var(--sw) * 1% - 16%), transparent calc(var(--sw) * 1%));
+  clip-path: inset(0 calc(100% - var(--sw) * 1%) 0 0);
 }
 .dither:hover::before,
 .dither:focus-visible::before,
 .dither[aria-expanded='true']::before,
 .dither[data-open='true']::before {
-  --sw: 118;
+  --sw: 100;
 }
 @media (prefers-reduced-motion: no-preference) {
   .dither::before {
-    transition: --sw 0.42s steps(12, end);
+    transition: --sw 0.45s steps(10, end);
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -193,9 +197,10 @@
     opacity: 0;
   }
   .dither:hover::before,
+  .dither:focus-visible::before,
   .dither[aria-expanded='true']::before {
     opacity: 1;
-    --sw: 118;
+    --sw: 100;
   }
 }
 
@@ -217,5 +222,121 @@
     transition:
       grid-template-rows 0.38s cubic-bezier(0.16, 1, 0.3, 1),
       opacity 0.3s ease;
+  }
+}
+
+/* ---------- Maskot Teemo (components/mascot) ---------- */
+.cat-tail,
+.cat-tail-base,
+.cat-lid,
+.cat-breathe {
+  transform-box: fill-box;
+}
+.cat-tail,
+.cat-tail-base {
+  transform-origin: 100% 100%;
+}
+.cat-lid {
+  transform-origin: 50% 0;
+  transform: scaleY(var(--lid, 0));
+  transition: transform 0.55s ease;
+}
+.cat-pupil {
+  transform: translate(calc(var(--px, 0) * 1px), calc(var(--py, 0) * 1px));
+  transition: transform 0.15s ease-out;
+}
+.cat-yawn {
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+  transform: scaleY(var(--yawn, 0));
+  opacity: var(--yawn, 0);
+  transition:
+    transform 0.6s ease,
+    opacity 0.4s ease;
+}
+.cat-breathe {
+  transform-origin: 50% 100%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .cat-tail {
+    animation: cat-sway 3.2s ease-in-out infinite;
+  }
+  .teemo:hover .cat-tail {
+    animation-duration: 0.55s;
+  }
+  .cat-blink {
+    animation: cat-blink 5s infinite;
+  }
+  .cat-breathe {
+    animation: cat-breathe 3.4s ease-in-out infinite;
+  }
+  .cat-z {
+    opacity: 0;
+    animation: cat-z 2.7s ease-out infinite;
+  }
+  .cat-hop {
+    transform-origin: 50% 100%;
+    animation: cat-hop 0.7s cubic-bezier(0.3, 0, 0.3, 1);
+  }
+  .cat-overlay-in {
+    animation: lx-fade 0.5s ease-out both;
+  }
+}
+@keyframes cat-sway {
+  0%,
+  100% {
+    transform: rotate(-7deg);
+  }
+  50% {
+    transform: rotate(9deg);
+  }
+}
+@keyframes cat-blink {
+  0%,
+  91%,
+  100% {
+    transform: scaleY(var(--lid, 0));
+  }
+  95% {
+    transform: scaleY(1);
+  }
+}
+@keyframes cat-breathe {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(1.045);
+  }
+}
+@keyframes cat-z {
+  0% {
+    opacity: 0;
+    transform: translate(0, 6px) scale(0.7);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(14px, -46px) scale(1.15);
+  }
+}
+@keyframes cat-hop {
+  0% {
+    transform: scale(1, 1);
+  }
+  18% {
+    transform: scale(1.08, 0.88);
+  }
+  45% {
+    transform: translateY(-22px) scale(0.94, 1.1);
+  }
+  72% {
+    transform: translateY(0) scale(1.06, 0.92);
+  }
+  100% {
+    transform: scale(1, 1);
   }
 }

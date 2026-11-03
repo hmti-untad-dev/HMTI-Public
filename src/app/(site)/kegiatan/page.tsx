@@ -6,14 +6,14 @@ import { Container } from '@/components/ui/Container'
 import { Empty } from '@/components/ui/Empty'
 import { Img } from '@/components/ui/Img'
 import { PageHeader } from '@/components/ui/PageHeader'
-import { ActivitySection, ProkerSection } from '@/components/sections/ActivitySections'
+import { ActivitySection } from '@/components/sections/ActivitySections'
 import { YearSelector } from '@/components/ui/YearSelector'
 import { getPrograms, mediaOf, resolvePeriod } from '@/lib/data'
 
 export const metadata: Metadata = { title: 'Kegiatan' }
 
-export default async function ActivitiesPage({ searchParams }: { searchParams: Promise<{ periode?: string }> }) {
-  const { periode } = await searchParams
+export default async function ActivitiesPage({ searchParams }: { searchParams: Promise<{ periode?: string; tahun?: string }> }) {
+  const { periode, tahun } = await searchParams
   const [programs, { period, periods }] = await Promise.all([getPrograms(), resolvePeriod(periode)])
   const featured = programs.filter((p) => p.featured)
   const others = programs.filter((p) => !p.featured)
@@ -60,8 +60,12 @@ export default async function ActivitiesPage({ searchParams }: { searchParams: P
         <Container className="py-6">
           <YearSelector years={periods.map((p) => p.year)} current={period?.year} hrefFor={(y) => `/kegiatan?periode=${y}`} />
         </Container>
-        <ActivitySection period={period} tone="alt" />
-        <ProkerSection period={period} />
+        <ActivitySection
+          period={period}
+          year={Number(tahun) || undefined}
+          hrefFor={(y) => `/kegiatan?${new URLSearchParams({ ...(periode ? { periode } : {}), tahun: String(y) })}#denyut`}
+          tone="alt"
+        />
       </div>
     </>
   )

@@ -1,6 +1,6 @@
 import type { CabinetMember } from '@/lib/data'
 import { POSITION_LABEL, pad } from '@/lib/format'
-import { Img } from '../ui/Img'
+import { PixelPortrait } from '../ui/PixelPortrait'
 
 type Props = {
   member: CabinetMember
@@ -14,7 +14,13 @@ type Props = {
 export function PersonCard({ member, index, total, className = '' }: Props) {
   return (
     <figure className={`w-44 shrink-0 sm:w-52 ${className}`}>
-      <Img media={member.photo} label={member.person.name} className="aspect-[3/4] w-full rounded-card" />
+      <div className="relative aspect-[3/4] w-full overflow-hidden rounded-card border border-line bg-scrim">
+        <PixelPortrait
+          src={member.photo?.sizes?.card?.url ?? member.photo?.url ?? null}
+          name={member.person.name}
+          tag={index !== undefined ? `ID_${pad(index)}` : 'ID'}
+        />
+      </div>
       <figcaption className="mt-3">
         {index !== undefined && total !== undefined && (
           <p className="font-mono text-[0.7rem] tracking-widest text-ink-muted">

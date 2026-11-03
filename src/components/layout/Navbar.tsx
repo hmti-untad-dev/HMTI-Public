@@ -32,7 +32,7 @@ export function Navbar({ orgName, departments, archivedYears }: Props) {
   const groups = buildGroups({ departments, archivedYears })
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-surface/90 backdrop-blur">
-      <Container className="flex h-16 items-center justify-between gap-4">
+      <Container className="flex h-16 items-stretch justify-between gap-4">
         <Link href="/" className="flex shrink-0 items-center gap-2.5 whitespace-nowrap font-display text-base font-bold text-ink sm:gap-3 sm:text-lg">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/brand/hmti-logo.webp" alt="" width={36} height={36} className="size-9 rounded-full" />
@@ -41,28 +41,28 @@ export function Navbar({ orgName, departments, archivedYears }: Props) {
 
         <NavMenu groups={groups} />
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-stretch divide-x divide-line border-x border-line">
           <ThemeToggle />
           <Link
             href={LOGIN_HREF}
-            className="dither inline-flex h-10 items-center overflow-hidden rounded-control border border-brand px-3 text-sm font-medium text-link"
+            className="dither inline-flex items-center px-4 text-sm font-medium text-link sm:px-6"
           >
             Login
           </Link>
           <details className="group relative lg:hidden">
-            <summary className="flex h-10 cursor-pointer list-none items-center rounded-control border border-line px-3 text-sm transition-colors hover:border-brand">
+            <summary className="dither flex h-16 cursor-pointer list-none items-center px-4 text-sm">
               Menu
             </summary>
             <nav
               aria-label="Menu utama (mobile)"
-              className="absolute right-0 mt-2 max-h-[75dvh] w-72 overflow-y-auto rounded-card border border-line bg-surface-raised p-2 shadow-xl"
+              className="absolute right-0 top-full max-h-[75dvh] w-72 overflow-y-auto border border-line bg-surface-raised p-2 shadow-xl"
             >
-              <Link href="/" className="block rounded-control px-3 py-2.5 text-sm hover:bg-brand-soft/50">
+              <Link href="/" className="block px-3 py-2.5 text-sm hover:bg-brand-soft/50">
                 Beranda
               </Link>
               {groups.map((g) => (
                 <div key={g.label} className="mt-1 border-t border-line pt-1">
-                  <Link href={g.href} className="block rounded-control px-3 py-2.5 text-sm font-medium hover:bg-brand-soft/50">
+                  <Link href={g.href} className="block px-3 py-2.5 text-sm font-medium hover:bg-brand-soft/50">
                     {g.label}
                   </Link>
                   {g.items && g.items.length > 1 && (
@@ -72,7 +72,7 @@ export function Navbar({ orgName, departments, archivedYears }: Props) {
                           <Link
                             href={item.href}
                             {...(item.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                            className="block rounded-control px-3 py-2 text-sm text-ink-muted hover:bg-brand-soft/50 hover:text-ink"
+                            className="block px-3 py-2 text-sm text-ink-muted hover:bg-brand-soft/50 hover:text-ink"
                           >
                             {item.label}
                             {item.external && ' ↗'}

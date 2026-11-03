@@ -3,12 +3,13 @@
 import Link from 'next/link'
 import { useCallback, useMemo, useRef, useState } from 'react'
 
-import { type ActivityItem, levelOf } from '@/lib/activity-core'
+import { type ActivityItem, DAYPARTS, type Landmark, dayLevel, slotsOf } from '@/lib/activity-core'
 
 type Props = {
   year: number
   weeks: (string | null)[][]
   map: Record<string, ActivityItem[]>
+  landmarks: Record<string, Landmark[]>
 }
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des']
@@ -17,10 +18,30 @@ const longDate = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numer
 const KIND = { kegiatan: 'Kegiatan', berita: 'Berita' } as const
 
 /**
- * Heatmap aktivitas setahun (kegiatan + berita). Rincian hari tampil di panel tetap di bawah grid
- * (bukan tooltip melayang) supaya bekerja di layar sentuh dan keyboard: tombol panah berpindah antar hari.
+ * Bintang khusus untuk hari besar himpunan. Terisi emas = sudah terjadi, kosong = akan datang
+ * (dibedakan lewat isi, bukan warna saja). Ukurannya sedikit melebihi kotak supaya menonjol.
  */
-export function ActivityHeatmap({ year, weeks, map }: Props) {
+export function StarMark({ upcoming = false, className = '' }: { upcoming?: boolean; className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+      <polygon
+        points="12,1 14.82,8.12 22.46,8.6 16.57,13.48 18.47,20.9 12,16.8 5.53,20.9 7.43,13.48 1.54,8.6 9.18,8.12"
+        fill={upcoming ? 'var(--bg)' : 'var(--star)'}
+        stroke="var(--ink)"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+      <circle cx="12" cy="10.6" r="1.7" fill={upcoming ? 'var(--ink)' : 'var(--bg)'} />
+    </svg>
+  )
+}
+
+/**
+ * Heatmap aktivitas setahun (kegiatan + berita). Warna kotak = berapa sesi hari itu yang terisi (pagi, siang,
+ * sore, malam), jadi skalanya tetap 0 sampai 4. Rincian hari tampil di panel tetap di bawah grid (bukan tooltip
+ * melayang) supaya bekerja di layar sentuh dan keyboard: tombol panah berpindah antar hari.
+ */
+export function ActivityHeatmap({ year, weeks, map, landmarks }: Props) {
   const [cursor, setCursor] = useState<string | null>(null)
   const refs = useRef(new Map<string, HTMLButtonElement>())
 
@@ -57,12 +78,13 @@ export function ActivityHeatmap({ year, weeks, map }: Props) {
   )
 
   const firstDate = useMemo(() => {
-    const withData = Object.keys(map).sort()[0]
+    const withData = [...Object.keys(map), ...Object.keys(landmarks)].sort()[0]
     return withData ?? weeks.flat().find(Boolean) ?? null
-  }, [map, weeks])
+  }, [map, landmarks, weeks])
 
   const items = cursor ? (map[cursor] ?? []) : []
-  const max = useMemo(() => Math.max(1, ...Object.values(map).map((v) => v.length)), [map])
+  const marks = cursor ? (landmarks[cursor] ?? []) : []
+  const slots = slotsOf(items)
 
   return (
     <div>
@@ -96,9 +118,16 @@ export function ActivityHeatmap({ year, weeks, map }: Props) {
               {weeks.flatMap((week, wi) =>
                 week.map((date, di) => {
                   if (!date) return <span key={`${wi}-${di}`} aria-hidden="true" />
-                  const count = map[date]?.length ?? 0
-                  const lvl = levelOf(count, max)
+                  const dayItems = map[date] ?? []
+                  const dayMarks = landmarks[date] ?? []
+                  const lvl = dayLevel(dayItems)
                   const isCursor = cursor === date
+                  const label = [
+                    longDate.format(new Date(`${date}T00:00:00Z`)),
+                    `${dayItems.length} aktivitas`,
+                    ...(lvl > 0 ? [`${slotsOf(dayItems).size || 1} sesi terisi`] : []),
+                    ...dayMarks.map((m) => `hari penting: ${m.title}`),
+                  ].join(', ')
                   return (
                     <button
                       key={date}
@@ -109,7 +138,7 @@ export function ActivityHeatmap({ year, weeks, map }: Props) {
                       type="button"
                       role="gridcell"
                       tabIndex={date === (cursor ?? firstDate) ? 0 : -1}
-                      aria-label={`${longDate.format(new Date(`${date}T00:00:00Z`))}: ${count} aktivitas`}
+                      aria-label={label}
                       onMouseEnter={() => setCursor(date)}
                       onFocus={() => setCursor(date)}
                       onKeyDown={(e) => {
@@ -121,10 +150,14 @@ export function ActivityHeatmap({ year, weeks, map }: Props) {
                         else return
                         e.preventDefault()
                       }}
-                      className={`aspect-square w-full rounded-[3px] transition-[transform,box-shadow] duration-150 ${LEVEL_BG[lvl]} ${
-                        isCursor ? 'scale-125 shadow-[0_0_0_1.5px_var(--ink)]' : 'hover:scale-110'
-                      }`}
-                    />
+                      className={`relative aspect-square w-full rounded-[3px] transition-[transform,box-shadow] duration-150 ${LEVEL_BG[lvl]} ${
+                        isCursor ? 'z-20 scale-125 shadow-[0_0_0_1.5px_var(--ink)]' : 'hover:scale-110'
+                      } ${dayMarks.length ? 'z-10' : ''}`}
+                    >
+                      {dayMarks.length > 0 && (
+                        <StarMark upcoming={dayMarks.every((m) => m.upcoming)} className="pointer-events-none absolute left-1/2 top-1/2 size-[1.45rem] -translate-x-1/2 -translate-y-1/2 drop-shadow-[0_0_1px_var(--bg)]" />
+                      )}
+                    </button>
                   )
                 }),
               )}
@@ -134,25 +167,60 @@ export function ActivityHeatmap({ year, weeks, map }: Props) {
       </div>
 
       {/* Rincian + legenda */}
-      <div className="mt-4 flex flex-col gap-4 border-t border-line pt-4 sm:flex-row sm:items-start sm:justify-between">
+      <div className="mt-4 flex flex-col gap-4 border-t border-line pt-4 lg:flex-row lg:items-start lg:justify-between">
         <div aria-live="polite" className="min-h-14 text-sm">
           {cursor ? (
             <>
               <p className="font-medium">{longDate.format(new Date(`${cursor}T00:00:00Z`))}</p>
-              {items.length === 0 ? (
-                <p className="text-ink-muted">Tidak ada aktivitas tercatat.</p>
-              ) : (
-                <ul className="mt-1 space-y-0.5 text-ink-muted">
-                  {items.slice(0, 4).map((it, i) => (
-                    <li key={i}>
-                      <span className="font-mono text-xs uppercase tracking-wider text-link">{KIND[it.kind]}</span>{' '}
-                      <Link href={it.href} className="text-ink hover:underline">
-                        {it.title}
+
+              {marks.map((m) => (
+                <div key={m.title} className="mt-1.5 flex items-start gap-2">
+                  <StarMark upcoming={m.upcoming} className="mt-0.5 size-4 shrink-0" />
+                  <p>
+                    <span className="font-medium">{m.title}</span>
+                    <span className="text-ink-muted"> · {m.upcoming ? 'akan datang' : 'sudah terlaksana'}</span>
+                    {m.description && <span className="block text-ink-muted">{m.description}</span>}
+                    {m.href && (
+                      <Link href={m.href} className="text-link hover:underline">
+                        Lihat kegiatan
                       </Link>
-                    </li>
-                  ))}
-                  {items.length > 4 && <li>dan {items.length - 4} lainnya</li>}
-                </ul>
+                    )}
+                  </p>
+                </div>
+              ))}
+
+              {items.length === 0 ? (
+                marks.length === 0 && <p className="text-ink-muted">Tidak ada aktivitas tercatat.</p>
+              ) : (
+                <>
+                  <ul className="mt-1.5 flex flex-wrap gap-1.5" aria-label="Sesi yang terisi">
+                    {DAYPARTS.map((d) => {
+                      const on = slots.has(d.key)
+                      return (
+                        <li
+                          key={d.key}
+                          title={d.range}
+                          className={`border px-2 py-0.5 font-mono text-[0.7rem] uppercase tracking-wider ${on ? 'border-brand bg-brand text-on-brand' : 'border-dashed border-line text-ink-muted'}`}
+                        >
+                          {d.label}
+                          <span className="sr-only">{on ? ' terisi' : ' kosong'}</span>
+                        </li>
+                      )
+                    })}
+                    {slots.size === 0 && <li className="self-center text-xs text-ink-muted">Sesi belum diisi, dihitung 1.</li>}
+                  </ul>
+                  <ul className="mt-2 space-y-0.5 text-ink-muted">
+                    {items.slice(0, 4).map((it, i) => (
+                      <li key={i}>
+                        <span className="font-mono text-xs uppercase tracking-wider text-link">{KIND[it.kind]}</span>{' '}
+                        <Link href={it.href} className="text-ink hover:underline">
+                          {it.title}
+                        </Link>
+                      </li>
+                    ))}
+                    {items.length > 4 && <li>dan {items.length - 4} lainnya</li>}
+                  </ul>
+                </>
               )}
             </>
           ) : (
@@ -160,12 +228,23 @@ export function ActivityHeatmap({ year, weeks, map }: Props) {
           )}
         </div>
 
-        <div className="flex shrink-0 items-center gap-2 text-xs text-ink-muted" aria-hidden="true">
-          Sedikit
-          {LEVEL_BG.map((c) => (
-            <span key={c} className={`size-3 rounded-[3px] ${c}`} />
-          ))}
-          Banyak
+        <div className="flex shrink-0 flex-col gap-2 text-xs text-ink-muted" aria-hidden="true">
+          <div className="flex items-center gap-2">
+            0 sesi
+            {LEVEL_BG.map((c) => (
+              <span key={c} className={`size-3 rounded-[3px] ${c}`} />
+            ))}
+            4 sesi
+          </div>
+          <p>Sesi: pagi, siang, sore, malam</p>
+          <div className="flex items-center gap-4">
+            <span className="flex items-center gap-1.5">
+              <StarMark className="size-4" /> Hari penting
+            </span>
+            <span className="flex items-center gap-1.5">
+              <StarMark upcoming className="size-4" /> Akan datang
+            </span>
+          </div>
         </div>
       </div>
     </div>

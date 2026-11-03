@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react'
 
 import { pad } from '@/lib/format'
+import { PixelPortrait } from '../ui/PixelPortrait'
 
 export type ShowcaseMember = {
   id: number
@@ -37,6 +38,7 @@ function instagramUrl(handle: string) {
 export function CabinetShowcase({ orgName, year, groups }: Props) {
   const [groupKey, setGroupKey] = useState(groups[0]?.key)
   const [index, setIndex] = useState(0)
+  const [scan, setScan] = useState(false)
 
   const flat = useMemo(() => groups.flatMap((g) => g.members.map((m) => ({ ...m, groupKey: g.key }))), [groups])
   const total = flat.length
@@ -84,25 +86,26 @@ export function CabinetShowcase({ orgName, year, groups }: Props) {
 
             {/* Poster */}
             <figure className="relative mt-8 aspect-[4/5] overflow-hidden rounded-lg border border-line bg-scrim">
-              {current.photoUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={current.photoUrl} alt={current.name} className="absolute inset-0 size-full object-cover" />
-              ) : (
-                <div className="absolute inset-0 flex items-center justify-center font-mono text-xs uppercase tracking-widest text-white/60">
-                  foto {current.name}
-                </div>
-              )}
-              <div className="absolute inset-0 bg-gradient-to-t from-scrim/90 via-transparent to-scrim/30" />
-              <p className="absolute left-5 top-5 font-mono text-xs tracking-widest text-white/85">
+              <PixelPortrait src={current.photoUrl} name={current.name} replayKey={current.id} pinned={scan} />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-scrim/90 via-transparent to-scrim/30" />
+              <p className="pointer-events-none absolute left-9 top-8 font-mono text-xs tracking-widest text-white/85">
                 <span className="text-lg">/ {pad(globalIndex)}</span>
               </p>
-              <p className="absolute right-5 top-5 rounded bg-scrim/70 px-3 py-1.5 font-mono text-xs uppercase tracking-[0.25em] text-white">
+              <p className="pointer-events-none absolute right-9 top-8 bg-scrim/70 px-3 py-1.5 font-mono text-xs uppercase tracking-[0.25em] text-white">
                 {current.role}
               </p>
-              <figcaption className="absolute inset-x-5 bottom-5">
+              <figcaption className="pointer-events-none absolute inset-x-9 bottom-8">
                 <p className="font-serif text-4xl italic leading-none text-white sm:text-5xl">{current.name}</p>
                 <p className="mt-2 font-mono text-xs uppercase tracking-[0.25em] text-white/75">{group.title}</p>
               </figcaption>
+              <button
+                type="button"
+                aria-pressed={scan}
+                onClick={() => setScan((v) => !v)}
+                className="absolute right-9 top-[4.25rem] border border-white/70 bg-scrim/75 px-2 py-1 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-white hover:bg-scrim"
+              >
+                {scan ? 'Bitmap' : 'ASCII'}
+              </button>
             </figure>
           </div>
 

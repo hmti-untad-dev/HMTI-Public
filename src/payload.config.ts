@@ -9,6 +9,8 @@ import sharp from 'sharp'
 import { Achievements } from './collections/Achievements'
 import { Albums } from './collections/Albums'
 import { Articles } from './collections/Articles'
+import { BestPhotos } from './collections/BestPhotos'
+import { ChatMessages } from './collections/ChatMessages'
 import { Departments } from './collections/Departments'
 import { Documents } from './collections/Documents'
 import { Editions } from './collections/Editions'
@@ -23,6 +25,7 @@ import { Periods } from './collections/Periods'
 import { Programs } from './collections/Programs'
 import { ServiceRequests } from './collections/ServiceRequests'
 import { Services } from './collections/Services'
+import { SpecialDays } from './collections/SpecialDays'
 import { Testimonials } from './collections/Testimonials'
 import { Users } from './collections/Users'
 import { SiteSettings } from './globals/SiteSettings'
@@ -52,17 +55,20 @@ export default buildConfig({
     // Kegiatan
     Programs,
     Editions,
+    SpecialDays,
     // Konten
     Achievements,
     Testimonials,
     Articles,
     Albums,
+    BestPhotos,
     Faqs,
     Documents,
     Partners,
     // Layanan
     Services,
     ServiceRequests,
+    ChatMessages,
     Inventory,
     Loans,
   ],

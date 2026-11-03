@@ -35,7 +35,7 @@ export function NavMenu({ groups }: { groups: NavGroup[] }) {
     <nav
       ref={root}
       aria-label="Menu utama"
-      className="hidden items-center gap-1 lg:flex"
+      className="hidden items-stretch divide-x divide-line border-l border-line lg:flex"
       onKeyDown={(e) => {
         if (e.key === 'Escape' && open !== null) {
           setOpen(null)
@@ -50,7 +50,7 @@ export function NavMenu({ groups }: { groups: NavGroup[] }) {
         return (
           <div
             key={g.label}
-            className="relative"
+            className="relative flex"
             onMouseEnter={() => hasMenu && hold(i)}
             onMouseLeave={release}
             onBlur={(e) => {
@@ -64,7 +64,7 @@ export function NavMenu({ groups }: { groups: NavGroup[] }) {
               data-open={isOpen}
               onFocus={() => hasMenu && hold(i)}
               onClick={() => setOpen(null)}
-              className="dither inline-flex h-10 items-center gap-1.5 overflow-hidden rounded-control px-3 font-mono text-[0.72rem] uppercase tracking-[0.14em] text-ink-muted hover:text-ink aria-expanded:text-ink"
+              className="dither inline-flex items-center gap-1.5 px-4 font-mono text-[0.72rem] uppercase tracking-[0.14em] text-ink-muted hover:text-ink aria-expanded:text-ink"
             >
               {g.label}
               {hasMenu && (
@@ -79,12 +79,12 @@ export function NavMenu({ groups }: { groups: NavGroup[] }) {
                 role="menu"
                 aria-label={g.label}
                 data-open={isOpen}
-                className={`absolute left-0 top-full z-50 pt-2 transition-[opacity,transform,visibility] duration-200 ${
+                className={`absolute left-[-1px] top-full z-50 transition-[opacity,transform,visibility] duration-200 ${
                   isOpen ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-1 opacity-0'
                 }`}
               >
                 <ul
-                  className={`grid gap-px overflow-hidden rounded-card border border-line bg-line shadow-xl ${wide ? 'w-[30rem] grid-cols-2 [&>li:last-child:nth-child(odd)]:col-span-2' : 'w-64'}`}
+                  className={`grid gap-px border border-line bg-line shadow-xl ${wide ? 'w-[30rem] grid-cols-2 [&>li:last-child:nth-child(odd)]:col-span-2' : 'w-64'}`}
                 >
                   {g.items!.map((item) => (
                     <li key={item.href + item.label} className="bg-surface-raised">
@@ -94,7 +94,7 @@ export function NavMenu({ groups }: { groups: NavGroup[] }) {
                         tabIndex={isOpen ? 0 : -1}
                         {...(item.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                         onClick={() => setOpen(null)}
-                        className="dither flex min-h-11 items-center justify-between gap-3 overflow-hidden px-4 py-2.5 text-sm text-ink"
+                        className="dither flex min-h-11 items-center justify-between gap-3 px-4 py-2.5 text-sm text-ink"
                       >
                         <span>{item.label}</span>
                         {item.external && (
