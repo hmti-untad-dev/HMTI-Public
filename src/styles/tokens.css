@@ -23,6 +23,15 @@
   --font-display: var(--font-sans);
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
 
+  /* Mode gelap editorial (halaman Kepengurusan, mengacu gaya "Faces Behind") */
+  --color-night: #0f0f10;
+  --color-night-raised: #17171a;
+  --color-night-line: #2b2b30;
+  --color-night-ink: #f4f4f2;
+  --color-night-muted: #8b8b93;
+  --color-night-accent: #4d7cff;
+  --font-serif: ui-serif, 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+
   /* Bentuk */
   --radius-card: 1rem;
   --radius-control: 0.625rem;
