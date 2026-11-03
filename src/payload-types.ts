@@ -335,6 +335,10 @@ export interface Edition {
   title: string;
   program: number | Program;
   period: number | Period;
+  /**
+   * Dipakai pada bagian "Progres Program Kerja" di situs.
+   */
+  status: 'rencana' | 'berjalan' | 'selesai' | 'ditunda';
   startDate?: string | null;
   endDate?: string | null;
   location?: string | null;
@@ -887,6 +891,7 @@ export interface EditionsSelect<T extends boolean = true> {
   title?: T;
   program?: T;
   period?: T;
+  status?: T;
   startDate?: T;
   endDate?: T;
   location?: T;

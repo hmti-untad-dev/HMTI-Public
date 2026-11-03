@@ -1,3 +1,4 @@
+import { ActivitySection, ProkerSection } from '@/components/sections/ActivitySections'
 import { AboutPreview } from '@/components/sections/AboutPreview'
 import { FaqSection } from '@/components/sections/FaqSection'
 import { GalleryPreview } from '@/components/sections/GalleryPreview'
@@ -7,15 +8,19 @@ import { ProgramsPreview } from '@/components/sections/ProgramsPreview'
 import { ProofSection } from '@/components/sections/ProofSection'
 import { ServicesPreview } from '@/components/sections/ServicesPreview'
 import { TeamPreview } from '@/components/sections/TeamPreview'
+import { getActivePeriod } from '@/lib/data'
 
 /** Urutan section = urutan wireframe Main. Pindah/hapus baris untuk mengubah susunan beranda. */
-export default function HomePage() {
+export default async function HomePage() {
+  const period = await getActivePeriod()
   return (
     <>
       <Hero />
       <AboutPreview />
       <TeamPreview />
       <ProgramsPreview />
+      <ActivitySection period={period} tone="alt" />
+      <ProkerSection period={period} />
       <ProofSection />
       <NewsPreview />
       <GalleryPreview />

@@ -143,6 +143,8 @@ export async function getArticles(opts: { limit?: number; page?: number } = {}) 
   const payload = await getClient()
   return payload.find({
     collection: 'articles',
+    // Local API melewati access control: draft harus disaring manual.
+    where: { _status: { equals: 'published' } },
     sort: '-publishedAt',
     limit: opts.limit ?? 12,
     page: opts.page ?? 1,
@@ -152,7 +154,7 @@ export async function getArticles(opts: { limit?: number; page?: number } = {}) 
 
 export async function getArticle(slug: string) {
   const payload = await getClient()
-  const { docs } = await payload.find({ collection: 'articles', where: { slug: { equals: slug } }, limit: 1, depth: 1 })
+  const { docs } = await payload.find({ collection: 'articles', where: { and: [{ slug: { equals: slug } }, { _status: { equals: 'published' } }] }, limit: 1, depth: 1 })
   return docs[0] ?? null
 }
 

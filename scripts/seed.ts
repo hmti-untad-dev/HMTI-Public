@@ -116,21 +116,41 @@ for (const d of depts) {
 }
 
 // --- Program kerja & edisi ---
-const programDefs = [
-  { name: 'Informatics Festival', shortName: 'I-Fest', slug: 'i-fest', dept: 'rinoya', summary: 'Festival teknologi tahunan.', month: '09' },
-  { name: 'Pengabdian Masyarakat', shortName: 'PenMas', slug: 'penmas', dept: 'rinoya', summary: 'Program pengabdian kepada masyarakat.', month: '06' },
-  { name: 'Dies Natalis', shortName: 'Dies', slug: 'dies', dept: 'rinoya', summary: 'Perayaan hari jadi himpunan.', month: '03' },
-  { name: 'Interaksi Bulanan Mahasiswa', shortName: 'IBM', slug: 'ibm', dept: 'intelektual', summary: 'Forum bulanan pengembangan intelektual mahasiswa.', month: '02' },
-] as const
+// Nama program dari dokumen MUBES (struktur 2025/2026); TANGGAL dan STATUS adalah data contoh.
+type Seed = { name: string; short?: string; slug: string; dept: string; summary: string; start: string; end?: string; status: 'rencana' | 'berjalan' | 'selesai' | 'ditunda'; featured?: boolean }
+const programDefs: Seed[] = [
+  { name: 'Informatics Festival', short: 'I-Fest', slug: 'i-fest', dept: 'rinoya', summary: 'Festival teknologi tahunan.', start: '2026-09-26', end: '2026-09-28', status: 'selesai', featured: true },
+  { name: 'Pengabdian Masyarakat', short: 'PenMas', slug: 'penmas', dept: 'rinoya', summary: 'Program pengabdian kepada masyarakat.', start: '2026-06-20', end: '2026-06-22', status: 'selesai', featured: true },
+  { name: 'Dies Natalis', short: 'Dies', slug: 'dies', dept: 'rinoya', summary: 'Perayaan hari jadi himpunan.', start: '2026-03-14', end: '2026-03-16', status: 'selesai', featured: true },
+  { name: 'Interaksi Bulanan Mahasiswa', short: 'IBM', slug: 'ibm', dept: 'intelektual', summary: 'Forum bulanan pengembangan intelektual mahasiswa.', start: '2026-02-15', status: 'selesai', featured: true },
+  { name: 'Penalaran Keilmuan', slug: 'penalaran-keilmuan', dept: 'intelektual', summary: 'Kajian keilmuan dan riset bidang teknologi.', start: '2026-04-20', status: 'selesai' },
+  { name: 'ALGOMATIK', slug: 'algomatik', dept: 'kaderisasi', summary: 'Proses kaderisasi menuju anggota muda.', start: '2026-05-09', end: '2026-05-11', status: 'selesai' },
+  { name: 'Latihan Kepemimpinan', short: 'LK', slug: 'latihan-kepemimpinan', dept: 'kaderisasi', summary: 'Pelatihan kepemimpinan anggota.', start: '2026-08-14', end: '2026-08-16', status: 'selesai' },
+  { name: 'Musyawarah Besar', short: 'MUBES', slug: 'mubes', dept: 'kaderisasi', summary: 'Sidang umum anggota: pertanggungjawaban dan pemilihan Ketua Umum.', start: '2026-12-19', end: '2026-12-21', status: 'rencana' },
+  { name: 'Mimbar Akbar dan Advokasi', slug: 'mimbar-akbar', dept: 'humas', summary: 'Wadah diskusi dan advokasi isu mahasiswa.', start: '2026-04-05', status: 'selesai' },
+  { name: 'Interaksi Sosial Media', short: 'ISM', slug: 'ism', dept: 'humas', summary: 'Pengelolaan konten dan platform digital himpunan.', start: '2026-07-01', end: '2026-12-20', status: 'berjalan' },
+  { name: 'PERMIKOMNAS', slug: 'permikomnas', dept: 'humas', summary: 'Keikutsertaan pada forum nasional ilmu komputer.', start: '2026-10-24', status: 'ditunda' },
+  { name: 'HMTI Shop', slug: 'hmti-shop', dept: 'ekonomi-kreatif', summary: 'Usaha merchandise himpunan.', start: '2026-10-01', end: '2026-12-31', status: 'berjalan' },
+  { name: 'Koperasi', slug: 'koperasi', dept: 'ekonomi-kreatif', summary: 'Koperasi kebutuhan mahasiswa.', start: '2026-11-20', status: 'rencana' },
+  { name: 'Pendataan Anggota dan Inventaris', slug: 'pendataan', dept: 'kesekretariatan', summary: 'Pendataan anggota dan inventaris himpunan.', start: '2026-12-05', status: 'rencana' },
+]
 for (const [i, def] of programDefs.entries()) {
   const department = depts.find((d) => d.slug === def.dept)
   const program = await payload.create({
     collection: 'programs',
-    data: { name: def.name, shortName: def.shortName, slug: def.slug, summary: def.summary, department: department?.id, featured: true, order: i },
+    data: { name: def.name, shortName: def.short, slug: def.slug, summary: def.summary, department: department?.id, featured: Boolean(def.featured), order: i },
   })
   await payload.create({
     collection: 'editions',
-    data: { title: `${def.name} 2026`, program: program.id, period: p2026.id, startDate: `2026-${def.month}-15T00:00:00.000Z`, location: 'Lokasi (placeholder)' },
+    data: {
+      title: `${def.name} 2026`,
+      program: program.id,
+      period: p2026.id,
+      status: def.status,
+      startDate: `${def.start}T00:00:00.000+08:00`,
+      endDate: def.end ? `${def.end}T00:00:00.000+08:00` : undefined,
+      location: 'Lokasi (contoh)',
+    },
   })
 }
 
@@ -151,15 +171,18 @@ for (const t of [
   await payload.create({ collection: 'testimonials', data: t })
 }
 
-for (const [i, title] of ['Pembukaan Kabinet 2026', 'Hasil Rapat Kerja', 'Pendaftaran I-Fest Dibuka', 'Pengumuman IBM Bulan Ini'].entries()) {
+// Berita contoh: tersebar sepanjang tahun agar heatmap terlihat nyata. SEMUA DUMMY.
+const newsTitles = ['Pembukaan Kabinet 2026', 'Hasil Rapat Kerja', 'Pendaftaran Dies Natalis Dibuka', 'Pengumuman IBM Bulan Ini', 'Dokumentasi Kegiatan', 'Open Recruitment Komunitas', 'Pengumuman Lomba', 'Laporan Pengabdian', 'Info Peminjaman Inventaris']
+const newsDays = ['01-12', '01-28', '02-10', '02-13', '02-15', '03-02', '03-10', '03-14', '03-15', '03-16', '03-30', '04-05', '04-06', '04-21', '05-08', '05-09', '05-10', '05-11', '05-25', '06-18', '06-20', '06-21', '06-22', '07-03', '07-27', '08-12', '08-14', '08-15', '08-16', '08-31', '09-14', '09-24', '09-26', '09-27', '09-28', '10-05', '10-19', '10-30', '11-02']
+for (const [i, d] of newsDays.entries()) {
   await payload.create({
     collection: 'articles',
     data: {
-      title,
+      title: `${newsTitles[i % newsTitles.length]} (contoh ${i + 1})`,
       slug: `berita-contoh-${i + 1}`,
-      category: i === 3 ? 'pengumuman' : 'berita',
-      excerpt: 'Ringkasan berita placeholder untuk keperluan tampilan skeleton.',
-      publishedAt: new Date(2026, 9 - i, 10).toISOString(),
+      category: i % 7 === 3 ? 'pengumuman' : 'berita',
+      excerpt: 'Ringkasan berita contoh untuk keperluan tampilan.',
+      publishedAt: `2026-${d}T09:00:00.000+08:00`,
       author: 'Tim Humas',
       _status: 'published',
     },
