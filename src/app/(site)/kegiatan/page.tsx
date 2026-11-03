@@ -29,7 +29,7 @@ export default async function ActivitiesPage() {
               <li key={p.id}>
                 <Link href={`/kegiatan/${p.slug}`} className="group relative block overflow-hidden rounded-card">
                   <Img media={mediaOf(p.cover)} label={p.name} className="aspect-video w-full" />
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent p-4 text-white">
+                  <div className="absolute inset-x-0 bottom-0 bg-scrim/85 p-4 text-white">
                     <p className="font-display text-xl font-semibold">{p.name}</p>
                     {p.summary && <p className="line-clamp-2 text-sm text-white/80">{p.summary}</p>}
                   </div>

@@ -12,7 +12,7 @@ export function ArticleCard({ article }: { article: Article }) {
       <p className="mt-3 text-xs uppercase tracking-wider text-ink-muted">
         {article.category} {article.publishedAt && `· ${formatDate(article.publishedAt)}`}
       </p>
-      <h3 className="font-display text-lg font-semibold group-hover:text-brand">{article.title}</h3>
+      <h3 className="font-display text-lg font-semibold group-hover:text-link">{article.title}</h3>
       {article.excerpt && <p className="mt-1 line-clamp-2 text-sm text-ink-muted">{article.excerpt}</p>}
     </Link>
   )

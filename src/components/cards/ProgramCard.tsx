@@ -9,7 +9,7 @@ export function ProgramCard({ program }: { program: Program }) {
   return (
     <Link href={`/kegiatan/${program.slug}`} className="group block">
       <Img media={mediaOf(program.cover)} label={program.name} className="aspect-[3/4] w-full rounded-card" />
-      <p className="mt-3 font-display font-semibold group-hover:text-brand">{program.shortName || program.name}</p>
+      <p className="mt-3 font-display font-semibold group-hover:text-link">{program.shortName || program.name}</p>
       {department && <p className="text-xs text-ink-muted">{department.name}</p>}
     </Link>
   )

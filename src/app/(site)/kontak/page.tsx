@@ -28,7 +28,7 @@ export default async function ContactPage() {
           ))}
         </dl>
         {contact?.mapUrl && (
-          <a href={contact.mapUrl} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-brand hover:underline">
+          <a href={contact.mapUrl} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-link hover:underline">
             Buka di peta →
           </a>
         )}

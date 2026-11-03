@@ -47,7 +47,12 @@ await payload.updateGlobal({
     },
     about: { anthemTitle: 'Mars HMTI UNTAD' },
     contact: { email: 'hmti.untad@gmail.com', address: 'Laboratorium Informatika, Universitas Tadulako' },
-    socials: [],
+    socials: [
+      { platform: 'Instagram', url: 'https://www.instagram.com/hmtiuntad/' },
+      { platform: 'YouTube', url: 'https://www.youtube.com/@hmtiuntad8514' },
+      { platform: 'Facebook', url: 'https://www.facebook.com/hmti.untad' },
+      { platform: 'LinkedIn', url: 'https://www.linkedin.com/company/hmtiuntad/' },
+    ],
   },
 })
 

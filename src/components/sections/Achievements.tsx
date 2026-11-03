@@ -15,7 +15,7 @@ export async function Achievements() {
           <article className="overflow-hidden rounded-card border border-line">
             <Img media={mediaOf(lead.proof)} label={lead.title} className="aspect-video w-full" />
             <div className="p-4">
-              <p className="text-xs uppercase tracking-wider text-brand">
+              <p className="text-xs uppercase tracking-wider text-link">
                 {[lead.rank, lead.level, lead.year].filter(Boolean).join(' · ')}
               </p>
               <h3 className="font-display text-lg font-semibold">{lead.title}</h3>

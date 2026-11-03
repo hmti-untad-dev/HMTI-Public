@@ -20,7 +20,7 @@ export async function Hero() {
       <Container className="grid gap-10 py-16 lg:grid-cols-2 lg:items-center">
         <div>
           {period?.cabinetName && (
-            <p className="text-xs font-semibold uppercase tracking-widest text-brand">
+            <p className="text-xs font-semibold uppercase tracking-widest text-link">
               {period.cabinetName} · Periode {period.year}
             </p>
           )}
@@ -44,7 +44,7 @@ export async function Hero() {
         <dl className="grid grid-cols-2 gap-4 md:grid-cols-4">
           {stats.map((s) => (
             <div key={s.label} className="rounded-card border border-line bg-surface p-4">
-              <dd className="font-display text-3xl font-bold text-brand">{s.value}</dd>
+              <dd className="font-display text-3xl font-bold text-link">{s.value}</dd>
               <dt className="text-sm text-ink-muted">{s.label}</dt>
             </div>
           ))}

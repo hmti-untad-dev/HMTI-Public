@@ -41,7 +41,7 @@ export default async function NewsPage({ searchParams }: { searchParams: Promise
         {result.totalPages > 1 && (
           <nav aria-label="Halaman berita" className="flex items-center justify-between text-sm">
             {result.hasPrevPage ? (
-              <Link href={`/berita?page=${current - 1}`} className="text-brand hover:underline">
+              <Link href={`/berita?page=${current - 1}`} className="text-link hover:underline">
                 ← Sebelumnya
               </Link>
             ) : (
@@ -51,7 +51,7 @@ export default async function NewsPage({ searchParams }: { searchParams: Promise
               Halaman {current} dari {result.totalPages}
             </span>
             {result.hasNextPage ? (
-              <Link href={`/berita?page=${current + 1}`} className="text-brand hover:underline">
+              <Link href={`/berita?page=${current + 1}`} className="text-link hover:underline">
                 Berikutnya →
               </Link>
             ) : (

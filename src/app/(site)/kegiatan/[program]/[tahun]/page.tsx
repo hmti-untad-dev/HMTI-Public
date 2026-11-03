@@ -36,7 +36,7 @@ export default async function EditionPage({ params }: Props) {
         <div className="flex flex-wrap gap-3">
           {edition.registrationUrl && <Button href={edition.registrationUrl}>Daftar</Button>}
           {album && (
-            <Link href={`/galeri/${album.slug}`} className="text-sm font-medium text-brand hover:underline">
+            <Link href={`/galeri/${album.slug}`} className="text-sm font-medium text-link hover:underline">
               Lihat album foto →
             </Link>
           )}

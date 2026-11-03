@@ -62,14 +62,14 @@ export function CabinetShowcase({ orgName, year, groups }: Props) {
   if (!group || !current) return null
 
   return (
-    <section className="bg-night text-night-ink" aria-label={`Pengurus ${orgName} ${year}`}>
+    <section className="bg-surface text-ink" aria-label={`Pengurus ${orgName} ${year}`}>
       <div className="mx-auto w-full max-w-site px-4 py-10 sm:px-6">
-        <div className="flex items-center justify-between border-b border-night-line pb-4 font-mono text-xs uppercase tracking-[0.25em]">
+        <div className="flex items-center justify-between border-b border-line pb-4 font-mono text-xs uppercase tracking-[0.25em]">
           <p>
-            <span className="font-bold text-night-ink">{orgName}</span>
-            <span className="ml-3 text-night-muted">— Pengurus Kabinet {year}</span>
+            <span className="font-bold text-ink">{orgName}</span>
+            <span className="ml-3 text-ink-muted">— Pengurus Kabinet {year}</span>
           </p>
-          <p className="text-night-muted">
+          <p className="text-ink-muted">
             Vol. {pad(globalIndex)} / {pad(total)}
           </p>
         </div>
@@ -77,31 +77,31 @@ export function CabinetShowcase({ orgName, year, groups }: Props) {
         <div className="mt-8 grid gap-8 lg:grid-cols-2">
           <div>
             <h2 className="font-serif text-5xl leading-[0.95] sm:text-6xl">
-              The <em className="text-night-accent">Faces</em>
+              The <em className="text-link">Faces</em>
               <br />
               Behind {orgName.split(' ')[0]}.
             </h2>
 
             {/* Poster */}
-            <figure className="relative mt-8 aspect-[4/5] overflow-hidden rounded-lg border border-night-line bg-night-raised">
+            <figure className="relative mt-8 aspect-[4/5] overflow-hidden rounded-lg border border-line bg-surface-raised">
               {current.photoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={current.photoUrl} alt={current.name} className="absolute inset-0 size-full object-cover" />
               ) : (
-                <div className="absolute inset-0 flex items-center justify-center font-mono text-xs uppercase tracking-widest text-night-muted">
+                <div className="absolute inset-0 flex items-center justify-center font-mono text-xs uppercase tracking-widest text-ink-muted">
                   foto {current.name}
                 </div>
               )}
-              <div className="absolute inset-0 bg-gradient-to-t from-night/90 via-transparent to-night/30" />
-              <p className="absolute left-5 top-5 font-mono text-xs tracking-widest text-night-ink/80">
+              <div className="absolute inset-0 bg-gradient-to-t from-scrim/90 via-transparent to-scrim/30" />
+              <p className="absolute left-5 top-5 font-mono text-xs tracking-widest text-white/85">
                 <span className="text-lg">/ {pad(globalIndex)}</span>
               </p>
-              <p className="absolute right-5 top-5 rounded bg-night/70 px-3 py-1.5 font-mono text-xs uppercase tracking-[0.25em]">
+              <p className="absolute right-5 top-5 rounded bg-scrim/70 px-3 py-1.5 font-mono text-xs uppercase tracking-[0.25em] text-white">
                 {current.role}
               </p>
               <figcaption className="absolute inset-x-5 bottom-5">
-                <p className="font-serif text-4xl italic leading-none sm:text-5xl">{current.name}</p>
-                <p className="mt-2 font-mono text-xs uppercase tracking-[0.25em] text-night-ink/70">{group.title}</p>
+                <p className="font-serif text-4xl italic leading-none text-white sm:text-5xl">{current.name}</p>
+                <p className="mt-2 font-mono text-xs uppercase tracking-[0.25em] text-white/75">{group.title}</p>
               </figcaption>
             </figure>
           </div>
@@ -117,8 +117,8 @@ export function CabinetShowcase({ orgName, year, groups }: Props) {
                   onClick={() => selectGroup(g.key)}
                   className={`border px-4 py-2 font-mono text-xs uppercase tracking-wider transition-colors ${
                     g.key === group.key
-                      ? 'border-night-ink bg-night-ink text-night'
-                      : 'border-night-line text-night-ink hover:border-night-muted'
+                      ? 'border-ink bg-ink text-surface'
+                      : 'border-line text-ink hover:border-night-muted'
                   }`}
                 >
                   {g.label}
@@ -126,17 +126,17 @@ export function CabinetShowcase({ orgName, year, groups }: Props) {
               ))}
             </div>
 
-            <div className="mt-6 border-t border-night-line pt-6">
-              <p className="font-mono text-xs uppercase tracking-[0.25em] text-night-muted">{group.label}</p>
+            <div className="mt-6 border-t border-line pt-6">
+              <p className="font-mono text-xs uppercase tracking-[0.25em] text-ink-muted">{group.label}</p>
               <h3 className="mt-2 font-serif text-3xl italic">{group.title}</h3>
-              <p className="mt-1 text-sm text-night-muted">{members.length} pengurus</p>
+              <p className="mt-1 text-sm text-ink-muted">{members.length} pengurus</p>
             </div>
 
-            <ol className="mt-6 border-t border-night-line">
+            <ol className="mt-6 border-t border-line">
               {members.map((m, i) => (
-                <li key={m.id} className="border-b border-night-line">
+                <li key={m.id} className="border-b border-line">
                   <div
-                    className={`flex items-center gap-4 py-4 pr-2 ${i === index ? 'text-night-ink' : 'text-night-muted'}`}
+                    className={`flex items-center gap-4 py-4 pr-2 ${i === index ? 'text-ink' : 'text-ink-muted'}`}
                   >
                     <button
                       type="button"
@@ -146,8 +146,8 @@ export function CabinetShowcase({ orgName, year, groups }: Props) {
                     >
                       <span className="w-8 font-serif text-lg italic">{pad(i + 1)}</span>
                       <span>
-                        <span className="block text-lg text-night-ink">{m.name}</span>
-                        <span className="block text-sm text-night-muted">{m.role}</span>
+                        <span className="block text-lg text-ink">{m.name}</span>
+                        <span className="block text-sm text-ink-muted">{m.role}</span>
                       </span>
                     </button>
                     {m.instagram && (
@@ -156,7 +156,7 @@ export function CabinetShowcase({ orgName, year, groups }: Props) {
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={`Instagram ${m.name}`}
-                        className="flex size-10 items-center justify-center rounded-full border border-night-line text-night-ink hover:border-night-ink"
+                        className="flex size-10 items-center justify-center rounded-full border border-line text-ink hover:border-ink"
                       >
                         <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
                           <rect x="3" y="3" width="18" height="18" rx="5" />
@@ -175,20 +175,20 @@ export function CabinetShowcase({ orgName, year, groups }: Props) {
                 type="button"
                 onClick={() => step(-1)}
                 aria-label="Pengurus sebelumnya"
-                className="flex size-12 items-center justify-center rounded-full border border-night-line hover:border-night-ink"
+                className="flex size-12 items-center justify-center rounded-full border border-line hover:border-ink"
               >
                 ←
               </button>
               <div className="flex flex-1 flex-wrap gap-1" aria-hidden="true">
                 {flat.map((m, i) => (
-                  <span key={m.id} className={`h-0.5 w-4 ${i + 1 === globalIndex ? 'bg-amber-200' : 'bg-night-line'}`} />
+                  <span key={m.id} className={`h-0.5 w-4 ${i + 1 === globalIndex ? 'bg-link' : 'bg-line'}`} />
                 ))}
               </div>
               <button
                 type="button"
                 onClick={() => step(1)}
                 aria-label="Pengurus berikutnya"
-                className="flex size-12 items-center justify-center rounded-full border border-night-line hover:border-night-ink"
+                className="flex size-12 items-center justify-center rounded-full border border-line hover:border-ink"
               >
                 →
               </button>

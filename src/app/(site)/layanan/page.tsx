@@ -19,7 +19,7 @@ export default async function ServicesPage() {
         <ServicesGrid services={services} />
         <p className="text-sm text-ink-muted">
           Sudah mengajukan?{' '}
-          <Link href="/layanan/lacak" className="font-medium text-brand hover:underline">
+          <Link href="/layanan/lacak" className="font-medium text-link hover:underline">
             Lacak status permintaan
           </Link>
         </p>

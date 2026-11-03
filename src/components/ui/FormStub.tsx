@@ -7,7 +7,7 @@ type Field = { name: string; label: string; type?: string | null; required?: boo
 export function FormStub({ fields, submitLabel = 'Kirim' }: { fields: Field[]; submitLabel?: string }) {
   return (
     <form className="max-w-xl space-y-4" aria-disabled="true">
-      <p className="rounded-control bg-brand-soft/60 px-3 py-2 text-sm text-brand-strong">
+      <p className="rounded-control bg-brand-soft/60 px-3 py-2 text-sm text-ink">
         Formulir ini belum aktif (tahap pengembangan).
       </p>
       {fields.map((f) => (
@@ -23,7 +23,7 @@ export function FormStub({ fields, submitLabel = 'Kirim' }: { fields: Field[]; s
           )}
         </label>
       ))}
-      <button type="button" disabled className="rounded-control bg-brand px-4 py-2 text-sm font-medium text-white opacity-50">
+      <button type="button" disabled className="rounded-control bg-brand px-4 py-2 text-sm font-medium text-on-brand opacity-50">
         {submitLabel}
       </button>
     </form>

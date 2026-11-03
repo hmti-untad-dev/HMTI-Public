@@ -19,7 +19,7 @@ export function DepartmentBlock({ department, members, numbering, total }: Props
     <article className="rounded-card border border-line p-5">
       <header className="mb-4">
         <h3 className="font-display text-xl font-semibold">
-          <Link href={`/kepengurusan/${department.slug}`} className="hover:text-brand">
+          <Link href={`/kepengurusan/${department.slug}`} className="hover:text-link">
             {department.name}
           </Link>
         </h3>

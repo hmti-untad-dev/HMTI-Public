@@ -1,35 +1,85 @@
 /*
  * DESIGN TOKENS — satu-satunya tempat gaya visual didefinisikan.
- * Ganti nilai di sini untuk mengubah tampilan seluruh situs. Semua komponen memakai
- * utility Tailwind yang diturunkan dari token ini (bg-brand, text-ink, rounded-card, ...),
- * bukan warna/ukuran hard-coded.
  *
- * Nilai di bawah PLACEHOLDER (biru netral mengikuti wireframe) sampai referensi desain final masuk.
+ * Dua lapis:
+ *  1. Nilai mentah per tema di :root (terang) dan :root[data-theme='dark'] (gelap).
+ *  2. Pemetaan ke utilitas Tailwind lewat @theme inline (bg-surface, text-ink, ...).
+ * Komponen hanya memakai utilitas semantik, tidak pernah hex. Ganti palet = ganti nilai di sini.
+ *
+ * Palet sumber (dari pengurus):
+ *   hitam #121212 · nonaktif #414141 · teks deskripsi #b3b3b3
+ *   biru HMTI #5253ad, #3e4094, #b4d6fe
+ * Putih sengaja bukan #ffffff: #f4f5fa (latar) dan #fbfbfe (permukaan) bernuansa biru agar serasi dengan biru HMTI.
+ * Hasil cek kontras (WCAG): teks utama 16-17:1, deskripsi >= 6.3:1, link >= 8:1, tombol >= 6.2:1.
  */
-@theme {
-  /* Warna */
-  --color-brand: #2f6fb5;
-  --color-brand-strong: #1f4f87;
-  --color-brand-soft: #dbe8f6;
-  --color-ink: #0f172a;
-  --color-ink-muted: #475569;
-  --color-surface: #ffffff;
-  --color-surface-alt: #f1f5f9;
-  --color-line: #cbd5e1;
-  --color-accent: #f59e0b;
 
+:root {
+  color-scheme: light;
+
+  --bg: #f4f5fa;
+  --bg-alt: #eaecf6;
+  --raised: #fbfbfe;
+  --line: #d5d8e8;
+
+  --ink: #121212;
+  /* #b3b3b3 hanya 1.9:1 di latar terang, jadi deskripsi memakai abu-biru yang lebih gelap. */
+  --ink-muted: #565a6b;
+  --inactive: #c4c7d6;
+
+  --brand: #3e4094;
+  --brand-hover: #5253ad;
+  --brand-soft: #b4d6fe;
+  --on-brand: #f7f8fc;
+  --link: #3e4094;
+
+  --scrim: #121212;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg: #121212;
+  --bg-alt: #181818;
+  --raised: #1c1c1c;
+  --line: #2e2e2e;
+
+  --ink: #eceef7;
+  --ink-muted: #b3b3b3;
+  --inactive: #414141;
+
+  --brand: #5253ad;
+  --brand-hover: #3e4094;
+  --brand-soft: #2a2b57;
+  --on-brand: #f7f8fc;
+  --link: #b4d6fe;
+
+  --scrim: #121212;
+}
+
+@theme inline {
+  --color-surface: var(--bg);
+  --color-surface-alt: var(--bg-alt);
+  --color-surface-raised: var(--raised);
+  --color-line: var(--line);
+
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-inactive: var(--inactive);
+
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-hover);
+  --color-brand-soft: var(--brand-soft);
+  --color-on-brand: var(--on-brand);
+  --color-link: var(--link);
+
+  --color-scrim: var(--scrim);
+}
+
+@theme {
   /* Tipografi (stack sistem; ganti dengan next/font bila font sudah dipilih) */
   --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-display: var(--font-sans);
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
-
-  /* Mode gelap editorial (halaman Kepengurusan, mengacu gaya "Faces Behind") */
-  --color-night: #0f0f10;
-  --color-night-raised: #17171a;
-  --color-night-line: #2b2b30;
-  --color-night-ink: #f4f4f2;
-  --color-night-muted: #8b8b93;
-  --color-night-accent: #4d7cff;
   --font-serif: ui-serif, 'Iowan Old Style', Georgia, 'Times New Roman', serif;
 
   /* Bentuk */

@@ -25,7 +25,7 @@ export async function AboutPreview() {
               <li key={t.href}>
                 <Link
                   href={t.href}
-                  className="block rounded-control border border-brand px-4 py-2 text-center text-sm font-medium text-brand hover:bg-brand-soft"
+                  className="block rounded-control border border-brand px-4 py-2 text-center text-sm font-medium text-link hover:bg-brand-soft/50"
                 >
                   {t.label}
                 </Link>
@@ -33,7 +33,12 @@ export async function AboutPreview() {
             ))}
           </ul>
         </div>
-        <Img media={mediaOf(settings.logo)} label="LOGO" className="size-44 rounded-card" />
+        {mediaOf(settings.logo) ? (
+          <Img media={mediaOf(settings.logo)} label="Logo HMTI UNTAD" className="size-44 rounded-card" />
+        ) : (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src="/brand/hmti-logo.webp" alt="Lambang HMTI UNTAD" width={176} height={176} className="size-44 rounded-full" />
+        )}
       </div>
     </Section>
   )

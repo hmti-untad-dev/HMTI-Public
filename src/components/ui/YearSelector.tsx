@@ -20,7 +20,7 @@ export function YearSelector({ years, current, hrefFor, label = 'Periode' }: Pro
           href={hrefFor(year)}
           aria-current={year === current ? 'page' : undefined}
           className={`rounded-control border px-3 py-1 text-sm ${
-            year === current ? 'border-brand bg-brand text-white' : 'border-line hover:border-brand'
+            year === current ? 'border-brand bg-brand text-on-brand' : 'border-line hover:border-brand'
           }`}
         >
           {year}
