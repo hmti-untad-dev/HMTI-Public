@@ -36,6 +36,7 @@ export const NAV_GROUPS: NavGroup[] = [
     href: '/kegiatan',
     items: [
       { href: '/kegiatan', label: 'Program kerja' },
+      { href: '/riset', label: 'Hasil riset' },
       { href: '/berita', label: 'Berita' },
       { href: '/galeri', label: 'Galeri' },
     ],

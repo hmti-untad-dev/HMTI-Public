@@ -1,26 +1,40 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
+import { MembershipStats } from '@/components/hero/MembershipStats'
+import { LegacySection } from '@/components/legacy/LegacySection'
 import { LogoExplorer } from '@/components/tentang/LogoExplorer'
+import { Accordion } from '@/components/ui/Accordion'
+import { PolaroidCarousel } from '@/components/ui/PolaroidCarousel'
+import { LabPhoto } from '@/components/ui/LabPhoto'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { Reveal } from '@/components/ui/Reveal'
 import { Section } from '@/components/ui/Section'
+import { SectionNav } from '@/components/ui/SectionNav'
 import {
+  ALASAN_PEMBENTUKAN,
+  ARSIP_AWAL,
   ASAS,
   DOKUMEN_PUBLIK,
   INTRO,
+  JARGON_AWAL,
   JENJANG,
+  LINIMASA_HMTI,
   MARS_BAIT,
   MARS_JUDUL,
   MARS_PENCIPTA,
   MARS_YOUTUBE,
+  MISI_AWAL,
   MISI_GBHO,
+  MOTTO,
   NILAI,
   SEJARAH,
+  SEJARAH_HMTI_INTRO,
   SEJARAH_JUDUL,
   SIAPA_KAMI,
   STRUKTUR,
   TUJUAN,
+  VISI_AWAL,
   VISI_GBHO,
 } from '@/content/tentang'
 import { JTI_LINKS } from '@/lib/nav'
@@ -47,12 +61,32 @@ export default async function AboutPage() {
         {INTRO}
       </PageHeader>
 
+      <SectionNav
+        items={[
+          { id: 'siapa-kami', label: 'Siapa kami' },
+          { id: 'sejarah', label: 'Sejarah' },
+          { id: 'kepemimpinan', label: 'Kepemimpinan' },
+          { id: 'visi-misi', label: 'Visi misi' },
+          { id: 'lambang', label: 'Lambang' },
+          { id: 'asas-tujuan', label: 'Asas' },
+          { id: 'keanggotaan', label: 'Keanggotaan' },
+          { id: 'struktur', label: 'Struktur' },
+          { id: 'mars', label: 'Mars' },
+          { id: 'dokumen', label: 'Dokumen' },
+          { id: 'jti', label: 'Jurusan' },
+        ]}
+      />
+
       <Section id="siapa-kami" title="Siapa kami">
         <div className="grid gap-8 lg:grid-cols-[1fr_20rem]">
-          <div className="max-w-2xl space-y-4 text-lg text-ink-muted">
-            {SIAPA_KAMI.map((p) => (
-              <p key={p.slice(0, 24)}>{p}</p>
-            ))}
+          <div>
+            <div className="max-w-2xl space-y-4 text-lg text-ink-muted">
+              {SIAPA_KAMI.map((p) => (
+                <p key={p.slice(0, 24)}>{p}</p>
+              ))}
+            </div>
+            <p className="mt-6 font-display text-2xl font-bold">{settings.motto || MOTTO}</p>
+            <LabPhoto className="mt-8 max-w-2xl" />
           </div>
           <dl className="space-y-4 self-start rounded-card border border-line bg-surface-raised p-5 text-sm">
             <div>
@@ -72,6 +106,95 @@ export default async function AboutPage() {
           </dl>
         </div>
       </Section>
+
+      <Section id="sejarah" tone="alt" eyebrow="Sejak 2014" title="Sejarah HMTI UNTAD">
+        <div className="grid gap-10 lg:grid-cols-[1fr_22rem]">
+          <p className="max-w-2xl text-lg text-ink-muted">{SEJARAH_HMTI_INTRO}</p>
+          <blockquote className="self-start border-l-2 border-link pl-5">
+            <p className="font-mono text-xs uppercase tracking-[0.2em] text-ink-muted">Jargon periode pertama</p>
+            <p className="mt-2 font-display text-xl font-bold">{JARGON_AWAL}</p>
+            <p className="mt-1 font-display text-xl font-bold text-link">{MOTTO}</p>
+          </blockquote>
+        </div>
+
+        <Reveal as="ol" stagger className="timeline mt-12">
+          {LINIMASA_HMTI.map((t) => (
+            <li key={t.date + t.title} className="timeline-item" data-key={t.key ? 'true' : undefined}>
+              <p className="font-mono text-xs uppercase tracking-[0.18em] text-link">{t.date}</p>
+              <h3 className="mt-1 font-display text-lg font-semibold">{t.title}</h3>
+              <p className="mt-1 max-w-2xl text-ink-muted">{t.text}</p>
+              {t.images && (
+                <div className="mt-4 flex flex-wrap items-end gap-4">
+                  {t.images.map((img) => (
+                    <figure key={img.src} className="cv-frame border border-line bg-surface-raised p-2">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={img.src} alt={img.alt} width={img.w} height={img.h} loading="lazy" decoding="async" className="h-28 w-auto object-contain sm:h-32" />
+                    </figure>
+                  ))}
+                </div>
+              )}
+            </li>
+          ))}
+        </Reveal>
+
+        <Accordion
+          className="mt-12"
+          items={[
+            {
+              id: 'alasan',
+              title: 'Mengapa HMTI dibentuk',
+              meta: `${ALASAN_PEMBENTUKAN.length} alasan dari angkatan pertama`,
+              content: (
+                <ol className="max-w-3xl list-decimal space-y-2 pl-5 text-ink-muted">
+                  {ALASAN_PEMBENTUKAN.map((a) => (
+                    <li key={a}>{a}</li>
+                  ))}
+                </ol>
+              ),
+            },
+            {
+              id: 'visi-awal',
+              title: 'Visi dan misi periode pertama',
+              meta: '2014',
+              content: (
+                <div className="max-w-3xl text-ink-muted">
+                  <p>
+                    <span className="font-medium text-ink">Visi.</span> {VISI_AWAL}
+                  </p>
+                  <p className="mt-3 font-medium text-ink">Misi.</p>
+                  <ol className="mt-1 list-decimal space-y-1 pl-5">
+                    {MISI_AWAL.map((m) => (
+                      <li key={m}>{m}</li>
+                    ))}
+                  </ol>
+                </div>
+              ),
+            },
+            {
+              id: 'prodi',
+              title: SEJARAH_JUDUL,
+              meta: 'Berdiri 16 April 2012',
+              content: (
+                <div className="max-w-3xl space-y-3 text-ink-muted">
+                  {SEJARAH.map((p) => (
+                    <p key={p.slice(0, 24)}>{p}</p>
+                  ))}
+                </div>
+              ),
+            },
+          ]}
+        />
+
+        <div className="mt-14">
+          <h3 className="font-display text-xl font-semibold">Arsip kegiatan 2014–2015</h3>
+          <p className="mt-1 text-sm text-ink-muted">Penerimaan anggota dan bina akrab, Dies Natalis pertama, dan bakti sosial. Geser untuk melihat semua.</p>
+          <div className="mt-4">
+            <PolaroidCarousel photos={ARSIP_AWAL} label="Arsip kegiatan HMTI 2014–2015" />
+          </div>
+        </div>
+      </Section>
+
+      <LegacySection id="kepemimpinan" />
 
       <Section id="visi-misi" tone="alt" title="Visi dan Misi">
         <div className="grid gap-10 lg:grid-cols-2">
@@ -140,6 +263,9 @@ export default async function AboutPage() {
             </li>
           ))}
         </Reveal>
+        <div className="mt-12">
+          <MembershipStats numbers={false} />
+        </div>
       </Section>
 
       <Section id="struktur" tone="alt" title="Struktur organisasi">
@@ -158,15 +284,7 @@ export default async function AboutPage() {
         </Reveal>
       </Section>
 
-      <Section id="sejarah" title={SEJARAH_JUDUL}>
-        <div className="max-w-2xl space-y-4 text-lg text-ink-muted">
-          {SEJARAH.map((p) => (
-            <p key={p.slice(0, 24)}>{p}</p>
-          ))}
-        </div>
-      </Section>
-
-      <Section id="mars" tone="alt" title={MARS_JUDUL}>
+      <Section id="mars" title={MARS_JUDUL}>
         <div className="grid gap-10 lg:grid-cols-[22rem_1fr]">
           <div className="self-start">
             <p className="text-sm text-ink-muted">{MARS_PENCIPTA}</p>
@@ -196,31 +314,7 @@ export default async function AboutPage() {
         </div>
       </Section>
 
-      <Section id="jti" tone="alt" title="Jurusan dan program studi">
-        <p className="max-w-2xl text-lg text-ink-muted">
-          HMTI UNTAD bernaung di program studi S1 Teknik Informatika, Jurusan Teknologi Informasi, Fakultas Teknik. Informasi
-          akademik resmi seperti kurikulum, dosen, dan fasilitas ada di situs jurusan.
-        </p>
-        <Reveal as="ul" stagger className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {JTI_LINKS.map((l) => (
-            <li key={l.href}>
-              <a
-                href={l.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="dither flex min-h-14 items-center justify-between gap-3 overflow-hidden rounded-card border border-line bg-surface-raised px-5 py-3 text-ink transition-colors hover:border-brand"
-              >
-                <span>{l.label}</span>
-                <span aria-hidden="true" className="text-ink-muted">
-                  ↗
-                </span>
-              </a>
-            </li>
-          ))}
-        </Reveal>
-      </Section>
-
-      <Section id="dokumen" title="Dokumen">
+      <Section id="dokumen" tone="alt" title="Dokumen">
         <ul className="max-w-2xl divide-y divide-line rounded-card border border-line bg-surface-raised">
           {DOKUMEN_PUBLIK.map((d) => (
             <li key={d.href} className="flex items-center justify-between gap-4 p-4 text-sm">
@@ -244,6 +338,30 @@ export default async function AboutPage() {
             ) : null
           })}
         </ul>
+      </Section>
+
+      <Section id="jti" title="Jurusan dan program studi">
+        <p className="max-w-2xl text-lg text-ink-muted">
+          HMTI UNTAD bernaung di program studi S1 Teknik Informatika, Jurusan Teknologi Informasi, Fakultas Teknik. Informasi
+          akademik resmi seperti kurikulum, dosen, dan fasilitas ada di situs jurusan.
+        </p>
+        <Reveal as="ul" stagger className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {JTI_LINKS.map((l) => (
+            <li key={l.href}>
+              <a
+                href={l.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="dither flex min-h-14 items-center justify-between gap-3 overflow-hidden rounded-card border border-line bg-surface-raised px-5 py-3 text-ink transition-colors hover:border-brand"
+              >
+                <span>{l.label}</span>
+                <span aria-hidden="true" className="text-ink-muted">
+                  ↗
+                </span>
+              </a>
+            </li>
+          ))}
+        </Reveal>
       </Section>
     </>
   )

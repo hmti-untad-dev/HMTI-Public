@@ -63,6 +63,11 @@ export function AsciiWordmark({ text }: Props) {
       cell = w < 520 ? 6 : w < 900 ? 8 : 10
       cols = Math.floor(w / cell)
       rows = Math.floor((h - top) / cell)
+      if (cols < 1 || rows < 1) {
+        // Kontainer belum punya ukuran (mis. panel baru terbuka): lewati, ResizeObserver akan memanggil lagi.
+        lit = new Uint8Array(0)
+        return
+      }
 
       // Rasterisasi teks ke kanvas luring, lalu ambil sampel per sel.
       const off = document.createElement('canvas')

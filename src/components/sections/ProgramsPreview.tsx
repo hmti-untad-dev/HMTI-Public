@@ -7,7 +7,7 @@ import { Section } from '../ui/Section'
 export async function ProgramsPreview() {
   const programs = await getPrograms({ featured: true })
   return (
-    <Section eyebrow="Program kerja" title="Kegiatan" action={{ href: '/kegiatan', label: 'Lihat semua' }}>
+    <Section tone="alt" eyebrow="Program kerja" title="Kegiatan" action={{ href: '/kegiatan', label: 'Lihat semua' }}>
       {programs.length === 0 ? (
         <Empty>Belum ada kegiatan unggulan.</Empty>
       ) : (

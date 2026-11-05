@@ -80,7 +80,7 @@ export function SleepyOverlay() {
   if (phase === 'off') return null
 
   const asleep = phase === 'asleep'
-  const lid = phase === 'drowsy' ? 0.83 : phase === 'sleepy' ? 1 : 0
+  const lid = phase === 'drowsy' ? 0.5 : phase === 'sleepy' ? 0.88 : 0
   const message =
     phase === 'drowsy' || phase === 'sleepy' ? 'Hoaaam… Teemo ngantuk' : phase === 'wake' ? 'Eh! Kamu balik!' : phase === 'alert' ? 'Hm? Sepi sekali…' : null
 
@@ -92,7 +92,7 @@ export function SleepyOverlay() {
       }`}
     >
       <div className="relative h-60 w-72 sm:h-72 sm:w-80">
-        <div className="absolute inset-x-6 bottom-0 top-8 rounded-full bg-brand-soft/60 blur-2xl" />
+        <div className="absolute inset-x-6 bottom-0 top-8 rounded-full bg-brand-soft/40 blur-2xl" />
 
         {message && (
           <p className="absolute left-1/2 top-0 z-10 -translate-x-1/2 whitespace-nowrap border border-line bg-surface-raised px-4 py-2 font-mono text-xs text-ink shadow-md">
@@ -103,6 +103,8 @@ export function SleepyOverlay() {
         <CatSit
           still
           lid={lid}
+          fluff={phase === 'wake'}
+          wide={phase === 'wake'}
           yawn={phase === 'drowsy' ? 1 : 0}
           className={`absolute inset-0 size-full transition-all duration-700 ${asleep ? 'translate-y-3 scale-90 opacity-0' : 'opacity-100'}`}
         />

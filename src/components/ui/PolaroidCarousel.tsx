@@ -273,7 +273,7 @@ function PolaroidCard({ photo, index, onEnter, setRef }: { photo: Polaroid; inde
       <div className="aspect-square overflow-hidden bg-scrim">
         {photo.src ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={photo.src} alt={photo.caption} draggable={false} className="size-full object-cover" />
+          <img src={photo.src} alt={photo.caption} draggable={false} className="skeleton size-full object-cover" />
         ) : (
           <div role="img" aria-label={photo.caption} className="flex size-full items-center justify-center bg-brand-soft/60 text-xs text-ink-muted">
             foto

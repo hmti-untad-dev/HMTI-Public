@@ -24,7 +24,7 @@ export const Albums: CollectionConfig = {
       label: 'Foto',
       fields: [
         { name: 'image', type: 'upload', relationTo: 'media', required: true },
-        { name: 'caption', type: 'text' },
+        { name: 'caption', type: 'text', label: 'Keterangan foto', admin: { description: 'Tulisan di bawah foto saat dibuka di galeri.' } },
       ],
     },
   ],

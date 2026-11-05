@@ -31,7 +31,7 @@ export default async function EditionPage({ params }: Props) {
         {[formatDate(edition.startDate), edition.location].filter(Boolean).join(' · ')}
       </PageHeader>
       <Container className="space-y-8 py-12">
-        <Img media={mediaOf(edition.cover)} label={edition.title} className="aspect-video w-full rounded-card" />
+        <Img media={mediaOf(edition.cover)} label={edition.title} className="aspect-video w-full" />
         {edition.description && <RichText data={edition.description} />}
         <div className="flex flex-wrap gap-3">
           {edition.registrationUrl && <Button href={edition.registrationUrl}>Daftar</Button>}

@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react'
 
+import { Dissolve } from './Dissolve'
+
 type Theme = 'light' | 'dark'
 
 /** Skrip inline di <head> (lihat layout) sudah memasang data-theme sebelum paint; komponen ini hanya membacanya. */
@@ -32,6 +34,7 @@ export function ThemeToggle() {
       aria-pressed={theme === null ? undefined : isDark}
       className="dither flex w-12 items-center justify-center text-ink sm:w-14"
     >
+      <Dissolve w={56} />
       <svg viewBox="0 0 24 24" className="size-[18px]" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         {isDark ? (
           <>

@@ -5,7 +5,7 @@ import { Container } from '@/components/ui/Container'
 import { Empty } from '@/components/ui/Empty'
 import { YearSelector } from '@/components/ui/YearSelector'
 import { type CabinetMember, getCabinet, getSiteSettings, resolvePeriod } from '@/lib/data'
-import { POSITION_LABEL } from '@/lib/format'
+import { roleLabel } from '@/lib/format'
 
 export const metadata: Metadata = { title: 'Kepengurusan' }
 
@@ -13,9 +13,10 @@ function toShowcase(m: CabinetMember) {
   return {
     id: m.id,
     name: m.person.name,
-    role: POSITION_LABEL[m.position] ?? m.position,
+    role: roleLabel(m.position, m.department?.name),
     photoUrl: m.photo?.url ?? null,
     instagram: m.person.instagram ?? null,
+    poster: m.poster,
   }
 }
 
@@ -26,12 +27,16 @@ export default async function CabinetPage({ searchParams }: { searchParams: Prom
 
   const groups: ShowcaseGroup[] = [
     { key: 'bph', label: 'BPH', title: 'Badan Pengurus Harian', members: cabinet.bph.map(toShowcase) },
+    { key: 'koordinator', label: 'Koordinator', title: 'Koordinator Departemen', members: cabinet.coordinators.map(toShowcase) },
     ...cabinet.departments.map((d) => ({
       key: d.slug,
       label: d.name,
       title: d.name,
-      members: (cabinet.byDepartment.get(d.id) ?? []).map(toShowcase),
+      // Koordinator sudah ada di tab "Koordinator"; tab departemen berisi anggotanya saja.
+      members: (cabinet.byDepartment.get(d.id) ?? []).filter((m) => m.position !== 'koordinator').map(toShowcase),
     })),
+    { key: 'pengawas', label: 'BPO', title: 'Badan Pengawas Organisasi', members: cabinet.pengawas.map(toShowcase) },
+    { key: 'pembina', label: 'Pembina', title: 'Pembina', members: cabinet.pembina.map(toShowcase) },
   ].filter((g) => g.members.length > 0)
 
   return (

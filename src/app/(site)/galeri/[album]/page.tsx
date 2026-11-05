@@ -22,7 +22,7 @@ export default async function AlbumPage({ params }: { params: Promise<{ album: s
           <ul className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
             {photos.map((p) => (
               <li key={p.id}>
-                <Img media={mediaOf(p.image)} label={p.caption ?? album.title} className="aspect-square w-full rounded-card" />
+                <Img media={mediaOf(p.image)} label={p.caption ?? album.title} className="aspect-square w-full" />
                 {p.caption && <p className="mt-1 text-xs text-ink-muted">{p.caption}</p>}
               </li>
             ))}

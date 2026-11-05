@@ -9,9 +9,11 @@ export const POSITIONS = [
   { label: 'Bendahara Umum', value: 'bendum' },
   { label: 'Koordinator Departemen', value: 'koordinator' },
   { label: 'Anggota', value: 'anggota' },
+  { label: 'Pembina', value: 'pembina' },
+  { label: 'Badan Pengawas Organisasi', value: 'pengawas' },
 ]
 
-/** Orang × periode × departemen × jabatan. Departemen kosong = BPH. */
+/** Orang × periode × departemen × jabatan. Departemen kosong = BPH (Koordinator tanpa departemen tampil di grup tersendiri). */
 export const Memberships: CollectionConfig = {
   slug: 'memberships',
   typescript: { interface: 'Membership' },
@@ -36,5 +38,12 @@ export const Memberships: CollectionConfig = {
     { name: 'position', type: 'select', label: 'Jabatan', required: true, options: POSITIONS },
     { name: 'order', type: 'number', label: 'Urutan', defaultValue: 0 },
     { name: 'photoOverride', type: 'upload', relationTo: 'media', label: 'Foto khusus periode ini' },
+    {
+      name: 'photoIsPoster',
+      type: 'checkbox',
+      label: 'Foto berupa poster',
+      defaultValue: false,
+      admin: { description: 'Centang bila fotonya poster yang sudah memuat nama dan jabatan, supaya teks tidak ditumpuk dua kali di halaman Kepengurusan.' },
+    },
   ],
 }

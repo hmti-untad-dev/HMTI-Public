@@ -80,6 +80,7 @@ export interface Config {
     testimonials: Testimonial;
     articles: Article;
     albums: Album;
+    researches: Research;
     'best-photos': BestPhoto;
     faqs: Faq;
     documents: Document;
@@ -109,6 +110,7 @@ export interface Config {
     testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
     articles: ArticlesSelect<false> | ArticlesSelect<true>;
     albums: AlbumsSelect<false> | AlbumsSelect<true>;
+    researches: ResearchesSelect<false> | ResearchesSelect<true>;
     'best-photos': BestPhotosSelect<false> | BestPhotosSelect<true>;
     faqs: FaqsSelect<false> | FaqsSelect<true>;
     documents: DocumentsSelect<false> | DocumentsSelect<true>;
@@ -282,6 +284,10 @@ export interface Department {
   name: string;
   slug: string;
   group: 'internal' | 'eksternal';
+  /**
+   * Bila departemen pernah berganti nama, mis. Kewirausahaan.
+   */
+  formerName?: string | null;
   description?: string | null;
   icon?: (number | null) | Media;
   order?: number | null;
@@ -300,9 +306,13 @@ export interface Membership {
    * Kosongkan untuk BPH (pengurus harian).
    */
   department?: (number | null) | Department;
-  position: 'ketua' | 'ketua1' | 'ketua2' | 'sekum' | 'bendum' | 'koordinator' | 'anggota';
+  position: 'ketua' | 'ketua1' | 'ketua2' | 'sekum' | 'bendum' | 'koordinator' | 'anggota' | 'pembina' | 'pengawas';
   order?: number | null;
   photoOverride?: (number | null) | Media;
+  /**
+   * Centang bila fotonya poster yang sudah memuat nama dan jabatan, supaya teks tidak ditumpuk dua kali di halaman Kepengurusan.
+   */
+  photoIsPoster?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -327,6 +337,46 @@ export interface Program {
   department?: (number | null) | Department;
   summary?: string | null;
   cover?: (number | null) | Media;
+  /**
+   * Pisahkan paragraf dengan satu baris kosong. Tampil di halaman program.
+   */
+  about?: string | null;
+  /**
+   * Untuk program yang berlokasi di satu tempat, mis. desa binaan PenMas. Peta tampil bila koordinatnya diisi.
+   */
+  location?: {
+    /**
+     * Mis. Desa Lampo.
+     */
+    name?: string | null;
+    /**
+     * Mis. Kec. Banawa Tengah, Kab. Donggala, Sulawesi Tengah.
+     */
+    area?: string | null;
+    website?: string | null;
+    mapUrl?: string | null;
+    lat?: number | null;
+    lng?: number | null;
+  };
+  gallery?:
+    | {
+        image: number | Media;
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Mis. "Produk unggulan Desa Lampo". Kosongkan bila tidak ada bagian produk.
+   */
+  productsTitle?: string | null;
+  products?:
+    | {
+        name: string;
+        image?: (number | null) | Media;
+        note?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   featured?: boolean | null;
   order?: number | null;
   updatedAt: string;
@@ -387,6 +437,9 @@ export interface Album {
   photos?:
     | {
         image: number | Media;
+        /**
+         * Tulisan di bawah foto saat dibuka di galeri.
+         */
         caption?: string | null;
         id?: string | null;
       }[]
@@ -406,7 +459,7 @@ export interface SpecialDay {
   title: string;
   date: string;
   /**
-   * Centang untuk hari jadi atau peringatan tahunan: bintang muncul di tanggal yang sama setiap tahun.
+   * Centang untuk hari jadi atau peringatan tahunan: bendera muncul di tanggal yang sama setiap tahun.
    */
   recurring?: boolean | null;
   description?: string | null;
@@ -449,6 +502,8 @@ export interface Testimonial {
   authorRole?: string | null;
   quote: string;
   photo?: (number | null) | Media;
+  kind?: ('testimoni' | 'tokoh') | null;
+  order?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -481,6 +536,48 @@ export interface Article {
   author?: string | null;
   publishedAt?: string | null;
   featured?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "researches".
+ */
+export interface Research {
+  id: number;
+  title: string;
+  slug: string;
+  kind: 'riset' | 'temuan' | 'artikel';
+  department?: (number | null) | Department;
+  /**
+   * Pisahkan dengan koma.
+   */
+  authors?: string | null;
+  summary: string;
+  cover?: (number | null) | Media;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  file?: (number | null) | Media;
+  externalUrl?: string | null;
+  /**
+   * Pisahkan dengan koma.
+   */
+  tags?: string | null;
+  publishedAt?: string | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -623,8 +720,12 @@ export interface ServiceRequest {
  */
 export interface ChatMessage {
   id: number;
+  name?: string | null;
   email: string;
+  phone?: string | null;
+  topic?: string | null;
   message: string;
+  source?: ('faq' | 'kontak' | 'layanan') | null;
   status?: ('baru' | 'dibalas') | null;
   updatedAt: string;
   createdAt: string;
@@ -732,6 +833,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'albums';
         value: number | Album;
+      } | null)
+    | ({
+        relationTo: 'researches';
+        value: number | Research;
       } | null)
     | ({
         relationTo: 'best-photos';
@@ -922,6 +1027,7 @@ export interface DepartmentsSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
   group?: T;
+  formerName?: T;
   description?: T;
   icon?: T;
   order?: T;
@@ -939,6 +1045,7 @@ export interface MembershipsSelect<T extends boolean = true> {
   position?: T;
   order?: T;
   photoOverride?: T;
+  photoIsPoster?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -953,6 +1060,33 @@ export interface ProgramsSelect<T extends boolean = true> {
   department?: T;
   summary?: T;
   cover?: T;
+  about?: T;
+  location?:
+    | T
+    | {
+        name?: T;
+        area?: T;
+        website?: T;
+        mapUrl?: T;
+        lat?: T;
+        lng?: T;
+      };
+  gallery?:
+    | T
+    | {
+        image?: T;
+        caption?: T;
+        id?: T;
+      };
+  productsTitle?: T;
+  products?:
+    | T
+    | {
+        name?: T;
+        image?: T;
+        note?: T;
+        id?: T;
+      };
   featured?: T;
   order?: T;
   updatedAt?: T;
@@ -1015,6 +1149,8 @@ export interface TestimonialsSelect<T extends boolean = true> {
   authorRole?: T;
   quote?: T;
   photo?: T;
+  kind?: T;
+  order?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1055,6 +1191,27 @@ export interface AlbumsSelect<T extends boolean = true> {
       };
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "researches_select".
+ */
+export interface ResearchesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  kind?: T;
+  department?: T;
+  authors?: T;
+  summary?: T;
+  cover?: T;
+  content?: T;
+  file?: T;
+  externalUrl?: T;
+  tags?: T;
+  publishedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1157,8 +1314,12 @@ export interface ServiceRequestsSelect<T extends boolean = true> {
  * via the `definition` "chat-messages_select".
  */
 export interface ChatMessagesSelect<T extends boolean = true> {
+  name?: T;
   email?: T;
+  phone?: T;
+  topic?: T;
   message?: T;
+  source?: T;
   status?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1238,6 +1399,10 @@ export interface SiteSetting {
   orgName?: string | null;
   orgFullName?: string | null;
   tagline?: string | null;
+  /**
+   * Jargon himpunan, tampil di beranda, Tentang, dan footer.
+   */
+  motto?: string | null;
   logo?: (number | null) | Media;
   hero?: {
     headline?: string | null;
@@ -1289,6 +1454,7 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   orgName?: T;
   orgFullName?: T;
   tagline?: T;
+  motto?: T;
   logo?: T;
   hero?:
     | T

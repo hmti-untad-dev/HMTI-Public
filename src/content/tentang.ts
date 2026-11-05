@@ -3,6 +3,12 @@
  * Teks tingkat anggaran dasar jarang berubah, jadi disimpan di kode. Visi/misi periode aktif tetap dari CMS (lihat page.tsx).
  */
 
+/** Jargon HMTI. Dipakai bila pengaturan situs belum mengisi motto. */
+export const MOTTO = 'We Make A Better Future'
+
+/** Kredit pembuat situs, tampil di baris paling bawah footer. */
+export const CREDIT = 'Dibuat oleh Nakita Semesta & kepengurusan HMTI UNTAD Kabinet All Blue periode 2026.'
+
 export const INTRO =
   'Wadah mahasiswa program studi S1 Teknik Informatika, Fakultas Teknik, Universitas Tadulako untuk berkontribusi secara aktif, partisipatif, dan demokratis.'
 
@@ -55,6 +61,79 @@ export const STRUKTUR = [
     name: 'Komunitas binaan',
     text: 'Programming Tadulako dan Animedia Tadulako: unit kegiatan semi-otonom dengan struktur kerja sendiri yang tetap berada dalam koordinasi HMTI UNTAD, wadah minat dan bakat mahasiswa.',
   },
+]
+
+/*
+ * Sejarah HMTI. Sumber: dokumen "Sejarah Pembentukan Himpunan Mahasiswa Teknik Informatika", presentasi
+ * "Sejarah", dan "Visi dan misi" dari Ketua Umum pertama HMTI UNTAD (diterima November 2026).
+ * Foto di public/sejarah/ berasal dari presentasi yang sama.
+ */
+export const SEJARAH_HMTI_INTRO =
+  'HMTI UNTAD lahir dari inisiatif mahasiswa Teknik Informatika sendiri. Mahasiswa angkatan 2012 merumuskan alasan membentuk himpunan, lalu mengajukan permohonan ke program studi. Pada 30 Mei 2014 Rektor Universitas Tadulako menetapkan pembentukan Himpunan Mahasiswa Teknik Informatika (HMTI) pada Fakultas Teknik, dan tanggal itu kini diperingati sebagai Dies Natalis himpunan.'
+
+export const JARGON_AWAL = 'Kami belajar, kami bekerja, dan kami membangun.'
+
+export type Tonggak = { date: string; title: string; text: string; key?: boolean; images?: { src: string; alt: string; w: number; h: number }[] }
+export const LINIMASA_HMTI: Tonggak[] = [
+  { date: '13 Mei 2014', title: 'Usulan pembentukan', text: 'Atas permohonan mahasiswa, program studi menyurat untuk mengusulkan penerbitan Surat Keputusan pembentukan himpunan.' },
+  {
+    date: '30 Mei 2014',
+    title: 'SK Rektor: HMTI resmi berdiri',
+    text: 'Rektor Universitas Tadulako menetapkan pembentukan HMTI pada Fakultas Teknik, untuk mewadahi dan mempermudah koordinasi kegiatan kemahasiswaan program studi S1 Teknik Informatika.',
+    key: true,
+  },
+  {
+    date: '20 Juni 2014',
+    title: 'Pemilihan ketua pertama',
+    text: 'Rapat pemilihan Ketua HMTI dihadiri mahasiswa informatika angkatan 2012, perwakilan Himpunan Mahasiswa Elektro (HME), dosen informatika, dan Wakil Ketua Jurusan Teknik Elektro.',
+  },
+  { date: '15 Juli 2014', title: 'Permohonan SK kepengurusan', text: 'Himpunan belum memiliki kepengurusan resmi, sehingga program studi kembali menyurat untuk penerbitan SK kepengurusan.' },
+  { date: '26 Agustus 2014', title: 'SK Dekan: pengurus pertama', text: 'Dekan Fakultas Teknik menetapkan pengangkatan pengurus HMTI tahun 2014, kepengurusan pertama himpunan.', key: true },
+  {
+    date: '2014',
+    title: 'Membangun fondasi',
+    text: 'Pengurus pertama menyusun AD/ART, membuat logo, merenovasi sekretariat, merancang baju PDH, dan membuat bendera himpunan.',
+    images: [
+      { src: '/sejarah/logo-awal.webp', alt: 'Logo HMTI di masa awal', w: 367, h: 391 },
+      { src: '/sejarah/pdh.webp', alt: 'Rancangan baju PDH HMTI tampak depan dan belakang', w: 1400, h: 532 },
+    ],
+  },
+  { date: '30 Mei 2015', title: 'Dies Natalis pertama', text: 'Satu tahun HMTI dirayakan dengan tema "First Step for a Better Future", dirangkai bakti sosial di Panti Asuhan As-Salam.', key: true },
+]
+
+export const ALASAN_PEMBENTUKAN = [
+  'Menjadi wadah mahasiswa informatika.',
+  'Tempat mahasiswa berkumpul dan bekerja sama secara rasional, sistematis, dan terkendali, memanfaatkan sumber daya (dana, material, lingkungan, metode, sarana, prasarana, data) secara efisien dan efektif untuk mencapai tujuan bersama.',
+  'Menjadi payung bagi komunitas-komunitas IT yang dibentuk oleh mahasiswa informatika.',
+  'Meningkatkan kualitas mahasiswa dalam bidang akademik dan non-akademik.',
+  'Bekerja sama dan berkolaborasi dengan himpunan dan UKM yang tergabung di OKFT.',
+  'Menjadi salah satu poin pendukung akreditasi program studi informatika.',
+  'Mendorong mahasiswa untuk terus melakukan perbaikan dan mempertahankan mutu yang tinggi.',
+]
+
+/** Visi dan misi periode pertama (2014), disimpan sebagai catatan sejarah. Visi-misi berjalan ada di VISI_GBHO / CMS. */
+export const VISI_AWAL =
+  'Mewujudkan Himpunan Mahasiswa Informatika yang harmonis berasaskan kekeluargaan dan mampu menciptakan mahasiswa yang profesional, unggul, dan kompeten secara akademik maupun non-akademik.'
+export const MISI_AWAL = [
+  'Menjadikan kekeluargaan yang terikat sebagai budaya HMTI.',
+  'Memberikan informasi yang dibutuhkan oleh mahasiswa Informatika Tadulako.',
+  'Mewadahi mahasiswa, alumni, dosen, dan karyawan dalam satu wadah guna membangun informatika yang lebih baik.',
+  'Meningkatkan potensi tiap individu mahasiswa dalam bidang akademik maupun non-akademik.',
+]
+
+/** Arsip foto kegiatan periode 2014-2015 (polaroid di halaman Tentang). */
+export const ARSIP_AWAL = [
+  { id: 'penerimaan-1', src: '/sejarah/penerimaan-1.webp', caption: 'Penerimaan anggota' },
+  { id: 'penerimaan-2', src: '/sejarah/penerimaan-2.webp', caption: 'Bina akrab' },
+  { id: 'penerimaan-3', src: '/sejarah/penerimaan-3.webp', caption: 'Materi bina akrab' },
+  { id: 'dies-2', src: '/sejarah/dies-2.webp', caption: 'Dies Natalis ke-1' },
+  { id: 'dies-3', src: '/sejarah/dies-3.webp', caption: 'First step, 30 Mei 2015' },
+  { id: 'dies-4', src: '/sejarah/dies-4.webp', caption: 'Kue ulang tahun pertama' },
+  { id: 'dies-1', src: '/sejarah/dies-1.webp', caption: 'Panggung Dies Natalis' },
+  { id: 'baksos-1', src: '/sejarah/baksos-1.webp', caption: 'Bakti sosial As-Salam' },
+  { id: 'baksos-2', src: '/sejarah/baksos-2.webp', caption: 'Bersama adik-adik panti' },
+  { id: 'baksos-3', src: '/sejarah/baksos-3.webp', caption: 'Foto bersama di panti' },
+  { id: 'foto-bersama', src: '/sejarah/foto-bersama.webp', caption: 'Foto bersama pengurus' },
 ]
 
 export const SEJARAH_JUDUL = 'Sejarah Program Studi'

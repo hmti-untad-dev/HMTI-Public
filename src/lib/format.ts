@@ -19,4 +19,12 @@ export const POSITION_LABEL: Record<string, string> = {
   bendum: 'Bendahara Umum',
   koordinator: 'Koordinator Departemen',
   anggota: 'Anggota',
+  pembina: 'Pembina',
+  pengawas: 'Badan Pengawas Organisasi',
+}
+
+/** Jabatan untuk tampilan: koordinator disebut bersama departemennya, mis. "Koordinator Humas". */
+export function roleLabel(position: string, departmentName?: string | null) {
+  if (position === 'koordinator' && departmentName) return `Koordinator ${departmentName}`
+  return POSITION_LABEL[position] ?? position
 }

@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 
 import { Button } from './Button'
 import { Container } from './Container'
+import { DecodeText } from './DecodeText'
 import { Reveal } from './Reveal'
 
 type Props = {
@@ -16,14 +17,24 @@ type Props = {
 /** Pembungkus section standar: judul, tombol "See more", dan latar selang-seling. */
 export function Section({ id, eyebrow, title, action, tone = 'default', children }: Props) {
   return (
-    <section id={id} className={`scroll-mt-16 ${tone === 'alt' ? 'bg-surface-alt' : ''}`} style={{ paddingBlock: 'var(--spacing-section)' }}>
+    <section id={id} className={`scroll-mt-28 ${tone === 'alt' ? 'bg-surface-alt' : ''}`} style={{ paddingBlock: 'var(--spacing-section)' }}>
       <Container>
         <Reveal>
         {(title || action) && (
           <header className="mb-8 flex flex-wrap items-end justify-between gap-4">
             <div>
-              {eyebrow && <p className="text-xs font-semibold uppercase tracking-widest text-link">{eyebrow}</p>}
-              {title && <h2 className="font-display text-2xl font-bold sm:text-3xl">{title}</h2>}
+              {eyebrow && (
+                <p className="text-xs font-semibold uppercase tracking-widest text-link">
+                  <DecodeText text={eyebrow} />
+                </p>
+              )}
+              {title && (
+                <h2 className="font-display text-2xl font-bold sm:text-3xl">
+                  <span className="mask-line">
+                    <span>{title}</span>
+                  </span>
+                </h2>
+              )}
             </div>
             {action && (
               <Button href={action.href} variant="outline">

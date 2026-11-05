@@ -1,35 +1,47 @@
-import { getActivePeriod, getCabinet, getPrograms, getSiteSettings, mediaOf } from '@/lib/data'
+import { getActivePeriod, getCabinet, getSiteSettings } from '@/lib/data'
+import { MOTTO } from '@/content/tentang'
+import { type MottoLine, PixelMotto, type Tone } from '../hero/PixelMotto'
+import { TechOrbit } from '../hero/TechOrbit'
 import { Button } from '../ui/Button'
 import { Container } from '../ui/Container'
-import { Img } from '../ui/Img'
+import { MembershipStats } from '../hero/MembershipStats'
 
-/** Hero + 4 kotak statistik (menggantikan 4 kotak kecil wireframe yang belum punya fungsi). */
+/**
+ * Susun jargon menjadi baris bergaya kode: kata pendamping pendek (We, A, the, …) abu berongga, kata utama
+ * berwarna teks, dan kata terakhir biru. Jargon bawaan dipecah We Make / A Better / Future.
+ */
+const SMALL = new Set(['we', 'a', 'an', 'the', 'to', 'of', 'and', 'kami', 'yang', 'dan'])
+function toLines(motto: string): MottoLine[] {
+  const words = motto.trim().split(/\s+/)
+  const tone = (wd: string, last: boolean): Tone => (last ? 'link' : SMALL.has(wd.toLowerCase()) ? 'dim' : 'ink')
+  const rows = words.length === 5 ? [words.slice(0, 2), words.slice(2, 4), words.slice(4)] : (() => {
+    const per = Math.ceil(words.length / 3)
+    const out: string[][] = []
+    for (let i = 0; i < words.length; i += per) out.push(words.slice(i, i + per))
+    return out
+  })()
+  return rows.map((row, r) => ({ words: row.map((wd, k) => ({ text: wd, tone: tone(wd, r === rows.length - 1 && k === row.length - 1) })) }))
+}
+
+/**
+ * Hero beranda: jargon HMTI sebagai tipografi piksel interaktif (PixelMotto) dan konstelasi bidang IT (TechOrbit),
+ * lalu "HMTI dalam angka" (MembershipStats: data per angkatan dari content/keanggotaan.ts + pengurus aktif dari CMS).
+ */
 export async function Hero() {
-  const [settings, period, programs] = await Promise.all([getSiteSettings(), getActivePeriod(), getPrograms()])
+  const [settings, period] = await Promise.all([getSiteSettings(), getActivePeriod()])
   const cabinet = await getCabinet(period)
-
-  const stats = [
-    { label: 'Periode', value: period ? String(period.year) : '—' },
-    { label: 'Departemen', value: String(cabinet.departments.length) },
-    { label: 'Pengurus aktif', value: String(cabinet.total) },
-    { label: 'Program kerja', value: String(programs.length) },
-  ]
-
+  const motto = settings.motto || MOTTO
   return (
-    <section className="border-b border-line bg-surface-alt">
-      <Container className="grid gap-10 py-16 lg:grid-cols-2 lg:items-center">
-        <div>
-          {period?.cabinetName && (
-            <p className="text-xs font-semibold uppercase tracking-widest text-link">
-              {period.cabinetName} · Periode {period.year}
-            </p>
-          )}
-          <h1 className="mt-3 font-display text-4xl font-bold leading-tight sm:text-5xl">
-            {settings.hero?.headline || settings.orgFullName}
-          </h1>
-          <p className="mt-4 max-w-xl text-ink-muted">
-            {settings.hero?.subheadline || settings.tagline || 'Wadah aspirasi dan kreativitas mahasiswa.'}
+    <section className="hero relative overflow-hidden border-b border-line bg-surface-alt">
+      <Container className="grid gap-10 pb-10 pt-12 sm:pt-16 lg:grid-cols-[1.1fr_1fr] lg:items-center [&>*]:min-w-0">
+        <div data-enter>
+          <p className="font-mono text-xs uppercase tracking-[0.2em] text-link">
+            {settings.orgName || 'HMTI UNTAD'}
+            {period?.cabinetName && ` · ${period.cabinetName}`}
+            {period && ` · Periode ${period.year}`}
           </p>
+          <PixelMotto lines={toLines(motto)} className="mt-5" />
+          <p className="mt-7 max-w-xl text-lg text-ink-muted">{settings.hero?.subheadline || settings.tagline || settings.orgFullName}</p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Button href={settings.hero?.ctaHref || '/tentang'}>{settings.hero?.ctaLabel || 'Kenali Kami'}</Button>
             <Button href="/layanan" variant="outline">
@@ -37,18 +49,13 @@ export async function Hero() {
             </Button>
           </div>
         </div>
-        <Img media={mediaOf(settings.hero?.image)} label="hero" className="aspect-video w-full rounded-card" />
+        <div className="hero-panel">
+          <TechOrbit />
+        </div>
       </Container>
 
-      <Container className="pb-12">
-        <dl className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          {stats.map((s) => (
-            <div key={s.label} className="rounded-card border border-line bg-surface p-4">
-              <dd className="font-display text-3xl font-bold text-link">{s.value}</dd>
-              <dt className="text-sm text-ink-muted">{s.label}</dt>
-            </div>
-          ))}
-        </dl>
+      <Container className="pb-14">
+        <MembershipStats pengurus={cabinet.total} pengurusYear={period?.year} chart={false} />
       </Container>
     </section>
   )

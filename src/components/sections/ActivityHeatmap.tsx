@@ -18,20 +18,21 @@ const longDate = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numer
 const KIND = { kegiatan: 'Kegiatan', berita: 'Berita' } as const
 
 /**
- * Bintang khusus untuk hari besar himpunan. Terisi emas = sudah terjadi, kosong = akan datang
- * (dibedakan lewat isi, bukan warna saja). Ukurannya sedikit melebihi kotak supaya menonjol.
+ * Bendera tonggak untuk hari besar himpunan (penanda "titik sejarah", bukan hiasan). Terisi = sudah terlaksana,
+ * kosong bergaris putus = akan datang, jadi bedanya terbaca tanpa bergantung warna. Sedikit lebih besar dari kotak.
  */
-export function StarMark({ upcoming = false, className = '' }: { upcoming?: boolean; className?: string }) {
+export function LandmarkMark({ upcoming = false, className = '' }: { upcoming?: boolean; className?: string }) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
-      <polygon
-        points="12,1 14.82,8.12 22.46,8.6 16.57,13.48 18.47,20.9 12,16.8 5.53,20.9 7.43,13.48 1.54,8.6 9.18,8.12"
-        fill={upcoming ? 'var(--bg)' : 'var(--star)'}
+      <path d="M6.2 21.5V2.6" stroke="var(--ink)" strokeWidth="2" strokeLinecap="round" fill="none" />
+      <path
+        d="M7.2 3.4H20.4L16.2 8.9L20.4 14.4H7.2Z"
+        fill={upcoming ? 'var(--bg)' : 'var(--landmark)'}
         stroke="var(--ink)"
         strokeWidth="1.6"
         strokeLinejoin="round"
+        strokeDasharray={upcoming ? '2.4 1.8' : undefined}
       />
-      <circle cx="12" cy="10.6" r="1.7" fill={upcoming ? 'var(--ink)' : 'var(--bg)'} />
     </svg>
   )
 }
@@ -110,6 +111,7 @@ export function ActivityHeatmap({ year, weeks, map, landmarks }: Props) {
 
             <div
               role="grid"
+              data-cv-skip
               aria-label={`Aktivitas himpunan tahun ${year}`}
               className="grid flex-1 grid-flow-col grid-rows-7 gap-[3px]"
               style={{ gridTemplateColumns: `repeat(${weeks.length}, minmax(0, 1fr))` }}
@@ -139,6 +141,7 @@ export function ActivityHeatmap({ year, weeks, map, landmarks }: Props) {
                       role="gridcell"
                       tabIndex={date === (cursor ?? firstDate) ? 0 : -1}
                       aria-label={label}
+                      style={{ ['--w' as string]: wi }}
                       onMouseEnter={() => setCursor(date)}
                       onFocus={() => setCursor(date)}
                       onKeyDown={(e) => {
@@ -150,12 +153,12 @@ export function ActivityHeatmap({ year, weeks, map, landmarks }: Props) {
                         else return
                         e.preventDefault()
                       }}
-                      className={`relative aspect-square w-full rounded-[3px] transition-[transform,box-shadow] duration-150 ${LEVEL_BG[lvl]} ${
+                      className={`heat-cell relative aspect-square w-full rounded-[3px] transition-[transform,box-shadow] duration-150 ${LEVEL_BG[lvl]} ${
                         isCursor ? 'z-20 scale-125 shadow-[0_0_0_1.5px_var(--ink)]' : 'hover:scale-110'
                       } ${dayMarks.length ? 'z-10' : ''}`}
                     >
                       {dayMarks.length > 0 && (
-                        <StarMark upcoming={dayMarks.every((m) => m.upcoming)} className="pointer-events-none absolute left-1/2 top-1/2 size-[1.45rem] -translate-x-1/2 -translate-y-1/2 drop-shadow-[0_0_1px_var(--bg)]" />
+                        <LandmarkMark upcoming={dayMarks.every((m) => m.upcoming)} className="pointer-events-none absolute left-1/2 top-1/2 size-[1.45rem] -translate-x-[38%] -translate-y-1/2 drop-shadow-[0_0_1px_var(--bg)]" />
                       )}
                     </button>
                   )
@@ -175,7 +178,7 @@ export function ActivityHeatmap({ year, weeks, map, landmarks }: Props) {
 
               {marks.map((m) => (
                 <div key={m.title} className="mt-1.5 flex items-start gap-2">
-                  <StarMark upcoming={m.upcoming} className="mt-0.5 size-4 shrink-0" />
+                  <LandmarkMark upcoming={m.upcoming} className="mt-0.5 size-4 shrink-0" />
                   <p>
                     <span className="font-medium">{m.title}</span>
                     <span className="text-ink-muted"> · {m.upcoming ? 'akan datang' : 'sudah terlaksana'}</span>
@@ -239,10 +242,10 @@ export function ActivityHeatmap({ year, weeks, map, landmarks }: Props) {
           <p>Sesi: pagi, siang, sore, malam</p>
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1.5">
-              <StarMark className="size-4" /> Hari penting
+              <LandmarkMark className="size-4" /> Hari penting
             </span>
             <span className="flex items-center gap-1.5">
-              <StarMark upcoming className="size-4" /> Akan datang
+              <LandmarkMark upcoming className="size-4" /> Akan datang
             </span>
           </div>
         </div>

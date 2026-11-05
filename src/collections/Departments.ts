@@ -25,6 +25,7 @@ export const Departments: CollectionConfig = {
         { label: 'Eksternal', value: 'eksternal' },
       ],
     },
+    { name: 'formerName', type: 'text', label: 'Nama sebelumnya', admin: { description: 'Bila departemen pernah berganti nama, mis. Kewirausahaan.' } },
     { name: 'description', type: 'textarea', label: 'Deskripsi' },
     { name: 'icon', type: 'upload', relationTo: 'media', label: 'Ikon' },
     { name: 'order', type: 'number', label: 'Urutan', defaultValue: 0 },

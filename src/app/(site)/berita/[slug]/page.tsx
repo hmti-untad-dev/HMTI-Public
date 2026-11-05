@@ -27,7 +27,7 @@ export default async function ArticlePage({ params }: Props) {
         {[formatDate(article.publishedAt), article.author].filter(Boolean).join(' · ')}
       </PageHeader>
       <Container className="max-w-3xl space-y-8 py-12">
-        <Img media={mediaOf(article.cover)} label={article.title} className="aspect-video w-full rounded-card" />
+        <Img media={mediaOf(article.cover)} label={article.title} className="aspect-video w-full" />
         <RichText data={article.content} />
       </Container>
     </>

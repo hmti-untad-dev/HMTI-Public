@@ -11,6 +11,8 @@ export type ShowcaseMember = {
   role: string
   photoUrl: string | null
   instagram: string | null
+  /** Foto sudah berupa poster bernama: teks bawaan tidak ditumpuk di atasnya. */
+  poster: boolean
 }
 
 export type ShowcaseGroup = {
@@ -85,24 +87,28 @@ export function CabinetShowcase({ orgName, year, groups }: Props) {
             </h2>
 
             {/* Poster */}
-            <figure className="relative mt-8 aspect-[4/5] overflow-hidden rounded-lg border border-line bg-scrim">
+            <figure className="relative mt-8 aspect-[4/5] overflow-hidden border border-line bg-scrim">
               <PixelPortrait src={current.photoUrl} name={current.name} replayKey={current.id} pinned={scan} />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-scrim/90 via-transparent to-scrim/30" />
-              <p className="pointer-events-none absolute left-9 top-8 font-mono text-xs tracking-widest text-white/85">
-                <span className="text-lg">/ {pad(globalIndex)}</span>
-              </p>
-              <p className="pointer-events-none absolute right-9 top-8 bg-scrim/70 px-3 py-1.5 font-mono text-xs uppercase tracking-[0.25em] text-white">
-                {current.role}
-              </p>
-              <figcaption className="pointer-events-none absolute inset-x-9 bottom-8">
-                <p className="font-serif text-4xl italic leading-none text-white sm:text-5xl">{current.name}</p>
-                <p className="mt-2 font-mono text-xs uppercase tracking-[0.25em] text-white/75">{group.title}</p>
-              </figcaption>
+              {!current.poster && <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-scrim/90 via-transparent to-scrim/30" />}
+              {!current.poster && (
+                <>
+                  <p className="pointer-events-none absolute left-9 top-8 font-mono text-xs tracking-widest text-white/85">
+                    <span className="text-lg">/ {pad(globalIndex)}</span>
+                  </p>
+                  <p className="pointer-events-none absolute right-9 top-8 bg-scrim/70 px-3 py-1.5 font-mono text-xs uppercase tracking-[0.25em] text-white">
+                    {current.role}
+                  </p>
+                  <figcaption className="pointer-events-none absolute inset-x-9 bottom-8">
+                    <p className="font-serif text-4xl italic leading-none text-white sm:text-5xl">{current.name}</p>
+                    <p className="mt-2 font-mono text-xs uppercase tracking-[0.25em] text-white/75">{group.title}</p>
+                  </figcaption>
+                </>
+              )}
               <button
                 type="button"
                 aria-pressed={scan}
                 onClick={() => setScan((v) => !v)}
-                className="absolute right-9 top-[4.25rem] border border-white/70 bg-scrim/75 px-2 py-1 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-white hover:bg-scrim"
+                className={`absolute right-9 border border-white/70 bg-scrim/75 px-2 py-1 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-white hover:bg-scrim ${current.poster ? 'top-8' : 'top-[4.25rem]'}`}
               >
                 {scan ? 'Bitmap' : 'ASCII'}
               </button>
@@ -136,41 +142,43 @@ export function CabinetShowcase({ orgName, year, groups }: Props) {
             </div>
 
             <ol className="mt-6 border-t border-line">
-              {members.map((m, i) => (
-                <li key={m.id} className="border-b border-line">
-                  <div
-                    className={`flex items-center gap-4 py-4 pr-2 ${i === index ? 'text-ink' : 'text-ink-muted'}`}
-                  >
-                    <button
-                      type="button"
-                      onClick={() => setIndex(i)}
-                      aria-current={i === index ? 'true' : undefined}
-                      className="flex flex-1 items-center gap-6 text-left"
-                    >
-                      <span className="w-8 font-serif text-lg italic">{pad(i + 1)}</span>
-                      <span>
-                        <span className="block text-lg text-ink">{m.name}</span>
-                        <span className="block text-sm text-ink-muted">{m.role}</span>
-                      </span>
-                    </button>
-                    {m.instagram && (
-                      <a
-                        href={instagramUrl(m.instagram)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={`Instagram ${m.name}`}
-                        className="flex size-10 items-center justify-center rounded-full border border-line text-ink hover:border-ink"
+              {members.map((m, i) => {
+                const active = i === index
+                return (
+                  <li key={m.id} className="border-b border-line">
+                    <div className={`flex items-center gap-2 transition-colors ${active ? 'bg-ink text-surface' : 'hover:bg-surface-alt'}`}>
+                      <button
+                        type="button"
+                        onClick={() => setIndex(i)}
+                        aria-current={active ? 'true' : undefined}
+                        className="flex flex-1 items-center gap-6 px-3 py-4 text-left"
                       >
-                        <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-                          <rect x="3" y="3" width="18" height="18" rx="5" />
-                          <circle cx="12" cy="12" r="4" />
-                          <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" />
-                        </svg>
-                      </a>
-                    )}
-                  </div>
-                </li>
-              ))}
+                        <span className={`w-8 font-serif text-lg italic ${active ? 'text-surface' : 'text-ink-muted'}`}>{pad(i + 1)}</span>
+                        <span className="flex-1">
+                          <span className={`block text-lg ${active ? 'font-semibold text-surface' : 'text-ink'}`}>{m.name}</span>
+                          <span className={`block text-sm ${active ? 'text-surface/80' : 'text-ink-muted'}`}>{m.role}</span>
+                        </span>
+                        {active && <span className="hidden font-mono text-[0.65rem] uppercase tracking-[0.2em] text-surface/80 sm:block">Sedang tampil</span>}
+                      </button>
+                      {m.instagram && (
+                        <a
+                          href={instagramUrl(m.instagram)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`Instagram ${m.name}`}
+                          className={`mr-2 flex size-10 items-center justify-center rounded-full border ${active ? 'border-surface/60 text-surface hover:border-surface' : 'border-line text-ink hover:border-ink'}`}
+                        >
+                          <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+                            <rect x="3" y="3" width="18" height="18" rx="5" />
+                            <circle cx="12" cy="12" r="4" />
+                            <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" />
+                          </svg>
+                        </a>
+                      )}
+                    </div>
+                  </li>
+                )
+              })}
             </ol>
 
             <div className="mt-auto flex items-center gap-4 pt-8">

@@ -1,7 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { anyone, hasRole } from '../access'
 
-/** Hari besar / bersejarah himpunan. Tampil sebagai bintang pada heatmap "Denyut Himpunan". */
+/** Hari besar / bersejarah himpunan. Tampil sebagai bendera tonggak pada heatmap "Denyut Himpunan". */
 export const SpecialDays: CollectionConfig = {
   slug: 'special-days',
   typescript: { interface: 'SpecialDay' },
@@ -28,7 +28,7 @@ export const SpecialDays: CollectionConfig = {
       type: 'checkbox',
       label: 'Berulang tiap tahun',
       defaultValue: false,
-      admin: { description: 'Centang untuk hari jadi atau peringatan tahunan: bintang muncul di tanggal yang sama setiap tahun.' },
+      admin: { description: 'Centang untuk hari jadi atau peringatan tahunan: bendera muncul di tanggal yang sama setiap tahun.' },
     },
     { name: 'description', type: 'textarea', label: 'Keterangan singkat' },
     { name: 'link', type: 'text', label: 'Tautan (opsional)', admin: { description: 'Halaman kegiatan terkait, mis. /kegiatan/i-fest/2026.' } },

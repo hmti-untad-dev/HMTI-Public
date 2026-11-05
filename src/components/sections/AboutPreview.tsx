@@ -2,6 +2,7 @@ import { getActivePeriod, getSiteSettings } from '@/lib/data'
 import { MISI_GBHO, MARS_JUDUL, MARS_PENCIPTA, SIAPA_KAMI, VISI_GBHO } from '@/content/tentang'
 import { Accordion } from '../ui/Accordion'
 import { Button } from '../ui/Button'
+import { LAB_OBJECTS, VisionScanner } from '../ui/VisionScanner'
 import { Section } from '../ui/Section'
 
 /** Tombol menuju bagian lengkap di halaman Tentang. */
@@ -21,12 +22,24 @@ export async function AboutPreview() {
   const [settings, period] = await Promise.all([getSiteSettings(), getActivePeriod()])
   const visi = period?.vision || VISI_GBHO
   return (
-    <Section eyebrow="Tentang" title="Tentang Kami">
-      <div className="max-w-3xl">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/brand/hmti-logo.webp" alt="Lambang HMTI UNTAD" width={80} height={80} className="size-20 rounded-full" />
-        <p className="mt-5 text-lg text-ink">{SIAPA_KAMI[0]}</p>
-        {settings.tagline && <p className="mt-2 text-ink-muted">{settings.tagline}</p>}
+    <Section id="tentang" eyebrow="Tentang" title="Tentang Kami">
+      <div className="grid gap-8 lg:grid-cols-[1.1fr_1fr] lg:items-center [&>*]:min-w-0">
+        <div className="max-w-3xl">
+          <span className="shine">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/brand/hmti-logo.webp" alt="Lambang HMTI UNTAD" width={80} height={80} className="block size-20 rounded-full" />
+          </span>
+          <p className="mt-5 text-lg text-ink">{SIAPA_KAMI[0]}</p>
+          {settings.tagline && <p className="mt-2 text-ink-muted">{settings.tagline}</p>}
+        </div>
+        <VisionScanner
+          src="/brand/lab-informatika.webp"
+          alt="Gedung Laboratorium Informatika Universitas Tadulako, tempat sekretariat HMTI UNTAD"
+          width={611}
+          height={348}
+          objects={LAB_OBJECTS}
+          caption="Laboratorium Informatika, sekretariat HMTI UNTAD"
+        />
       </div>
 
       <Accordion
@@ -57,7 +70,7 @@ export async function AboutPreview() {
             content: (
               <div className="max-w-3xl text-ink-muted">
                 <p>
-                  Program Studi S1 Teknik Informatika Universitas Tadulako berdiri pada 16 April 2012. HMTI UNTAD tumbuh di dalamnya sebagai rumah bersama mahasiswanya.
+                  HMTI UNTAD lahir dari inisiatif mahasiswa Teknik Informatika angkatan 2012 dan resmi dibentuk melalui SK Rektor Universitas Tadulako pada 30 Mei 2014. Setahun kemudian, 30 Mei 2015, himpunan merayakan Dies Natalis pertamanya.
                 </p>
                 <Detail href="/tentang#sejarah" />
               </div>

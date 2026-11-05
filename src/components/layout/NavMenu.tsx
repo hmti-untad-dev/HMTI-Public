@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 
 import type { NavGroup } from '@/lib/nav'
+import { Dissolve, Roll, Ticks, cellWidth } from './Dissolve'
 
 /**
  * Menu desktop: buka dengan hover (jeda tutup singkat), fokus keyboard, atau klik (layar sentuh).
@@ -64,14 +65,11 @@ export function NavMenu({ groups }: { groups: NavGroup[] }) {
               data-open={isOpen}
               onFocus={() => hasMenu && hold(i)}
               onClick={() => setOpen(null)}
-              className="dither inline-flex items-center gap-1.5 px-4 font-mono text-[0.72rem] uppercase tracking-[0.14em] text-ink-muted hover:text-ink aria-expanded:text-ink"
+              className="dither inline-flex items-center px-4 font-mono text-[0.72rem] uppercase tracking-[0.14em] text-ink-muted hover:text-ink aria-expanded:text-ink"
             >
-              {g.label}
-              {hasMenu && (
-                <svg viewBox="0 0 10 6" className={`size-2 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true">
-                  <path d="m1 1 4 4 4-4" />
-                </svg>
-              )}
+              <Dissolve w={cellWidth(g.label)} />
+              <Roll>{g.label}</Roll>
+              {hasMenu && <Ticks />}
             </Link>
 
             {hasMenu && (
@@ -96,7 +94,8 @@ export function NavMenu({ groups }: { groups: NavGroup[] }) {
                         onClick={() => setOpen(null)}
                         className="dither flex min-h-11 items-center justify-between gap-3 px-4 py-2.5 text-sm text-ink"
                       >
-                        <span>{item.label}</span>
+                        {isOpen && <Dissolve w={wide ? 240 : 256} h={44} />}
+                        <Roll>{item.label}</Roll>
                         {item.external && (
                           <svg viewBox="0 0 12 12" className="size-3 text-ink-muted" fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden="true">
                             <path d="M4 2h6v6M10 2 3 9" />

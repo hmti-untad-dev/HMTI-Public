@@ -11,6 +11,7 @@ export const SiteSettings: GlobalConfig = {
     { name: 'orgName', type: 'text', label: 'Nama organisasi', defaultValue: 'HMTI' },
     { name: 'orgFullName', type: 'text', label: 'Nama lengkap', defaultValue: 'Himpunan Mahasiswa Teknik Informatika' },
     { name: 'tagline', type: 'text', label: 'Tagline' },
+    { name: 'motto', type: 'text', label: 'Jargon / motto', defaultValue: 'We Make A Better Future', admin: { description: 'Jargon himpunan, tampil di beranda, Tentang, dan footer.' } },
     { name: 'logo', type: 'upload', relationTo: 'media', label: 'Logo' },
     {
       name: 'hero',

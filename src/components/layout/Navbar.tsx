@@ -2,6 +2,8 @@ import Link from 'next/link'
 
 import { LOGIN_HREF, NAV_GROUPS, type NavGroup } from '@/lib/nav'
 import { Container } from '../ui/Container'
+import { BrandLink } from './BrandLink'
+import { Dissolve, Roll } from './Dissolve'
 import { NavMenu } from './NavMenu'
 import { ThemeToggle } from './ThemeToggle'
 
@@ -31,13 +33,9 @@ function buildGroups({ departments, archivedYears }: Pick<Props, 'departments' |
 export function Navbar({ orgName, departments, archivedYears }: Props) {
   const groups = buildGroups({ departments, archivedYears })
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-surface/90 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-line bg-surface">
       <Container className="flex h-16 items-stretch justify-between gap-4">
-        <Link href="/" className="flex shrink-0 items-center gap-2.5 whitespace-nowrap font-display text-base font-bold text-ink sm:gap-3 sm:text-lg">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/brand/hmti-logo.webp" alt="" width={36} height={36} className="size-9 rounded-full" />
-          {orgName}
-        </Link>
+        <BrandLink orgName={orgName} />
 
         <NavMenu groups={groups} />
 
@@ -47,10 +45,12 @@ export function Navbar({ orgName, departments, archivedYears }: Props) {
             href={LOGIN_HREF}
             className="dither inline-flex items-center px-4 text-sm font-medium text-link sm:px-6"
           >
+            <Dissolve w={88} />
             Login
           </Link>
           <details className="group relative lg:hidden">
             <summary className="dither flex h-16 cursor-pointer list-none items-center px-4 text-sm">
+              <Dissolve w={66} />
               Menu
             </summary>
             <nav

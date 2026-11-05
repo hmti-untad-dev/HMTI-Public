@@ -31,6 +31,7 @@ export default async function DepartmentPage({ params, searchParams }: Props) {
     <>
       <PageHeader eyebrow={`Departemen ${department.group}`} title={department.name}>
         {department.description}
+        {department.formerName && <span className="mt-2 block text-sm text-ink-muted">Sebelumnya bernama {department.formerName}.</span>}
       </PageHeader>
       <Container className="space-y-12 py-12">
         <YearSelector

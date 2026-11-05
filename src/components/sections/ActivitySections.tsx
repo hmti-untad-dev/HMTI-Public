@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { type ActivityStats, buildWeeks, dayKey, summarize } from '@/lib/activity-core'
 import { getActivity, getActivityYears, getLandmarks, getProkerProgress } from '@/lib/activity'
 import type { Period } from '@/payload-types'
+import { CountUp } from '../ui/CountUp'
 import { Reveal } from '../ui/Reveal'
 import { Accordion } from '../ui/Accordion'
 import { Section } from '../ui/Section'
@@ -14,9 +15,9 @@ const shortDate = new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'lon
 
 function Stat({ label, value, note }: { label: string; value: string; note?: string }) {
   return (
-    <div className="rounded-card border border-line bg-surface-raised p-4">
+    <div className="lift rounded-card border border-line bg-surface-raised p-4 hover:border-brand">
       <dt className="text-sm text-ink-muted">{label}</dt>
-      <dd className="mt-1 font-display text-3xl font-bold text-link">{value}</dd>
+      <dd className="mt-1 font-display text-3xl font-bold text-link">{/^\d+$/.test(value) ? <CountUp value={Number(value)} /> : value}</dd>
       {note && <p className="mt-0.5 text-xs text-ink-muted">{note}</p>}
     </div>
   )
@@ -128,7 +129,7 @@ export async function ActivitySection({ period, year: picked, hrefFor, tone }: P
     <Section id="denyut" tone={tone} eyebrow={`Tahun ${year}`} title="Denyut Himpunan">
       <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <p className="max-w-2xl text-ink-muted">
-          Setiap kotak adalah satu hari. Makin pekat berarti makin banyak sesi (pagi, siang, sore, malam) yang terisi kegiatan atau berita. Bintang menandai hari
+          Setiap kotak adalah satu hari. Makin pekat berarti makin banyak sesi (pagi, siang, sore, malam) yang terisi kegiatan atau berita. Bendera menandai hari
           besar himpunan.
         </p>
         <YearStepper years={years} current={year} hrefFor={hrefFor} />

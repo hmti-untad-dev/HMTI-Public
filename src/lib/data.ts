@@ -55,11 +55,13 @@ export type CabinetMember = {
   position: Membership['position']
   department: Department | null
   photo: Media | null
+  /** Foto berupa poster yang sudah memuat nama dan jabatan. */
+  poster: boolean
 }
 
 /** Kepengurusan satu periode: BPH (tanpa departemen) + anggota per departemen. */
 export async function getCabinet(period: Period | null) {
-  const empty = { bph: [] as CabinetMember[], byDepartment: new Map<number, CabinetMember[]>(), departments: [] as Department[], total: 0 }
+  const empty = { bph: [] as CabinetMember[], pembina: [] as CabinetMember[], pengawas: [] as CabinetMember[], coordinators: [] as CabinetMember[], byDepartment: new Map<number, CabinetMember[]>(), departments: [] as Department[], total: 0 }
   if (!period) return empty
 
   const payload = await getClient()
@@ -78,17 +80,29 @@ export async function getCabinet(period: Period | null) {
       position: m.position,
       department,
       photo: mediaOf(m.photoOverride) ?? mediaOf(m.person.photo),
+      poster: Boolean(m.photoIsPoster && mediaOf(m.photoOverride)),
     })
   }
 
   const byDepartment = new Map<number, CabinetMember[]>()
   const bph: CabinetMember[] = []
+  const pembina: CabinetMember[] = []
+  const pengawas: CabinetMember[] = []
+  const coordinators: CabinetMember[] = [] // semua koordinator departemen, dengan atau tanpa departemen terisi
   for (const member of members) {
-    if (!member.department) bph.push(member)
-    else byDepartment.set(member.department.id, [...(byDepartment.get(member.department.id) ?? []), member])
+    if (member.position === 'koordinator') coordinators.push(member)
+    if (!member.department) {
+      if (member.position === 'pembina') pembina.push(member)
+      else if (member.position === 'pengawas') pengawas.push(member)
+      else if (member.position !== 'koordinator') bph.push(member)
+    } else byDepartment.set(member.department.id, [...(byDepartment.get(member.department.id) ?? []), member])
   }
 
-  return { bph, byDepartment, departments, total: members.length }
+  // Koordinator diurutkan mengikuti urutan departemen.
+  const rank = (m: CabinetMember) => departments.findIndex((d) => d.id === m.department?.id)
+  coordinators.sort((a, b) => rank(a) - rank(b))
+
+  return { bph, pembina, pengawas, coordinators, byDepartment, departments, total: members.length }
 }
 
 export const getPrograms = cache(async (opts: { featured?: boolean } = {}) => {
@@ -135,8 +149,43 @@ export const getAchievements = cache(async (opts: { featured?: boolean } = {}) =
 
 export const getTestimonials = cache(async () => {
   const payload = await getClient()
-  const { docs } = await payload.find({ collection: 'testimonials', limit: 12, depth: 1 })
+  const { docs } = await payload.find({ collection: 'testimonials', where: { kind: { not_equals: 'tokoh' } }, limit: 12, depth: 1 })
   return docs
+})
+
+/** Kutipan tokoh (pendiri, Ketua Umum pertama, Kaprodi) untuk bagian Jejak Kepemimpinan. */
+export const getQuotes = cache(async () => {
+  const payload = await getClient()
+  const { docs } = await payload.find({ collection: 'testimonials', where: { kind: { equals: 'tokoh' } }, sort: 'order', limit: 10, depth: 1 })
+  return docs
+})
+
+export type Chair = { id: number; name: string; year: number; cabinetName: string | null; photo: Media | null; poster: boolean; current: boolean }
+
+/** Semua Ketua Umum dari data keanggotaan (jabatan "ketua" di tiap periode), urut dari periode tertua. */
+export const getChairs = cache(async (): Promise<Chair[]> => {
+  const payload = await getClient()
+  const [{ docs }, active] = await Promise.all([
+    payload.find({ collection: 'memberships', where: { position: { equals: 'ketua' } }, limit: 100, depth: 2 }),
+    getActivePeriod(),
+  ])
+  return docs
+    .filter((m) => typeof m.person === 'object' && typeof m.period === 'object')
+    .map((m) => {
+      const person = m.person as Person
+      const period = m.period as Period
+      const photo = mediaOf(m.photoOverride) ?? mediaOf(person.photo)
+      return {
+        id: m.id,
+        name: person.name,
+        year: period.year,
+        cabinetName: period.cabinetName ?? null,
+        photo,
+        poster: Boolean(m.photoIsPoster && mediaOf(m.photoOverride)),
+        current: active?.id === period.id,
+      }
+    })
+    .sort((a, b) => a.year - b.year)
 })
 
 export async function getArticles(opts: { limit?: number; page?: number } = {}) {
@@ -217,3 +266,25 @@ export const getDocuments = cache(async () => {
   const { docs } = await payload.find({ collection: 'documents', limit: 50, depth: 1 })
   return docs
 })
+
+/** Hasil riset terbit, bisa disaring per departemen penyusun. */
+export async function getResearches(opts: { department?: string; limit?: number; page?: number } = {}) {
+  const payload = await getClient()
+  return payload.find({
+    collection: 'researches',
+    // Local API melewati access control: draft harus disaring manual.
+    where: {
+      and: [{ _status: { equals: 'published' } }, ...(opts.department ? [{ 'department.slug': { equals: opts.department } }] : [])],
+    },
+    sort: '-publishedAt',
+    limit: opts.limit ?? 12,
+    page: opts.page ?? 1,
+    depth: 1,
+  })
+}
+
+export async function getResearch(slug: string) {
+  const payload = await getClient()
+  const { docs } = await payload.find({ collection: 'researches', where: { and: [{ slug: { equals: slug } }, { _status: { equals: 'published' } }] }, limit: 1, depth: 1 })
+  return docs[0] ?? null
+}

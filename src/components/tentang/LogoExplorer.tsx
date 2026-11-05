@@ -214,6 +214,8 @@ export function LogoExplorer() {
           aria-label={active ? 'Lambang HMTI UNTAD (penelusuran berjalan)' : 'Mulai penelusuran makna lambang HMTI UNTAD'}
           className={`group block w-full rounded-full focus-visible:outline-offset-8 ${active ? 'cursor-default' : 'cursor-pointer'}`}
         >
+          {/* Kilau melintas di atas lambang saat penelusuran tidak berjalan (cakram = 100/116 lebar SVG). */}
+          {!active && <span className="shine-overlay" aria-hidden="true" style={{ inset: '6.9%' }} />}
           <svg viewBox="-8 -8 116 116" className="block w-full overflow-visible" aria-hidden="true">
             <defs>
               <clipPath id={clipId}>

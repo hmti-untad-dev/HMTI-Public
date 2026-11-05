@@ -1,29 +1,24 @@
 import type { Media } from '@/payload-types'
+import { PixelTile } from './PixelTile'
 
 type Props = {
   media?: Media | null
   label?: string
+  /** Teks besar di ubin pengganti bila judul sudah tampil di bawah kartu (mis. kategori). Default: label. */
+  placeholder?: string
   className?: string
 }
 
 /**
- * Gambar dari Media, atau kotak placeholder (gaya wireframe) bila belum ada.
+ * Gambar dari Media, atau ubin piksel (PixelTile) bila belum ada.
  * Pakai <img> biasa agar skeleton tidak butuh konfigurasi domain next/image;
  * ganti ke next/image saat storage media final.
  */
-export function Img({ media, label, className = '' }: Props) {
+export function Img({ media, label, placeholder, className = '' }: Props) {
   const src = media?.sizes?.card?.url ?? media?.url
   if (src) {
     // eslint-disable-next-line @next/next/no-img-element
-    return <img src={src} alt={media?.alt ?? label ?? ''} className={`object-cover ${className}`} loading="lazy" />
+    return <img src={src} alt={media?.alt ?? label ?? ''} className={`skeleton object-cover ${className}`} loading="lazy" />
   }
-  return (
-    <div
-      role="img"
-      aria-label={label ?? 'Gambar belum tersedia'}
-      className={`flex items-center justify-center border border-dashed border-brand/50 bg-brand-soft/40 text-xs text-ink-muted ${className}`}
-    >
-      {label ?? 'gambar'}
-    </div>
-  )
+  return <PixelTile title={placeholder ?? label ?? 'Gambar belum tersedia'} label={label} className={className} />
 }

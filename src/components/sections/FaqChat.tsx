@@ -97,7 +97,7 @@ function ChatBox() {
 
   const field = 'w-full border border-line bg-surface px-3 py-2.5 text-[0.95rem] text-ink placeholder:text-ink-muted focus:border-brand focus:outline-none'
   return (
-    <section aria-labelledby={`${id}-t`} className="mt-12 overflow-hidden rounded-2xl border border-line bg-surface-raised">
+    <section aria-labelledby={`${id}-t`} className="mt-12 overflow-hidden border border-line bg-surface-raised">
       <header className="flex items-center gap-3 border-b border-line px-4 py-3">
         <HmtiAvatar className="size-9" />
         <div>
