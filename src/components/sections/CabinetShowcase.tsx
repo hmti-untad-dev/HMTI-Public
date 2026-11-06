@@ -40,7 +40,6 @@ function instagramUrl(handle: string) {
 export function CabinetShowcase({ orgName, year, groups }: Props) {
   const [groupKey, setGroupKey] = useState(groups[0]?.key)
   const [index, setIndex] = useState(0)
-  const [scan, setScan] = useState(false)
 
   const flat = useMemo(() => groups.flatMap((g) => g.members.map((m) => ({ ...m, groupKey: g.key }))), [groups])
   const total = flat.length
@@ -88,7 +87,7 @@ export function CabinetShowcase({ orgName, year, groups }: Props) {
 
             {/* Poster */}
             <figure className="relative mt-8 aspect-[4/5] overflow-hidden border border-line bg-scrim">
-              <PixelPortrait src={current.photoUrl} name={current.name} replayKey={current.id} pinned={scan} />
+              <PixelPortrait src={current.photoUrl} name={current.name} replayKey={current.id} />
               {!current.poster && <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-scrim/90 via-transparent to-scrim/30" />}
               {!current.poster && (
                 <>
@@ -104,14 +103,6 @@ export function CabinetShowcase({ orgName, year, groups }: Props) {
                   </figcaption>
                 </>
               )}
-              <button
-                type="button"
-                aria-pressed={scan}
-                onClick={() => setScan((v) => !v)}
-                className={`absolute right-9 border border-white/70 bg-scrim/75 px-2 py-1 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-white hover:bg-scrim ${current.poster ? 'top-8' : 'top-[4.25rem]'}`}
-              >
-                {scan ? 'Bitmap' : 'ASCII'}
-              </button>
             </figure>
           </div>
 

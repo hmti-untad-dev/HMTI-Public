@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from '@/components/ui/AppLink'
 
 import { CREDIT, MOTTO } from '@/content/tentang'
 import type { SiteSetting } from '@/payload-types'

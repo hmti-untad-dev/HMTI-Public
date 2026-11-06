@@ -1,9 +1,10 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import Link from '@/components/ui/AppLink'
 
 import { MembershipStats } from '@/components/hero/MembershipStats'
 import { LegacySection } from '@/components/legacy/LegacySection'
 import { LogoExplorer } from '@/components/tentang/LogoExplorer'
+import { MarsPlayer } from '@/components/mars/MarsPlayer'
 import { Accordion } from '@/components/ui/Accordion'
 import { PolaroidCarousel } from '@/components/ui/PolaroidCarousel'
 import { LabPhoto } from '@/components/ui/LabPhoto'
@@ -21,8 +22,10 @@ import {
   JENJANG,
   LINIMASA_HMTI,
   MARS_BAIT,
+  MARS_CUES,
   MARS_JUDUL,
   MARS_PENCIPTA,
+  MARS_SELESAI,
   MARS_YOUTUBE,
   MISI_AWAL,
   MISI_GBHO,
@@ -285,33 +288,7 @@ export default async function AboutPage() {
       </Section>
 
       <Section id="mars" title={MARS_JUDUL}>
-        <div className="grid gap-10 lg:grid-cols-[22rem_1fr]">
-          <div className="self-start">
-            <p className="text-sm text-ink-muted">{MARS_PENCIPTA}</p>
-            <audio controls preload="none" src={marsSrc} className="mt-4 w-full">
-              Peramban Anda tidak mendukung pemutar audio.
-            </audio>
-            <a
-              href={MARS_YOUTUBE}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-4 inline-block text-sm font-medium text-link hover:underline"
-            >
-              Dengarkan di YouTube →
-            </a>
-          </div>
-          <div className="grid gap-8 sm:grid-cols-3">
-            {MARS_BAIT.map((bait, i) => (
-              <p key={i} className="space-y-1 font-serif text-lg italic leading-snug">
-                {bait.map((baris) => (
-                  <span key={baris} className="block">
-                    {baris}
-                  </span>
-                ))}
-              </p>
-            ))}
-          </div>
-        </div>
+        <MarsPlayer src={marsSrc} title={MARS_JUDUL} composer={MARS_PENCIPTA} youtube={MARS_YOUTUBE} bait={MARS_BAIT} cues={MARS_CUES} end={MARS_SELESAI} />
       </Section>
 
       <Section id="dokumen" tone="alt" title="Dokumen">

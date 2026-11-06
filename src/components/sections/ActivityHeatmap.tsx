@@ -1,6 +1,6 @@
 'use client'
 
-import Link from 'next/link'
+import Link from '@/components/ui/AppLink'
 import { useCallback, useMemo, useRef, useState } from 'react'
 
 import { type ActivityItem, DAYPARTS, type Landmark, dayLevel, slotsOf } from '@/lib/activity-core'

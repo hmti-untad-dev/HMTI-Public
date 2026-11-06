@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import Link from 'next/link'
+import Link from '@/components/ui/AppLink'
 
 import { Container } from '@/components/ui/Container'
 import { Empty } from '@/components/ui/Empty'
@@ -31,6 +31,21 @@ export default async function ProgramPage({ params }: { params: Promise<{ progra
       <PageHeader eyebrow={department?.name ?? 'Program kerja'} title={program.name}>
         {program.summary}
       </PageHeader>
+
+      {program.website && (
+        <Container className="pt-8">
+          <a
+            href={program.website}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group inline-flex items-center gap-3 border border-ink bg-ink px-5 py-3 font-medium text-surface transition-colors hover:border-brand hover:bg-brand hover:text-on-brand"
+          >
+            Kunjungi situs {program.shortName || program.name}
+            <span className="font-mono text-xs opacity-70">{program.website.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}</span>
+            <span aria-hidden="true" className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5">↗</span>
+          </a>
+        </Container>
+      )}
 
       {(paragraphs.length > 0 || loc?.name) && (
         <Container className="grid gap-10 py-12 lg:grid-cols-[1.1fr_1fr]">

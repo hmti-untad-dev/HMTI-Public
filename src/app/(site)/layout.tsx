@@ -6,8 +6,11 @@ import '@/styles/globals.css'
 import { Footer } from '@/components/layout/Footer'
 import { Navbar } from '@/components/layout/Navbar'
 import { BootScreen } from '@/components/boot/BootScreen'
+import { TransitionPage } from '@/components/page-transition/page-transition'
+import { StripeTransition } from '@/components/stripe-transition/stripe-transition'
 import { HeatTrail } from '@/components/layout/HeatTrail'
 import { Interactions } from '@/components/layout/Interactions'
+import { SelectionChip } from '@/components/layout/SelectionChip'
 import { SmoothScroll } from '@/components/layout/SmoothScroll'
 import { SleepyOverlay } from '@/components/mascot/SleepyOverlay'
 import { BackToTop } from '@/components/ui/BackToTop'
@@ -68,15 +71,22 @@ export default async function SiteLayout({ children }: { children: ReactNode }) 
       </head>
       <body className="flex min-h-dvh flex-col">
         <BootScreen />
-        <div className="scroll-progress" aria-hidden="true" />
-        <SmoothScroll />
-        <Interactions />
-        <HeatTrail />
-        <Navbar orgName={settings.orgName || 'HMTI'} departments={nav.departments} archivedYears={nav.archivedYears} />
-        <main className="flex-1">{children}</main>
-        <Footer settings={settings} />
-        <BackToTop />
-        <SleepyOverlay />
+        {/* Transisi pindah halaman (Atelier Stripe Transition): tirai garis menutup lalu membuka halaman baru.
+            Semua tautan internal memakai AppLink -> TransitionLink. */}
+        <StripeTransition color="#151515" stripes={8} segments={6} duration={0.5} stagger={0.025}>
+          <div className="scroll-progress" aria-hidden="true" />
+          <SmoothScroll />
+          <Interactions />
+          <HeatTrail />
+          <SelectionChip />
+          <Navbar orgName={settings.orgName || 'HMTI'} departments={nav.departments} archivedYears={nav.archivedYears} />
+          <main className="flex-1">
+            <TransitionPage>{children}</TransitionPage>
+          </main>
+          <Footer settings={settings} />
+          <BackToTop />
+          <SleepyOverlay />
+        </StripeTransition>
       </body>
     </html>
   )

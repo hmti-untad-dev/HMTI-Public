@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from '@/components/ui/AppLink'
 
 import { LOGIN_HREF, NAV_GROUPS, type NavGroup } from '@/lib/nav'
 import { Container } from '../ui/Container'

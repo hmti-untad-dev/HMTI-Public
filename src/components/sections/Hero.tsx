@@ -32,8 +32,8 @@ export async function Hero() {
   const cabinet = await getCabinet(period)
   const motto = settings.motto || MOTTO
   return (
-    <section className="hero relative overflow-hidden border-b border-line bg-surface-alt">
-      <Container className="grid gap-10 pb-10 pt-12 sm:pt-16 lg:grid-cols-[1.1fr_1fr] lg:items-center [&>*]:min-w-0">
+    <section className="hero relative overflow-clip border-b border-line bg-surface-alt">
+      <Container className="hero-scroll grid gap-10 pb-10 pt-12 sm:pt-16 lg:grid-cols-[1.1fr_1fr] lg:items-center [&>*]:min-w-0">
         <div data-enter>
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-link">
             {settings.orgName || 'HMTI UNTAD'}

@@ -1,6 +1,6 @@
 'use client'
 
-import Link from 'next/link'
+import Link from '@/components/ui/AppLink'
 import { useEffect, useRef, useState } from 'react'
 
 import type { NavGroup } from '@/lib/nav'

@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from '@/components/ui/AppLink'
 
 import { getCabinet, resolvePeriod } from '@/lib/data'
 import { PersonCard } from '../cards/PersonCard'
@@ -42,9 +42,10 @@ export async function TeamPreview({ periode }: Props) {
       {coordinators.length > 0 && (
         <>
           <h3 className="mb-4 mt-12 font-display text-lg font-semibold">Koordinator departemen</h3>
-          <div className="snap-row justify-start lg:[justify-content:safe_center]">
+          {/* Grid, bukan baris geser: semua koordinator terlihat tanpa scroll ke samping. */}
+          <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 sm:gap-4 lg:grid-cols-6">
             {coordinators.map((m, i) => (
-              <PersonCard key={m.id} member={m} index={i + 1} total={coordinators.length} />
+              <PersonCard key={m.id} member={m} index={i + 1} total={coordinators.length} compact />
             ))}
           </div>
         </>
@@ -54,15 +55,24 @@ export async function TeamPreview({ periode }: Props) {
       {departments.length === 0 ? (
         <Empty>Departemen belum diisi.</Empty>
       ) : (
-        <div className="snap-row">
-          {departments.map((d) => (
+        // Grid (bukan baris geser): wadah overflow-x memotong kartu yang terangkat saat hover.
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+          {departments.map((d, i) => (
             <Link
               key={d.id}
               href={`/kepengurusan/${d.slug}`}
-              className="lift w-40 rounded-card border border-line bg-surface p-4 hover:border-brand"
+              className="group lift relative flex min-h-24 flex-col justify-between border border-line bg-surface p-4 hover:border-brand hover:bg-surface-raised"
             >
-              <p className="text-xs uppercase tracking-wider text-ink-muted">{d.group}</p>
-              <p className="mt-1 font-display font-semibold">{d.name}</p>
+              <span className="flex items-center justify-between font-mono text-[0.65rem] uppercase tracking-wider text-ink-muted">
+                <span>{d.group}</span>
+                <span aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              </span>
+              <span className="mt-3 flex items-end justify-between gap-2">
+                <span className="font-display font-semibold leading-tight">{d.name}</span>
+                <span aria-hidden="true" className="text-link opacity-0 transition-[opacity,transform] duration-200 group-hover:translate-x-0.5 group-hover:opacity-100">
+                  →
+                </span>
+              </span>
             </Link>
           ))}
         </div>

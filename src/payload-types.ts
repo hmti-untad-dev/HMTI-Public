@@ -336,6 +336,10 @@ export interface Program {
    */
   department?: (number | null) | Department;
   summary?: string | null;
+  /**
+   * Mis. https://www.ifestuntad.my.id/ untuk I-Fest. Tampil sebagai tombol di halaman kegiatan.
+   */
+  website?: string | null;
   cover?: (number | null) | Media;
   /**
    * Pisahkan paragraf dengan satu baris kosong. Tampil di halaman program.
@@ -1059,6 +1063,7 @@ export interface ProgramsSelect<T extends boolean = true> {
   slug?: T;
   department?: T;
   summary?: T;
+  website?: T;
   cover?: T;
   about?: T;
   location?:

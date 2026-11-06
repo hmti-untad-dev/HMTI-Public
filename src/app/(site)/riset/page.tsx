@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import Link from '@/components/ui/AppLink'
 
 import { ResearchCard } from '@/components/cards/ResearchCard'
 import { Container } from '@/components/ui/Container'

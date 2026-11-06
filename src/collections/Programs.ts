@@ -25,6 +25,12 @@ export const Programs: CollectionConfig = {
       admin: { description: 'Mis. Intelektual atau RINOYA.' },
     },
     { name: 'summary', type: 'textarea', label: 'Ringkasan' },
+    {
+      name: 'website',
+      type: 'text',
+      label: 'Situs resmi kegiatan',
+      admin: { description: 'Mis. https://www.ifestuntad.my.id/ untuk I-Fest. Tampil sebagai tombol di halaman kegiatan.' },
+    },
     { name: 'cover', type: 'upload', relationTo: 'media', label: 'Gambar sampul' },
     {
       name: 'about',

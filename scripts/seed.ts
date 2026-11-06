@@ -123,14 +123,6 @@ for (const [i, d] of dewan2026.entries()) {
   const who = await person(d.name)
   await payload.create({ collection: 'memberships', data: { person: who.id, period: p2026.id, position: d.position, order: i } })
 }
-for (const [i, name] of ['Deni Luvi Jayanto, M.Kom.', 'Ir. Sri Khaerawati Nur, S.Kom., M.Kom.'].entries()) {
-  const who = await person(name)
-  await payload.create({ collection: 'memberships', data: { person: who.id, period: p2026.id, position: 'pembina', order: i } })
-}
-for (const [i, name] of ['Ahmad Afil', 'Muh Afdal Maedja', 'Hidayatul Fatwa', 'Fahruddin A. Lebe'].entries()) {
-  const who = await person(name)
-  await payload.create({ collection: 'memberships', data: { person: who.id, period: p2026.id, position: 'pengawas', order: i } })
-}
 
 // --- Dewan Eksekutif 2025: data ASLI dari poster pengurus (foto di seed-assets/, tidak ikut repo) ---
 // Poster hanya menulis "Koordinator"; pemetaan ke departemen dikonfirmasi pengurus (nama lama dipakai pada
@@ -139,7 +131,8 @@ async function mediaFrom(dir: string, file: string, alt: string) {
   const full = path.join(process.cwd(), 'seed-assets', dir, file)
   if (!fs.existsSync(full)) return undefined
   const data = fs.readFileSync(full)
-  const m = await payload.create({ collection: 'media', data: { alt }, file: { data, mimetype: 'image/webp', name: file, size: data.length } })
+  const mimetype = file.endsWith('.jpg') ? 'image/jpeg' : 'image/webp'
+  const m = await payload.create({ collection: 'media', data: { alt }, file: { data, mimetype, name: file, size: data.length } })
   return m.id
 }
 const dewan2025 = [
@@ -161,6 +154,29 @@ for (const [i, d] of dewan2025.entries()) {
   await payload.create({
     collection: 'memberships',
     data: { person: who.id, period: p2025.id, position: d.position, order: i, ...('dept' in d ? { department: depts.find((x) => x.slug === d.dept)?.id } : {}), ...(photo ? { photoOverride: photo, photoIsPoster: true } : {}) },
+  })
+}
+
+// Pembina 2026: nama dan foto dari profil dosen di jti.fatek.untad.ac.id (foto di seed-assets/pembina/).
+const pembina2026 = [
+  { name: 'Deni Luvi Jayanto, S.Kom., M.Kom.', file: 'deni-luvi-jayanto.jpg' },
+  { name: 'Ir. Sri Khaerawati Nur, S.Kom., M.Kom.', file: 'sri-khaerawati-nur.jpg' },
+]
+for (const [i, d] of pembina2026.entries()) {
+  const who = await person(d.name)
+  const photo = await mediaFrom('pembina', d.file, `Foto ${d.name}`)
+  if (photo) await payload.update({ collection: 'people', id: who.id, data: { photo } })
+  await payload.create({ collection: 'memberships', data: { person: who.id, period: p2026.id, position: 'pembina', order: i } })
+}
+// BPO 2026 diisi Dewan Eksekutif 2025; tiga di antaranya memakai poster 2025 yang sama.
+const bpo2026 = ['Ahmad Afil', 'Muh Afdal Maedja', 'Hidayatul Fatwa', 'Fahruddin A. Lebe']
+for (const [i, name] of bpo2026.entries()) {
+  const who = await person(name)
+  const prev = await payload.find({ collection: 'memberships', where: { person: { equals: who.id }, period: { equals: p2025.id } }, depth: 0, limit: 1 })
+  const poster = prev.docs[0]?.photoOverride
+  await payload.create({
+    collection: 'memberships',
+    data: { person: who.id, period: p2026.id, position: 'pengawas', order: i, ...(poster ? { photoOverride: poster as number, photoIsPoster: true } : {}) },
   })
 }
 
@@ -197,9 +213,9 @@ for (const d of depts) {
 
 // --- Program kerja & edisi ---
 // Nama program dari dokumen MUBES (struktur 2025/2026); TANGGAL dan STATUS adalah data contoh.
-type Seed = { name: string; short?: string; slug: string; dept: string; summary: string; start: string; end?: string; status: 'rencana' | 'berjalan' | 'selesai' | 'ditunda'; featured?: boolean; sessions?: ('pagi' | 'siang' | 'sore' | 'malam')[] }
+type Seed = { name: string; short?: string; website?: string; slug: string; dept: string; summary: string; start: string; end?: string; status: 'rencana' | 'berjalan' | 'selesai' | 'ditunda'; featured?: boolean; sessions?: ('pagi' | 'siang' | 'sore' | 'malam')[] }
 const programDefs: Seed[] = [
-  { name: 'Informatics Festival', short: 'I-Fest', slug: 'i-fest', dept: 'rinoya', summary: 'Festival teknologi tahunan.', start: '2026-12-01', end: '2026-12-03', status: 'rencana', featured: true, sessions: ['pagi', 'siang', 'sore', 'malam'] },
+  { name: 'Informatics Festival', short: 'I-Fest', website: 'https://www.ifestuntad.my.id/', slug: 'i-fest', dept: 'rinoya', summary: 'Festival teknologi tahunan.', start: '2026-12-01', end: '2026-12-03', status: 'rencana', featured: true, sessions: ['pagi', 'siang', 'sore', 'malam'] },
   { name: 'Pengabdian Masyarakat', short: 'PenMas', slug: 'penmas', dept: 'rinoya', summary: 'Program pengabdian HMTI UNTAD kepada masyarakat: belajar bersama anak-anak desa, bermain, dan nonton bersama.', start: '2026-06-20', end: '2026-06-22', status: 'selesai', featured: true, sessions: ['pagi', 'siang', 'sore'] },
   { name: 'Dies Natalis', short: 'Dies', slug: 'dies', dept: 'rinoya', summary: 'Perayaan hari jadi himpunan setiap 30 Mei, sejak Dies Natalis pertama pada 2015.', start: '2026-05-28', end: '2026-05-30', status: 'selesai', featured: true, sessions: ['siang', 'malam'] },
   { name: 'Interaksi Bulanan Mahasiswa', short: 'IBM', slug: 'ibm', dept: 'intelektual', summary: 'Forum bulanan pengembangan intelektual mahasiswa.', start: '2026-02-15', status: 'selesai', featured: true, sessions: ['malam'] },
@@ -219,7 +235,7 @@ for (const [i, def] of programDefs.entries()) {
   const department = depts.find((d) => d.slug === def.dept)
   const program = await payload.create({
     collection: 'programs',
-    data: { name: def.name, shortName: def.short, slug: def.slug, summary: def.summary, department: department?.id, featured: Boolean(def.featured), order: i },
+    data: { name: def.name, shortName: def.short, website: def.website, slug: def.slug, summary: def.summary, department: department?.id, featured: Boolean(def.featured), order: i },
   })
   if (def.slug === 'penmas') penmasId = program.id
   await payload.create({

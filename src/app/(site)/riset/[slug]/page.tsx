@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import Link from '@/components/ui/AppLink'
 import { notFound } from 'next/navigation'
 
 import { KIND_LABEL } from '@/components/cards/ResearchCard'

@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from '@/components/ui/AppLink'
 
 import type { CabinetMember } from '@/lib/data'
 import type { Department } from '@/payload-types'

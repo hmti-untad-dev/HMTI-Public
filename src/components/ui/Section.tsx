@@ -33,6 +33,7 @@ export function Section({ id, eyebrow, title, action, tone = 'default', children
                   <span className="mask-line">
                     <span>{title}</span>
                   </span>
+                  <span className="sec-rule" aria-hidden="true" />
                 </h2>
               )}
             </div>

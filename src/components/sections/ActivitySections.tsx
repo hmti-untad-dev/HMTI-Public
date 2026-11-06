@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from '@/components/ui/AppLink'
 
 import { type ActivityStats, buildWeeks, dayKey, summarize } from '@/lib/activity-core'
 import { getActivity, getActivityYears, getLandmarks, getProkerProgress } from '@/lib/activity'

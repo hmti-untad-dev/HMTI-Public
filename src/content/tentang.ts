@@ -151,6 +151,18 @@ export const MARS_BAIT = [
   ['Mahasiswa sebagai insan intelektual', 'Pelopor penggerak Teknologi Informasi', 'Dengan semangat jiwa dan raga mahasiswa', 'Untukmu Indonesia tercinta'],
 ]
 
+/**
+ * Waktu mulai tiap baris lirik (detik) untuk pemutar Mars (components/mars/MarsPlayer.tsx). `line` = indeks baris
+ * dalam MARS_BAIT yang diratakan (0-11). PERKIRAAN dari analisis tempo rekaman (~128 BPM, satu baris = 2 birama
+ * = 3,76 dtk): intro sampai 16,2 dtk, lirik dinyanyikan dua kali, lalu baris terakhir diulang sebagai penutup.
+ * Untuk mencocokkan dengan telinga: buka /tentang?sinkron=1#mars, putar lagu, tekan T tepat saat tiap baris
+ * dimulai, lalu salin hasilnya ke sini.
+ */
+const BAR2 = 3.76
+const pass = (start: number) => Array.from({ length: 12 }, (_, i) => ({ t: +(start + i * BAR2).toFixed(2), line: i }))
+export const MARS_CUES: { t: number; line: number }[] = [...pass(16.2), ...pass(61.3), { t: 106.4, line: 11 }]
+export const MARS_SELESAI = 118.4
+
 export const DOKUMEN_PUBLIK = [
   { title: 'Anggaran Dasar dan Anggaran Rumah Tangga 2026', href: '/dokumen/AD-ART-HMTI-UNTAD-2026.pdf', size: '624 KB' },
   { title: 'Garis-Garis Besar Haluan Organisasi 2025', href: '/dokumen/GBHO-HMTI-UNTAD-2025.pdf', size: '179 KB' },
