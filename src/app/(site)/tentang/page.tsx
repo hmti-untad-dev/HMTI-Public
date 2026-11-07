@@ -42,6 +42,7 @@ import {
 } from '@/content/tentang'
 import { JTI_LINKS } from '@/lib/nav'
 import { pad } from '@/lib/format'
+import { DocumentList } from '@/components/ui/DocumentList'
 import { getActivePeriod, getDocuments, getSiteSettings, mediaOf } from '@/lib/data'
 
 export const metadata: Metadata = {
@@ -292,29 +293,15 @@ export default async function AboutPage() {
       </Section>
 
       <Section id="dokumen" tone="alt" title="Dokumen">
-        <ul className="max-w-2xl divide-y divide-line rounded-card border border-line bg-surface-raised">
-          {DOKUMEN_PUBLIK.map((d) => (
-            <li key={d.href} className="flex items-center justify-between gap-4 p-4 text-sm">
-              <span>
-                {d.title} <span className="text-ink-muted">· PDF {d.size}</span>
-              </span>
-              <a href={d.href} download className="font-medium text-link hover:underline">
-                Unduh
-              </a>
-            </li>
-          ))}
-          {cmsDocs.map((d) => {
-            const file = mediaOf(d.file)
-            return file?.url ? (
-              <li key={d.id} className="flex items-center justify-between gap-4 p-4 text-sm">
-                <span>{d.title}</span>
-                <a href={file.url} download className="font-medium text-link hover:underline">
-                  Unduh
-                </a>
-              </li>
-            ) : null
-          })}
-        </ul>
+        <DocumentList
+          docs={[
+            ...DOKUMEN_PUBLIK.map((d) => ({ title: d.title, href: d.href, meta: `PDF ${d.size}` })),
+            ...cmsDocs.flatMap((d) => {
+              const file = mediaOf(d.file)
+              return file?.url ? [{ title: d.title, href: file.url, meta: 'PDF' }] : []
+            }),
+          ]}
+        />
       </Section>
 
       <Section id="jti" title="Jurusan dan program studi">

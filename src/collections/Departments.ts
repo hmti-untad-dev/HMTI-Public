@@ -26,6 +26,12 @@ export const Departments: CollectionConfig = {
       ],
     },
     { name: 'formerName', type: 'text', label: 'Nama sebelumnya', admin: { description: 'Bila departemen pernah berganti nama, mis. Kewirausahaan.' } },
+    {
+      name: 'formerNameUntil',
+      type: 'number',
+      label: 'Nama sebelumnya dipakai sampai tahun',
+      admin: { description: 'Periode sampai tahun ini menampilkan nama sebelumnya, mis. 2025.', condition: (data) => Boolean(data?.formerName) },
+    },
     { name: 'description', type: 'textarea', label: 'Deskripsi' },
     { name: 'icon', type: 'upload', relationTo: 'media', label: 'Ikon' },
     { name: 'order', type: 'number', label: 'Urutan', defaultValue: 0 },

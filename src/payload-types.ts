@@ -67,29 +67,30 @@ export interface Config {
   };
   blocks: {};
   collections: {
-    users: User;
-    media: Media;
+    articles: Article;
+    albums: Album;
+    'best-photos': BestPhoto;
+    achievements: Achievement;
+    testimonials: Testimonial;
+    researches: Research;
+    faqs: Faq;
+    documents: Document;
+    partners: Partner;
+    programs: Program;
+    editions: Edition;
+    'special-days': SpecialDay;
+    services: Service;
+    'service-requests': ServiceRequest;
+    letters: Letter;
+    'chat-messages': ChatMessage;
+    inventory: InventoryItem;
+    loans: Loan;
     periods: Period;
     people: Person;
     departments: Department;
     memberships: Membership;
-    programs: Program;
-    editions: Edition;
-    'special-days': SpecialDay;
-    achievements: Achievement;
-    testimonials: Testimonial;
-    articles: Article;
-    albums: Album;
-    researches: Research;
-    'best-photos': BestPhoto;
-    faqs: Faq;
-    documents: Document;
-    partners: Partner;
-    services: Service;
-    'service-requests': ServiceRequest;
-    'chat-messages': ChatMessage;
-    inventory: InventoryItem;
-    loans: Loan;
+    users: User;
+    media: Media;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -97,29 +98,30 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
-    users: UsersSelect<false> | UsersSelect<true>;
-    media: MediaSelect<false> | MediaSelect<true>;
+    articles: ArticlesSelect<false> | ArticlesSelect<true>;
+    albums: AlbumsSelect<false> | AlbumsSelect<true>;
+    'best-photos': BestPhotosSelect<false> | BestPhotosSelect<true>;
+    achievements: AchievementsSelect<false> | AchievementsSelect<true>;
+    testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
+    researches: ResearchesSelect<false> | ResearchesSelect<true>;
+    faqs: FaqsSelect<false> | FaqsSelect<true>;
+    documents: DocumentsSelect<false> | DocumentsSelect<true>;
+    partners: PartnersSelect<false> | PartnersSelect<true>;
+    programs: ProgramsSelect<false> | ProgramsSelect<true>;
+    editions: EditionsSelect<false> | EditionsSelect<true>;
+    'special-days': SpecialDaysSelect<false> | SpecialDaysSelect<true>;
+    services: ServicesSelect<false> | ServicesSelect<true>;
+    'service-requests': ServiceRequestsSelect<false> | ServiceRequestsSelect<true>;
+    letters: LettersSelect<false> | LettersSelect<true>;
+    'chat-messages': ChatMessagesSelect<false> | ChatMessagesSelect<true>;
+    inventory: InventorySelect<false> | InventorySelect<true>;
+    loans: LoansSelect<false> | LoansSelect<true>;
     periods: PeriodsSelect<false> | PeriodsSelect<true>;
     people: PeopleSelect<false> | PeopleSelect<true>;
     departments: DepartmentsSelect<false> | DepartmentsSelect<true>;
     memberships: MembershipsSelect<false> | MembershipsSelect<true>;
-    programs: ProgramsSelect<false> | ProgramsSelect<true>;
-    editions: EditionsSelect<false> | EditionsSelect<true>;
-    'special-days': SpecialDaysSelect<false> | SpecialDaysSelect<true>;
-    achievements: AchievementsSelect<false> | AchievementsSelect<true>;
-    testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
-    articles: ArticlesSelect<false> | ArticlesSelect<true>;
-    albums: AlbumsSelect<false> | AlbumsSelect<true>;
-    researches: ResearchesSelect<false> | ResearchesSelect<true>;
-    'best-photos': BestPhotosSelect<false> | BestPhotosSelect<true>;
-    faqs: FaqsSelect<false> | FaqsSelect<true>;
-    documents: DocumentsSelect<false> | DocumentsSelect<true>;
-    partners: PartnersSelect<false> | PartnersSelect<true>;
-    services: ServicesSelect<false> | ServicesSelect<true>;
-    'service-requests': ServiceRequestsSelect<false> | ServiceRequestsSelect<true>;
-    'chat-messages': ChatMessagesSelect<false> | ChatMessagesSelect<true>;
-    inventory: InventorySelect<false> | InventorySelect<true>;
-    loans: LoansSelect<false> | LoansSelect<true>;
+    users: UsersSelect<false> | UsersSelect<true>;
+    media: MediaSelect<false> | MediaSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -164,37 +166,55 @@ export interface UserAuthOperations {
   };
 }
 /**
+ * Berita, pengumuman, dan artikel. Bisa disimpan sebagai draf dulu sebelum terbit.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
+ * via the `definition` "articles".
  */
-export interface User {
+export interface Article {
   id: number;
-  name?: string | null;
-  /**
-   * superadmin: semua akses. humas: berita/galeri/kegiatan. sekretaris: kepengurusan/penyuratan. inventaris: peminjaman. bisnis: jasa.
-   */
-  roles: ('superadmin' | 'humas' | 'sekretaris' | 'inventaris' | 'bisnis')[];
-  updatedAt: string;
-  createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  resetPasswordRequestedAt?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  sessions?:
+  title: string;
+  slug: string;
+  category?: ('berita' | 'pengumuman' | 'artikel') | null;
+  excerpt?: string | null;
+  cover?: (number | null) | Media;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  author?: string | null;
+  publishedAt?: string | null;
+  featured?: boolean | null;
+  gallery?:
     | {
-        id: string;
-        createdAt?: string | null;
-        expiresAt: string;
+        image: number | Media;
+        caption?: string | null;
+        id?: string | null;
       }[]
     | null;
-  password?: string | null;
-  collection: 'users';
+  /**
+   * Bila berita disadur, mis. "Situs Jurusan Teknologi Informasi UNTAD".
+   */
+  sourceName?: string | null;
+  sourceUrl?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
+ * Semua foto dan berkas yang diunggah. Isi teks alternatif agar foto bisa "dibaca" pembaca layar.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
@@ -232,91 +252,193 @@ export interface Media {
   };
 }
 /**
+ * Album foto dokumentasi per kegiatan. Album yang punya sampul tampil lebih dulu di beranda.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "periods".
+ * via the `definition` "albums".
  */
-export interface Period {
+export interface Album {
   id: number;
-  /**
-   * Mis. "Kabinet X 2026"
-   */
-  label: string;
+  title: string;
+  slug: string;
   year: number;
-  cabinetName?: string | null;
-  theme?: string | null;
-  /**
-   * Hanya satu periode yang boleh Aktif.
-   */
-  status: 'draft' | 'active' | 'archived';
-  vision?: string | null;
-  missions?:
+  cover?: (number | null) | Media;
+  bestOfYear?: boolean | null;
+  photos?:
     | {
-        text: string;
+        image: number | Media;
+        /**
+         * Tulisan di bawah foto saat dibuka di galeri.
+         */
+        caption?: string | null;
         id?: string | null;
       }[]
     | null;
-  logo?: (number | null) | Media;
   updatedAt: string;
   createdAt: string;
 }
 /**
+ * Maksimal 7 foto per tahun.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "people".
+ * via the `definition` "best-photos".
  */
-export interface Person {
+export interface BestPhoto {
   id: number;
-  name: string;
-  photo?: (number | null) | Media;
-  angkatan?: number | null;
-  nim?: string | null;
-  phone?: string | null;
-  instagram?: string | null;
-  linkedin?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "departments".
- */
-export interface Department {
-  id: number;
-  name: string;
-  slug: string;
-  group: 'internal' | 'eksternal';
+  image: number | Media;
   /**
-   * Bila departemen pernah berganti nama, mis. Kewirausahaan.
+   * Tulisan tangan di bawah foto, singkat saja.
    */
-  formerName?: string | null;
-  description?: string | null;
-  icon?: (number | null) | Media;
+  caption: string;
+  year: number;
   order?: number | null;
   updatedAt: string;
   createdAt: string;
 }
 /**
+ * Prestasi anggota dan himpunan. Centang "Tampil di beranda" untuk yang paling menonjol.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "memberships".
+ * via the `definition` "achievements".
  */
-export interface Membership {
+export interface Achievement {
   id: number;
-  person: number | Person;
+  title: string;
+  /**
+   * Mis. "Juara 1"
+   */
+  rank?: string | null;
+  level?: ('kampus' | 'regional' | 'nasional' | 'internasional') | null;
+  team?: string | null;
+  year: number;
+  proof?: (number | null) | Media;
+  featured?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Kutipan dari alumni, mitra, atau pejabat. Bisa dihubungkan ke edisi kegiatan tempat kutipan itu diucapkan.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials".
+ */
+export interface Testimonial {
+  id: number;
+  authorName: string;
+  /**
+   * Mis. "Alumni 2020", "Mitra"
+   */
+  authorRole?: string | null;
+  quote: string;
+  photo?: (number | null) | Media;
+  /**
+   * Opsional. Tautan berita atau dokumen tempat kutipan ini dimuat.
+   */
+  sourceUrl?: string | null;
+  /**
+   * Opsional. Bila diisi, kutipan juga tampil di halaman edisi dan program kegiatan itu.
+   */
+  edition?: (number | null) | Edition;
+  kind?: ('testimoni' | 'tokoh') | null;
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Pelaksanaan sebuah program di tahun tertentu: tanggal, status, tema, angka, rangkaian acara, pemenang, dan liputan.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "editions".
+ */
+export interface Edition {
+  id: number;
+  title: string;
+  program: number | Program;
   period: number | Period;
   /**
-   * Kosongkan untuk BPH (pengurus harian).
+   * Dipakai pada bagian "Progres Program Kerja" di situs.
    */
-  department?: (number | null) | Department;
-  position: 'ketua' | 'ketua1' | 'ketua2' | 'sekum' | 'bendum' | 'koordinator' | 'anggota' | 'pembina' | 'pengawas';
-  order?: number | null;
-  photoOverride?: (number | null) | Media;
+  status: 'rencana' | 'berjalan' | 'selesai' | 'ditunda';
   /**
-   * Centang bila fotonya poster yang sudah memuat nama dan jabatan, supaya teks tidak ditumpuk dua kali di halaman Kepengurusan.
+   * Dipakai heatmap: makin banyak sesi terisi dalam sehari, makin pekat kotaknya. Kosongkan bila belum jelas (dihitung 1 sesi).
    */
-  photoIsPoster?: boolean | null;
+  sessions?: ('pagi' | 'siang' | 'sore' | 'malam')[] | null;
+  startDate?: string | null;
+  endDate?: string | null;
+  location?: string | null;
+  /**
+   * Tema besar edisi ini, tampil di bawah judul.
+   */
+  theme?: string | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  stats?:
+    | {
+        /**
+         * Mis. "2.525" atau "390,1 rb"
+         */
+        value: string;
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  timeline?:
+    | {
+        name: string;
+        /**
+         * Teks bebas, mis. "8 Sep – 10 Okt 2025"
+         */
+        date?: string | null;
+        place?: string | null;
+        detail?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Jangan cantumkan nama lengkap peserta pelajar; pakai nama tim atau sekolah.
+   */
+  winners?:
+    | {
+        competition: string;
+        /**
+         * Mis. "Juara 1"
+         */
+        rank: string;
+        entrant?: string | null;
+        work?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  coverage?:
+    | {
+        outlet: string;
+        title: string;
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  cover?: (number | null) | Media;
+  album?: (number | null) | Album;
+  registrationUrl?: string | null;
   updatedAt: string;
   createdAt: string;
 }
 /**
+ * Program kerja yang berulang tiap tahun (I-Fest, PenMas, Dies Natalis, ...). Detail per tahun diisi di Edisi Kegiatan.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "programs".
  */
@@ -387,164 +509,63 @@ export interface Program {
   createdAt: string;
 }
 /**
+ * Departemen himpunan beserta deskripsinya. Nama lama (sebelum diganti) dipakai otomatis saat menampilkan periode lama.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "editions".
+ * via the `definition` "departments".
  */
-export interface Edition {
+export interface Department {
   id: number;
-  title: string;
-  program: number | Program;
-  period: number | Period;
-  /**
-   * Dipakai pada bagian "Progres Program Kerja" di situs.
-   */
-  status: 'rencana' | 'berjalan' | 'selesai' | 'ditunda';
-  /**
-   * Dipakai heatmap: makin banyak sesi terisi dalam sehari, makin pekat kotaknya. Kosongkan bila belum jelas (dihitung 1 sesi).
-   */
-  sessions?: ('pagi' | 'siang' | 'sore' | 'malam')[] | null;
-  startDate?: string | null;
-  endDate?: string | null;
-  location?: string | null;
-  description?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  cover?: (number | null) | Media;
-  album?: (number | null) | Album;
-  registrationUrl?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "albums".
- */
-export interface Album {
-  id: number;
-  title: string;
+  name: string;
   slug: string;
-  year: number;
-  cover?: (number | null) | Media;
-  bestOfYear?: boolean | null;
-  photos?:
-    | {
-        image: number | Media;
-        /**
-         * Tulisan di bawah foto saat dibuka di galeri.
-         */
-        caption?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "special-days".
- */
-export interface SpecialDay {
-  id: number;
+  group: 'internal' | 'eksternal';
   /**
-   * Contoh: Hari H I-Fest, Dies Natalis HMTI.
+   * Bila departemen pernah berganti nama, mis. Kewirausahaan.
    */
-  title: string;
-  date: string;
+  formerName?: string | null;
   /**
-   * Centang untuk hari jadi atau peringatan tahunan: bendera muncul di tanggal yang sama setiap tahun.
+   * Periode sampai tahun ini menampilkan nama sebelumnya, mis. 2025.
    */
-  recurring?: boolean | null;
+  formerNameUntil?: number | null;
   description?: string | null;
-  /**
-   * Halaman kegiatan terkait, mis. /kegiatan/i-fest/2026.
-   */
-  link?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "achievements".
- */
-export interface Achievement {
-  id: number;
-  title: string;
-  /**
-   * Mis. "Juara 1"
-   */
-  rank?: string | null;
-  level?: ('kampus' | 'regional' | 'nasional' | 'internasional') | null;
-  team?: string | null;
-  year: number;
-  proof?: (number | null) | Media;
-  featured?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "testimonials".
- */
-export interface Testimonial {
-  id: number;
-  authorName: string;
-  /**
-   * Mis. "Alumni 2020", "Mitra"
-   */
-  authorRole?: string | null;
-  quote: string;
-  photo?: (number | null) | Media;
-  kind?: ('testimoni' | 'tokoh') | null;
+  icon?: (number | null) | Media;
   order?: number | null;
   updatedAt: string;
   createdAt: string;
 }
 /**
+ * Satu baris per tahun kepengurusan (kabinet). Periode Aktif menentukan pengurus, visi-misi, dan data yang tampil di situs.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "articles".
+ * via the `definition` "periods".
  */
-export interface Article {
+export interface Period {
   id: number;
-  title: string;
-  slug: string;
-  category?: ('berita' | 'pengumuman' | 'artikel') | null;
-  excerpt?: string | null;
-  cover?: (number | null) | Media;
-  content?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  author?: string | null;
-  publishedAt?: string | null;
-  featured?: boolean | null;
+  /**
+   * Mis. "Kabinet X 2026"
+   */
+  label: string;
+  year: number;
+  cabinetName?: string | null;
+  theme?: string | null;
+  /**
+   * Hanya satu periode yang boleh Aktif.
+   */
+  status: 'draft' | 'active' | 'archived';
+  vision?: string | null;
+  missions?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  logo?: (number | null) | Media;
   updatedAt: string;
   createdAt: string;
-  _status?: ('draft' | 'published') | null;
 }
 /**
+ * Hasil riset, temuan, dan artikel keilmuan dari Rinoya, Humas, dan Intelektual.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "researches".
  */
@@ -587,24 +608,8 @@ export interface Research {
   _status?: ('draft' | 'published') | null;
 }
 /**
- * Maksimal 7 foto per tahun.
+ * Pertanyaan yang sering diajukan. Dipakai juga oleh chat FAQ di situs.
  *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "best-photos".
- */
-export interface BestPhoto {
-  id: number;
-  image: number | Media;
-  /**
-   * Tulisan tangan di bawah foto, singkat saja.
-   */
-  caption: string;
-  year: number;
-  order?: number | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "faqs".
  */
@@ -617,6 +622,8 @@ export interface Faq {
   createdAt: string;
 }
 /**
+ * Dokumen resmi (AD/ART, GBHO, proposal) yang bisa dibaca pengunjung tanpa diunduh.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "documents".
  */
@@ -629,6 +636,8 @@ export interface Document {
   createdAt: string;
 }
 /**
+ * Mitra, sponsor, dan media partner. Pilih edisi yang didukung agar logonya tampil di halaman edisi itu.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "partners".
  */
@@ -637,11 +646,43 @@ export interface Partner {
   name: string;
   logo?: (number | null) | Media;
   url?: string | null;
+  role?: ('kolaborator' | 'sponsor-utama' | 'sponsor' | 'media') | null;
+  /**
+   * Edisi yang didukung mitra ini; tampil di halaman edisi tersebut.
+   */
+  editions?: (number | Edition)[] | null;
   order?: number | null;
   updatedAt: string;
   createdAt: string;
 }
 /**
+ * Tanggal penting yang diberi bendera kuning di grafik aktivitas beranda, mis. Dies Natalis atau hari H I-Fest.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "special-days".
+ */
+export interface SpecialDay {
+  id: number;
+  /**
+   * Contoh: Hari H I-Fest, Dies Natalis HMTI.
+   */
+  title: string;
+  date: string;
+  /**
+   * Centang untuk hari jadi atau peringatan tahunan: bendera muncul di tanggal yang sama setiap tahun.
+   */
+  recurring?: boolean | null;
+  description?: string | null;
+  /**
+   * Halaman kegiatan terkait, mis. /kegiatan/i-fest/2026.
+   */
+  link?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Daftar layanan himpunan. Layanan grup Organisasi memakai formulir unggah surat; grup Bisnis memakai formulir kontak.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "services".
  */
@@ -684,6 +725,8 @@ export interface Service {
   createdAt: string;
 }
 /**
+ * Permintaan yang masuk dari formulir layanan di situs, lengkap dengan surat, kode pelacakan, dan riwayat status.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "service-requests".
  */
@@ -695,6 +738,23 @@ export interface ServiceRequest {
   applicantEmail: string;
   applicantPhone?: string | null;
   organization?: string | null;
+  subject?: string | null;
+  letterNumber?: string | null;
+  neededDate?: string | null;
+  note?: string | null;
+  letter?: (number | null) | Letter;
+  loanFrom?: string | null;
+  loanTo?: string | null;
+  /**
+   * Saat status diubah ke "Disetujui", catatan Peminjaman dibuat otomatis untuk tiap barang.
+   */
+  items?:
+    | {
+        item: number | InventoryItem;
+        quantity: number;
+        id?: string | null;
+      }[]
+    | null;
   data?:
     | {
         [k: string]: unknown;
@@ -719,6 +779,126 @@ export interface ServiceRequest {
   createdAt: string;
 }
 /**
+ * Berkas surat (PDF, Word, atau foto) yang diunggah pemohon. Hanya bisa dibuka pengurus yang login.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "letters".
+ */
+export interface Letter {
+  id: number;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * Seluruh barang himpunan. Barang Publik tampil di Daftar Inventaris; barang Internal hanya terlihat pengurus.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "inventory".
+ */
+export interface InventoryItem {
+  id: number;
+  name: string;
+  category?:
+    | (
+        | 'Arsip & Dokumentasi'
+        | 'Atribut'
+        | 'Furniture'
+        | 'Barang Inventaris'
+        | 'ATK'
+        | 'Alat Elektronik'
+        | 'Alat Rumah Tangga'
+        | 'Tanah dan Bangunan'
+      )
+    | null;
+  stock: number;
+  /**
+   * Buah, Lembar, Meter, Set, Box, ...
+   */
+  unit?: string | null;
+  /**
+   * Opsional, mis. "1/5 Karung". Menggantikan angka + satuan di tampilan.
+   */
+  quantityText?: string | null;
+  location?: ('sekretariat-dalam' | 'sekretariat-luar' | 'dalam-luar' | 'lainnya') | null;
+  /**
+   * Hanya terlihat oleh pengurus.
+   */
+  storage?: string | null;
+  icon?:
+    | (
+        | 'archive'
+        | 'file-text'
+        | 'folder'
+        | 'notebook'
+        | 'pencil'
+        | 'scissors'
+        | 'clipboard'
+        | 'shirt'
+        | 'sticker'
+        | 'flag'
+        | 'image'
+        | 'trophy'
+        | 'clock'
+        | 'briefcase'
+        | 'package'
+        | 'box'
+        | 'sofa'
+        | 'teach'
+        | 'presentation'
+        | 'camera'
+        | 'video'
+        | 'printer'
+        | 'projector'
+        | 'monitor'
+        | 'computer'
+        | 'keyboard'
+        | 'mouse'
+        | 'mic'
+        | 'radio'
+        | 'volume-3'
+        | 'spotlight'
+        | 'lightbulb'
+        | 'plug'
+        | 'zap'
+        | 'usb'
+        | 'wifi'
+        | 'database'
+        | 'memory-stick'
+        | 'battery'
+        | 'circuit-board'
+        | 'tools'
+        | 'tool-case'
+        | 'coffee'
+        | 'mug'
+        | 'trash'
+        | 'tent'
+        | 'chess'
+        | 'balloon'
+        | 'lock'
+        | 'cloud'
+        | 'map-pin-home'
+      )
+    | null;
+  visibility: 'publik' | 'internal';
+  loanable?: boolean | null;
+  procurement2025?: boolean | null;
+  description?: string | null;
+  photo?: (number | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Pesan dari form Kontak, chat FAQ, dan layanan grup Bisnis. Ubah status ke "Sudah dibalas" setelah ditanggapi.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "chat-messages".
  */
@@ -735,19 +915,8 @@ export interface ChatMessage {
   createdAt: string;
 }
 /**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "inventory".
- */
-export interface InventoryItem {
-  id: number;
-  name: string;
-  stock: number;
-  description?: string | null;
-  photo?: (number | null) | Media;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
+ * Catatan barang yang sedang atau akan dipinjam. Dibuat otomatis saat Permintaan Layanan peminjaman disetujui.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "loans".
  */
@@ -761,6 +930,81 @@ export interface Loan {
   status?: ('dijadwalkan' | 'dipinjam' | 'dikembalikan' | 'dibatalkan') | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * Data orang (pengurus, pembina, pengawas): nama, foto, angkatan, akun sosial. Jabatan per tahun diatur di Keanggotaan, bukan di sini.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "people".
+ */
+export interface Person {
+  id: number;
+  name: string;
+  photo?: (number | null) | Media;
+  angkatan?: number | null;
+  nim?: string | null;
+  phone?: string | null;
+  instagram?: string | null;
+  linkedin?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Siapa menjabat apa di periode mana. Satu baris = satu orang di satu periode dengan satu jabatan.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "memberships".
+ */
+export interface Membership {
+  id: number;
+  person: number | Person;
+  period: number | Period;
+  /**
+   * Kosongkan untuk BPH (pengurus harian).
+   */
+  department?: (number | null) | Department;
+  position: 'ketua' | 'ketua1' | 'ketua2' | 'sekum' | 'bendum' | 'koordinator' | 'anggota' | 'pembina' | 'pengawas';
+  order?: number | null;
+  photoOverride?: (number | null) | Media;
+  /**
+   * Centang bila fotonya poster yang sudah memuat nama dan jabatan, supaya teks tidak ditumpuk dua kali di halaman Kepengurusan.
+   */
+  photoIsPoster?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Akun pengurus yang bisa masuk ke admin ini. Role menentukan koleksi mana yang boleh diubah.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users".
+ */
+export interface User {
+  id: number;
+  name?: string | null;
+  /**
+   * superadmin: semua akses. humas: berita/galeri/kegiatan. sekretaris: kepengurusan/penyuratan. inventaris: peminjaman. bisnis: jasa.
+   */
+  roles: ('superadmin' | 'humas' | 'sekretaris' | 'inventaris' | 'bisnis')[];
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  resetPasswordRequestedAt?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
+  collection: 'users';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -787,12 +1031,76 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
-        relationTo: 'users';
-        value: number | User;
+        relationTo: 'articles';
+        value: number | Article;
       } | null)
     | ({
-        relationTo: 'media';
-        value: number | Media;
+        relationTo: 'albums';
+        value: number | Album;
+      } | null)
+    | ({
+        relationTo: 'best-photos';
+        value: number | BestPhoto;
+      } | null)
+    | ({
+        relationTo: 'achievements';
+        value: number | Achievement;
+      } | null)
+    | ({
+        relationTo: 'testimonials';
+        value: number | Testimonial;
+      } | null)
+    | ({
+        relationTo: 'researches';
+        value: number | Research;
+      } | null)
+    | ({
+        relationTo: 'faqs';
+        value: number | Faq;
+      } | null)
+    | ({
+        relationTo: 'documents';
+        value: number | Document;
+      } | null)
+    | ({
+        relationTo: 'partners';
+        value: number | Partner;
+      } | null)
+    | ({
+        relationTo: 'programs';
+        value: number | Program;
+      } | null)
+    | ({
+        relationTo: 'editions';
+        value: number | Edition;
+      } | null)
+    | ({
+        relationTo: 'special-days';
+        value: number | SpecialDay;
+      } | null)
+    | ({
+        relationTo: 'services';
+        value: number | Service;
+      } | null)
+    | ({
+        relationTo: 'service-requests';
+        value: number | ServiceRequest;
+      } | null)
+    | ({
+        relationTo: 'letters';
+        value: number | Letter;
+      } | null)
+    | ({
+        relationTo: 'chat-messages';
+        value: number | ChatMessage;
+      } | null)
+    | ({
+        relationTo: 'inventory';
+        value: number | InventoryItem;
+      } | null)
+    | ({
+        relationTo: 'loans';
+        value: number | Loan;
       } | null)
     | ({
         relationTo: 'periods';
@@ -811,72 +1119,12 @@ export interface PayloadLockedDocument {
         value: number | Membership;
       } | null)
     | ({
-        relationTo: 'programs';
-        value: number | Program;
+        relationTo: 'users';
+        value: number | User;
       } | null)
     | ({
-        relationTo: 'editions';
-        value: number | Edition;
-      } | null)
-    | ({
-        relationTo: 'special-days';
-        value: number | SpecialDay;
-      } | null)
-    | ({
-        relationTo: 'achievements';
-        value: number | Achievement;
-      } | null)
-    | ({
-        relationTo: 'testimonials';
-        value: number | Testimonial;
-      } | null)
-    | ({
-        relationTo: 'articles';
-        value: number | Article;
-      } | null)
-    | ({
-        relationTo: 'albums';
-        value: number | Album;
-      } | null)
-    | ({
-        relationTo: 'researches';
-        value: number | Research;
-      } | null)
-    | ({
-        relationTo: 'best-photos';
-        value: number | BestPhoto;
-      } | null)
-    | ({
-        relationTo: 'faqs';
-        value: number | Faq;
-      } | null)
-    | ({
-        relationTo: 'documents';
-        value: number | Document;
-      } | null)
-    | ({
-        relationTo: 'partners';
-        value: number | Partner;
-      } | null)
-    | ({
-        relationTo: 'services';
-        value: number | Service;
-      } | null)
-    | ({
-        relationTo: 'service-requests';
-        value: number | ServiceRequest;
-      } | null)
-    | ({
-        relationTo: 'chat-messages';
-        value: number | ChatMessage;
-      } | null)
-    | ({
-        relationTo: 'inventory';
-        value: number | InventoryItem;
-      } | null)
-    | ({
-        relationTo: 'loans';
-        value: number | Loan;
+        relationTo: 'media';
+        value: number | Media;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -919,6 +1167,462 @@ export interface PayloadMigration {
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articles_select".
+ */
+export interface ArticlesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  category?: T;
+  excerpt?: T;
+  cover?: T;
+  content?: T;
+  author?: T;
+  publishedAt?: T;
+  featured?: T;
+  gallery?:
+    | T
+    | {
+        image?: T;
+        caption?: T;
+        id?: T;
+      };
+  sourceName?: T;
+  sourceUrl?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "albums_select".
+ */
+export interface AlbumsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  year?: T;
+  cover?: T;
+  bestOfYear?: T;
+  photos?:
+    | T
+    | {
+        image?: T;
+        caption?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "best-photos_select".
+ */
+export interface BestPhotosSelect<T extends boolean = true> {
+  image?: T;
+  caption?: T;
+  year?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "achievements_select".
+ */
+export interface AchievementsSelect<T extends boolean = true> {
+  title?: T;
+  rank?: T;
+  level?: T;
+  team?: T;
+  year?: T;
+  proof?: T;
+  featured?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials_select".
+ */
+export interface TestimonialsSelect<T extends boolean = true> {
+  authorName?: T;
+  authorRole?: T;
+  quote?: T;
+  photo?: T;
+  sourceUrl?: T;
+  edition?: T;
+  kind?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "researches_select".
+ */
+export interface ResearchesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  kind?: T;
+  department?: T;
+  authors?: T;
+  summary?: T;
+  cover?: T;
+  content?: T;
+  file?: T;
+  externalUrl?: T;
+  tags?: T;
+  publishedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faqs_select".
+ */
+export interface FaqsSelect<T extends boolean = true> {
+  question?: T;
+  answer?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "documents_select".
+ */
+export interface DocumentsSelect<T extends boolean = true> {
+  title?: T;
+  type?: T;
+  file?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "partners_select".
+ */
+export interface PartnersSelect<T extends boolean = true> {
+  name?: T;
+  logo?: T;
+  url?: T;
+  role?: T;
+  editions?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "programs_select".
+ */
+export interface ProgramsSelect<T extends boolean = true> {
+  name?: T;
+  shortName?: T;
+  slug?: T;
+  department?: T;
+  summary?: T;
+  website?: T;
+  cover?: T;
+  about?: T;
+  location?:
+    | T
+    | {
+        name?: T;
+        area?: T;
+        website?: T;
+        mapUrl?: T;
+        lat?: T;
+        lng?: T;
+      };
+  gallery?:
+    | T
+    | {
+        image?: T;
+        caption?: T;
+        id?: T;
+      };
+  productsTitle?: T;
+  products?:
+    | T
+    | {
+        name?: T;
+        image?: T;
+        note?: T;
+        id?: T;
+      };
+  featured?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "editions_select".
+ */
+export interface EditionsSelect<T extends boolean = true> {
+  title?: T;
+  program?: T;
+  period?: T;
+  status?: T;
+  sessions?: T;
+  startDate?: T;
+  endDate?: T;
+  location?: T;
+  theme?: T;
+  description?: T;
+  stats?:
+    | T
+    | {
+        value?: T;
+        label?: T;
+        id?: T;
+      };
+  timeline?:
+    | T
+    | {
+        name?: T;
+        date?: T;
+        place?: T;
+        detail?: T;
+        id?: T;
+      };
+  winners?:
+    | T
+    | {
+        competition?: T;
+        rank?: T;
+        entrant?: T;
+        work?: T;
+        id?: T;
+      };
+  coverage?:
+    | T
+    | {
+        outlet?: T;
+        title?: T;
+        url?: T;
+        id?: T;
+      };
+  cover?: T;
+  album?: T;
+  registrationUrl?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "special-days_select".
+ */
+export interface SpecialDaysSelect<T extends boolean = true> {
+  title?: T;
+  date?: T;
+  recurring?: T;
+  description?: T;
+  link?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services_select".
+ */
+export interface ServicesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  group?: T;
+  summary?: T;
+  description?: T;
+  active?: T;
+  order?: T;
+  formFields?:
+    | T
+    | {
+        name?: T;
+        label?: T;
+        type?: T;
+        required?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "service-requests_select".
+ */
+export interface ServiceRequestsSelect<T extends boolean = true> {
+  trackingCode?: T;
+  service?: T;
+  applicantName?: T;
+  applicantEmail?: T;
+  applicantPhone?: T;
+  organization?: T;
+  subject?: T;
+  letterNumber?: T;
+  neededDate?: T;
+  note?: T;
+  letter?: T;
+  loanFrom?: T;
+  loanTo?: T;
+  items?:
+    | T
+    | {
+        item?: T;
+        quantity?: T;
+        id?: T;
+      };
+  data?: T;
+  status?: T;
+  staffNote?: T;
+  resultFile?: T;
+  history?:
+    | T
+    | {
+        status?: T;
+        at?: T;
+        note?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "letters_select".
+ */
+export interface LettersSelect<T extends boolean = true> {
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "chat-messages_select".
+ */
+export interface ChatMessagesSelect<T extends boolean = true> {
+  name?: T;
+  email?: T;
+  phone?: T;
+  topic?: T;
+  message?: T;
+  source?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "inventory_select".
+ */
+export interface InventorySelect<T extends boolean = true> {
+  name?: T;
+  category?: T;
+  stock?: T;
+  unit?: T;
+  quantityText?: T;
+  location?: T;
+  storage?: T;
+  icon?: T;
+  visibility?: T;
+  loanable?: T;
+  procurement2025?: T;
+  description?: T;
+  photo?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "loans_select".
+ */
+export interface LoansSelect<T extends boolean = true> {
+  item?: T;
+  request?: T;
+  quantity?: T;
+  from?: T;
+  to?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "periods_select".
+ */
+export interface PeriodsSelect<T extends boolean = true> {
+  label?: T;
+  year?: T;
+  cabinetName?: T;
+  theme?: T;
+  status?: T;
+  vision?: T;
+  missions?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  logo?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "people_select".
+ */
+export interface PeopleSelect<T extends boolean = true> {
+  name?: T;
+  photo?: T;
+  angkatan?: T;
+  nim?: T;
+  phone?: T;
+  instagram?: T;
+  linkedin?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "departments_select".
+ */
+export interface DepartmentsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  group?: T;
+  formerName?: T;
+  formerNameUntil?: T;
+  description?: T;
+  icon?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "memberships_select".
+ */
+export interface MembershipsSelect<T extends boolean = true> {
+  person?: T;
+  period?: T;
+  department?: T;
+  position?: T;
+  order?: T;
+  photoOverride?: T;
+  photoIsPoster?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -989,374 +1693,6 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "periods_select".
- */
-export interface PeriodsSelect<T extends boolean = true> {
-  label?: T;
-  year?: T;
-  cabinetName?: T;
-  theme?: T;
-  status?: T;
-  vision?: T;
-  missions?:
-    | T
-    | {
-        text?: T;
-        id?: T;
-      };
-  logo?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "people_select".
- */
-export interface PeopleSelect<T extends boolean = true> {
-  name?: T;
-  photo?: T;
-  angkatan?: T;
-  nim?: T;
-  phone?: T;
-  instagram?: T;
-  linkedin?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "departments_select".
- */
-export interface DepartmentsSelect<T extends boolean = true> {
-  name?: T;
-  slug?: T;
-  group?: T;
-  formerName?: T;
-  description?: T;
-  icon?: T;
-  order?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "memberships_select".
- */
-export interface MembershipsSelect<T extends boolean = true> {
-  person?: T;
-  period?: T;
-  department?: T;
-  position?: T;
-  order?: T;
-  photoOverride?: T;
-  photoIsPoster?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "programs_select".
- */
-export interface ProgramsSelect<T extends boolean = true> {
-  name?: T;
-  shortName?: T;
-  slug?: T;
-  department?: T;
-  summary?: T;
-  website?: T;
-  cover?: T;
-  about?: T;
-  location?:
-    | T
-    | {
-        name?: T;
-        area?: T;
-        website?: T;
-        mapUrl?: T;
-        lat?: T;
-        lng?: T;
-      };
-  gallery?:
-    | T
-    | {
-        image?: T;
-        caption?: T;
-        id?: T;
-      };
-  productsTitle?: T;
-  products?:
-    | T
-    | {
-        name?: T;
-        image?: T;
-        note?: T;
-        id?: T;
-      };
-  featured?: T;
-  order?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "editions_select".
- */
-export interface EditionsSelect<T extends boolean = true> {
-  title?: T;
-  program?: T;
-  period?: T;
-  status?: T;
-  sessions?: T;
-  startDate?: T;
-  endDate?: T;
-  location?: T;
-  description?: T;
-  cover?: T;
-  album?: T;
-  registrationUrl?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "special-days_select".
- */
-export interface SpecialDaysSelect<T extends boolean = true> {
-  title?: T;
-  date?: T;
-  recurring?: T;
-  description?: T;
-  link?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "achievements_select".
- */
-export interface AchievementsSelect<T extends boolean = true> {
-  title?: T;
-  rank?: T;
-  level?: T;
-  team?: T;
-  year?: T;
-  proof?: T;
-  featured?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "testimonials_select".
- */
-export interface TestimonialsSelect<T extends boolean = true> {
-  authorName?: T;
-  authorRole?: T;
-  quote?: T;
-  photo?: T;
-  kind?: T;
-  order?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "articles_select".
- */
-export interface ArticlesSelect<T extends boolean = true> {
-  title?: T;
-  slug?: T;
-  category?: T;
-  excerpt?: T;
-  cover?: T;
-  content?: T;
-  author?: T;
-  publishedAt?: T;
-  featured?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "albums_select".
- */
-export interface AlbumsSelect<T extends boolean = true> {
-  title?: T;
-  slug?: T;
-  year?: T;
-  cover?: T;
-  bestOfYear?: T;
-  photos?:
-    | T
-    | {
-        image?: T;
-        caption?: T;
-        id?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "researches_select".
- */
-export interface ResearchesSelect<T extends boolean = true> {
-  title?: T;
-  slug?: T;
-  kind?: T;
-  department?: T;
-  authors?: T;
-  summary?: T;
-  cover?: T;
-  content?: T;
-  file?: T;
-  externalUrl?: T;
-  tags?: T;
-  publishedAt?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "best-photos_select".
- */
-export interface BestPhotosSelect<T extends boolean = true> {
-  image?: T;
-  caption?: T;
-  year?: T;
-  order?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "faqs_select".
- */
-export interface FaqsSelect<T extends boolean = true> {
-  question?: T;
-  answer?: T;
-  order?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "documents_select".
- */
-export interface DocumentsSelect<T extends boolean = true> {
-  title?: T;
-  type?: T;
-  file?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "partners_select".
- */
-export interface PartnersSelect<T extends boolean = true> {
-  name?: T;
-  logo?: T;
-  url?: T;
-  order?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "services_select".
- */
-export interface ServicesSelect<T extends boolean = true> {
-  name?: T;
-  slug?: T;
-  group?: T;
-  summary?: T;
-  description?: T;
-  active?: T;
-  order?: T;
-  formFields?:
-    | T
-    | {
-        name?: T;
-        label?: T;
-        type?: T;
-        required?: T;
-        id?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "service-requests_select".
- */
-export interface ServiceRequestsSelect<T extends boolean = true> {
-  trackingCode?: T;
-  service?: T;
-  applicantName?: T;
-  applicantEmail?: T;
-  applicantPhone?: T;
-  organization?: T;
-  data?: T;
-  status?: T;
-  staffNote?: T;
-  resultFile?: T;
-  history?:
-    | T
-    | {
-        status?: T;
-        at?: T;
-        note?: T;
-        id?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "chat-messages_select".
- */
-export interface ChatMessagesSelect<T extends boolean = true> {
-  name?: T;
-  email?: T;
-  phone?: T;
-  topic?: T;
-  message?: T;
-  source?: T;
-  status?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "inventory_select".
- */
-export interface InventorySelect<T extends boolean = true> {
-  name?: T;
-  stock?: T;
-  description?: T;
-  photo?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "loans_select".
- */
-export interface LoansSelect<T extends boolean = true> {
-  item?: T;
-  request?: T;
-  quantity?: T;
-  from?: T;
-  to?: T;
-  status?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -1396,6 +1732,8 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
+ * Pengaturan yang berlaku untuk seluruh situs: identitas, hero beranda, kontak, media sosial, dan kursor.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-settings".
  */
@@ -1409,6 +1747,10 @@ export interface SiteSetting {
    */
   motto?: string | null;
   logo?: (number | null) | Media;
+  /**
+   * Kursor tetikus untuk semua pengunjung. Arahkan tetikus ke kotak pilihan untuk mencobanya. Di layar sentuh tidak ada kursor, jadi tidak berpengaruh.
+   */
+  cursor?: ('bawaan' | 'piksel' | 'teemo' | 'allblue') | null;
   hero?: {
     headline?: string | null;
     subheadline?: string | null;
@@ -1461,6 +1803,7 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   tagline?: T;
   motto?: T;
   logo?: T;
+  cursor?: T;
   hero?:
     | T
     | {

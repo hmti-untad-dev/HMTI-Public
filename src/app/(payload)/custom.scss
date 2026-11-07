@@ -1,1 +1,865 @@
-// Kustomisasi tampilan admin Payload diletakkan di sini.
+// Tema admin Payload yang senada dengan situs: palet dari src/styles/tokens.css (abu bernuansa biru, biru HMTI
+// #3e4094 / #5253ad / #b4d6fe, hitam #121212), sudut tegas tanpa lengkung, label mono huruf kapital, dan aksen
+// kotak piksel. Payload menurunkan semua warnanya dari skala --color-base-* dan --color-success-*, jadi cukup
+// skala itu yang diganti (di luar @layer, jadi menang atas @layer payload-default); komponen kecil (tombol utama,
+// tautan aktif, kartu) ditimpa di bawah.
+
+:root {
+  // Skala netral: 0 = latar terang situs, 900 = latar gelap situs.
+  --color-base-0: #f7f8fc;
+  --color-base-50: #eef0f7;
+  --color-base-100: #e5e7f1;
+  --color-base-150: #d5d8e8;
+  --color-base-200: #c4c7d6;
+  --color-base-250: #b0b4c6;
+  --color-base-300: #9da1b5;
+  --color-base-350: #8a8ea3;
+  --color-base-400: #777b90;
+  --color-base-450: #686c80;
+  --color-base-500: #5d6175;
+  --color-base-550: #565a6b;
+  --color-base-600: #4a4d5c;
+  --color-base-650: #3e404c;
+  --color-base-700: #33343e;
+  --color-base-750: #2e2e33;
+  --color-base-800: #232327;
+  --color-base-850: #1c1c1e;
+  --color-base-900: #121212;
+  --color-base-950: #0b0b0c;
+  --color-base-1000: #000;
+
+  // "Success" Payload (dipakai untuk status tersimpan, toast, sorotan) = biru HMTI.
+  --color-success-50: #f0f4fe;
+  --color-success-100: #e2ebfd;
+  --color-success-150: #cfe3fb;
+  --color-success-200: #b4d6fe;
+  --color-success-250: #9cc4f5;
+  --color-success-300: #8aa9ea;
+  --color-success-350: #7a90dc;
+  --color-success-400: #6b7acc;
+  --color-success-450: #5e66bd;
+  --color-success-500: #5253ad;
+  --color-success-550: #4849a0;
+  --color-success-600: #3e4094;
+  --color-success-650: #363880;
+  --color-success-700: #2f306d;
+  --color-success-750: #2a2b57;
+  --color-success-800: #24254a;
+  --color-success-850: #1e1f3d;
+  --color-success-900: #191a30;
+  --color-success-950: #131424;
+
+  --hm-brand: #3e4094;
+  --hm-brand-hover: #5253ad;
+  --hm-brand-soft: #b4d6fe;
+  --hm-on-brand: #f7f8fc;
+  --hm-link: #3e4094;
+  --hm-landmark: #f2b01e;
+
+  --style-radius-s: 0px;
+  --style-radius-m: 0px;
+  --style-radius-l: 0px;
+
+  --font-body: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+html[data-theme='dark'] {
+  --hm-brand: #5253ad;
+  --hm-brand-hover: #6a6bc4;
+  --hm-brand-soft: #2a2b57;
+  --hm-link: #b4d6fe;
+}
+
+// ---------- Elemen dasar ----------
+.payload__app,
+#app {
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  text-underline-offset: 3px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--hm-link) !important;
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--hm-brand-soft);
+  color: var(--theme-elevation-1000);
+}
+
+// Label mono huruf kapital seperti eyebrow di situs.
+.hm-eyebrow,
+.nav-group__toggle,
+.collections__label,
+.doc-controls__label,
+.table thead th {
+  font-family: var(--font-mono);
+}
+
+.field-label {
+  font-weight: 600;
+}
+
+.nav-group__toggle,
+.collections__label,
+.doc-controls__label,
+.table thead th {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 11px;
+}
+
+// ---------- Navigasi samping ----------
+.nav {
+  background: var(--theme-elevation-50);
+  border-right: 1px solid var(--theme-elevation-150);
+}
+
+.nav__link {
+  padding-block: 5px;
+  border-left: 2px solid transparent;
+  padding-left: 10px !important;
+  margin-left: -12px;
+  transition: border-color 0.15s, color 0.15s;
+
+  &:hover {
+    text-decoration: none;
+    border-left-color: var(--theme-elevation-300);
+  }
+}
+
+// Tautan halaman yang sedang dibuka: penanda biru, sama dengan item aktif di navbar situs.
+.nav__link:has(.nav__link-indicator),
+.nav__link.active {
+  border-left-color: var(--hm-brand);
+  color: var(--hm-link);
+}
+
+.nav__link-indicator {
+  display: none;
+}
+
+// ---------- Tombol ----------
+.btn {
+  font-weight: 600;
+  transition:
+    background-color 0.15s,
+    transform 0.1s,
+    border-color 0.15s;
+
+  &:active:not(.btn--disabled) {
+    transform: translateY(1px);
+  }
+}
+
+.btn--style-primary {
+  --bg-color: var(--hm-brand);
+  --color: var(--hm-on-brand);
+  --hover-bg: var(--hm-brand-hover);
+  --hover-color: var(--hm-on-brand);
+}
+
+.btn--style-secondary {
+  --hover-color: var(--hm-link);
+}
+
+// ---------- Kartu dashboard ----------
+.card {
+  border: 1px solid var(--theme-elevation-150);
+  box-shadow: none;
+  position: relative;
+  transition:
+    border-color 0.15s,
+    background-color 0.15s;
+
+  // Kotak piksel di sudut, motif yang sama dengan bingkai foto di situs.
+  &::after {
+    content: '';
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    width: 6px;
+    height: 6px;
+    background: var(--theme-elevation-150);
+    transition: background-color 0.15s;
+  }
+
+  &:hover {
+    border-color: var(--hm-brand);
+    background: var(--theme-elevation-0);
+
+    &::after {
+      background: var(--hm-brand);
+    }
+  }
+}
+
+.card__title {
+  font-weight: 600;
+}
+
+.collections__group + .collections__group {
+  margin-top: calc(var(--base) * 1.5);
+}
+
+.collections__label {
+  color: var(--theme-elevation-500);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  &::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--hm-brand);
+  }
+}
+
+// ---------- Tabel daftar ----------
+.table {
+  thead th {
+    color: var(--theme-elevation-500);
+    font-weight: 500;
+  }
+
+  tbody tr:hover td {
+    background: var(--theme-elevation-50);
+  }
+
+  a {
+    color: var(--hm-link);
+    font-weight: 600;
+  }
+}
+
+.list-header__title,
+.doc-header__title,
+.collection-list__header h1 {
+  letter-spacing: -0.02em;
+}
+
+// Deskripsi koleksi di bawah judul daftar: ringkasan fungsi dari content/admin-help.ts.
+.view-description,
+.list-header .view-description {
+  max-width: 72ch;
+  color: var(--theme-elevation-550);
+}
+
+// ---------- Field ----------
+.field-type input,
+.field-type textarea,
+.react-select .rs__control {
+  border-radius: 0;
+}
+
+.field-type input:focus,
+.field-type textarea:focus {
+  border-color: var(--hm-brand);
+}
+
+.checkbox-input--checked .checkbox-input__icon {
+  background: var(--hm-brand);
+  border-color: var(--hm-brand);
+}
+
+.pill {
+  border-radius: 0;
+}
+
+// ---------- Halaman masuk ----------
+.login__brand {
+  margin-bottom: calc(var(--base) * 1.5);
+}
+
+.template-minimal {
+  background:
+    linear-gradient(var(--theme-bg), var(--theme-bg)) padding-box,
+    var(--theme-bg);
+}
+
+// ---------- Komponen HMTI (components/admin) ----------
+.hm-eyebrow {
+  margin: 0;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--theme-elevation-500);
+}
+
+.hm-kbd {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--theme-elevation-250);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  vertical-align: 1px;
+}
+
+.hm-logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  img {
+    border-radius: 999px;
+  }
+}
+
+.hm-logo__name {
+  margin: 0 0 2px;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.hm-icon {
+  display: block;
+  border-radius: 999px;
+}
+
+.hm-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border: 1px solid var(--hm-brand);
+  background: var(--hm-brand);
+  color: var(--hm-on-brand);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 0.15s,
+    transform 0.1s;
+
+  &:hover {
+    background: var(--hm-brand-hover);
+    text-decoration: none;
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+.hm-btn--ghost {
+  background: transparent;
+  color: var(--hm-link);
+  border-color: var(--theme-elevation-250);
+
+  &:hover {
+    background: var(--theme-elevation-50);
+    border-color: var(--hm-brand);
+  }
+}
+
+// Sambutan dashboard
+.hm-welcome {
+  margin-bottom: calc(var(--base) * 2);
+}
+
+.hm-welcome__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--theme-elevation-150);
+}
+
+.hm-welcome__title {
+  margin: 8px 0 6px;
+  font-size: clamp(28px, 4vw, 40px);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.hm-welcome__lead {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--theme-elevation-600);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.hm-welcome__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 16px;
+  margin-top: 20px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.hm-panel {
+  border: 1px solid var(--theme-elevation-150);
+  background: var(--theme-elevation-50);
+  padding: 18px 20px;
+}
+
+.hm-empty {
+  margin: 12px 0 0;
+  color: var(--theme-elevation-550);
+}
+
+.hm-todos,
+.hm-shortcuts {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+}
+
+.hm-todos li + li {
+  border-top: 1px solid var(--theme-elevation-150);
+}
+
+.hm-todos a {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 10px 0;
+  color: inherit;
+  text-decoration: none;
+
+  &:hover .hm-todo__label {
+    color: var(--hm-link);
+  }
+}
+
+.hm-todo__n {
+  min-width: 44px;
+  font-family: var(--font-mono);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--hm-link);
+  font-variant-numeric: tabular-nums;
+}
+
+.hm-todo__label {
+  display: block;
+  font-weight: 600;
+}
+
+.hm-todo__hint {
+  display: block;
+  font-size: 13px;
+  color: var(--theme-elevation-550);
+}
+
+.hm-shortcuts a {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--theme-elevation-150);
+  color: inherit;
+  text-decoration: none;
+
+  &::after {
+    content: '→';
+    color: var(--theme-elevation-400);
+    transition: transform 0.15s;
+  }
+
+  &:hover {
+    color: var(--hm-link);
+
+    &::after {
+      color: var(--hm-link);
+      transform: translateX(3px);
+    }
+  }
+}
+
+// Tombol "?" dan dialog panduan
+.hm-help-q {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex: none;
+  border: 1px solid var(--hm-brand);
+  background: transparent;
+  color: var(--hm-link);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
+
+  &:hover {
+    background: var(--hm-brand);
+    color: var(--hm-on-brand);
+  }
+}
+
+.hm-help-dialog {
+  width: min(560px, calc(100vw - 32px));
+  max-height: calc(100dvh - 48px);
+  padding: 0;
+  border: 1px solid var(--theme-elevation-200);
+  background: var(--theme-elevation-0);
+  color: var(--theme-text);
+  box-shadow: 8px 8px 0 color-mix(in srgb, var(--hm-brand) 30%, transparent);
+
+  &::backdrop {
+    background: rgb(18 18 18 / 0.45);
+    backdrop-filter: blur(3px);
+  }
+
+  &[open] {
+    animation: hm-pop 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  section {
+    margin-top: 20px;
+  }
+}
+
+@keyframes hm-pop {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hm-help-dialog[open] {
+    animation: none;
+  }
+}
+
+.hm-help-body {
+  padding: 24px 26px 22px;
+}
+
+.hm-help-title {
+  margin: 8px 0 0;
+  font-size: 19px;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+
+.hm-steps,
+.hm-notes,
+.hm-links {
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hm-steps li {
+  display: flex;
+  gap: 14px;
+  padding: 9px 0;
+  line-height: 1.55;
+
+  & + li {
+    border-top: 1px dashed var(--theme-elevation-150);
+  }
+}
+
+.hm-step-n {
+  flex: none;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--hm-link);
+}
+
+.hm-notes li {
+  position: relative;
+  padding: 4px 0 4px 18px;
+  line-height: 1.55;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 2px;
+    top: 0.85em;
+    width: 6px;
+    height: 6px;
+    background: var(--hm-landmark);
+  }
+}
+
+.hm-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  a {
+    display: inline-block;
+    padding: 6px 10px;
+    border: 1px solid var(--theme-elevation-200);
+    color: var(--hm-link);
+    text-decoration: none;
+    font-size: 13px;
+
+    &:hover {
+      border-color: var(--hm-brand);
+    }
+  }
+}
+
+.hm-help-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 22px;
+}
+
+// Pilihan kursor (Pengaturan Situs)
+.hm-cursor-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 10px;
+  margin: 8px 0;
+}
+
+.hm-cursor-opt {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 14px;
+  border: 1px solid var(--theme-elevation-150);
+  background: var(--theme-elevation-50);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  position: relative;
+  transition: border-color 0.15s;
+
+  &:hover {
+    border-color: var(--theme-elevation-400);
+  }
+
+  &.is-on {
+    border-color: var(--hm-brand);
+    box-shadow: inset 0 0 0 1px var(--hm-brand);
+
+    &::after {
+      content: 'Dipakai';
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 2px 6px;
+      background: var(--hm-brand);
+      color: var(--hm-on-brand);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+  }
+}
+
+.hm-cursor-imgs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+
+  img {
+    image-rendering: pixelated;
+  }
+}
+
+.hm-cursor-sys {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--theme-elevation-500);
+}
+
+.hm-cursor-name {
+  font-weight: 700;
+}
+
+.hm-cursor-note {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--theme-elevation-550);
+}
+
+.hm-cursor-try {
+  margin-top: 4px;
+  padding: 3px 8px;
+  border: 1px dashed var(--theme-elevation-300);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--theme-elevation-600);
+}
+
+// Peta admin (menggantikan kartu koleksi bawaan yang tidak punya keterangan).
+.dashboard:has(.hm-map__group) .modular-dashboard {
+  display: none;
+}
+
+.hm-map {
+  margin-top: calc(var(--base) * 2);
+}
+
+.hm-map__group + .hm-map__group {
+  margin-top: calc(var(--base) * 1.6);
+}
+
+.hm-map__label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--theme-elevation-500);
+
+  &::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--hm-brand);
+  }
+}
+
+.hm-map__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hm-map__card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--theme-elevation-150);
+  background: var(--theme-elevation-50);
+  transition: border-color 0.15s;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    width: 6px;
+    height: 6px;
+    background: var(--theme-elevation-150);
+    transition: background-color 0.15s;
+  }
+
+  &:hover {
+    border-color: var(--hm-brand);
+
+    &::after {
+      background: var(--hm-brand);
+    }
+
+    .hm-map__title {
+      color: var(--hm-link);
+    }
+  }
+}
+
+.hm-map__link {
+  flex: 1;
+  display: block;
+  padding: 14px 16px 10px;
+  color: inherit;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.hm-map__title {
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
+  transition: color 0.15s;
+}
+
+.hm-map__desc {
+  display: -webkit-box;
+  margin-top: 6px;
+  overflow: hidden;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--theme-elevation-550);
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.hm-map__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  border-top: 1px dashed var(--theme-elevation-150);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--theme-elevation-500);
+}
+
+.hm-map__new {
+  color: var(--hm-link);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.hm-desc {
+  margin: 0;
+  max-width: 78ch;
+  color: var(--theme-elevation-600);
+  line-height: 1.55;
+}
+
+.hm-help-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--hm-link);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  vertical-align: baseline;
+
+  &:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+
+    .hm-help-q {
+      background: var(--hm-brand);
+      color: var(--hm-on-brand);
+    }
+  }
+}
+
+.hm-help-q--sm {
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+}

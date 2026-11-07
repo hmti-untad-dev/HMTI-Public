@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 
+import { AllBlueSection } from '@/components/kabinet/AllBlueSection'
 import { CabinetShowcase, type ShowcaseGroup } from '@/components/sections/CabinetShowcase'
+import { ALL_BLUE } from '@/content/kabinet'
 import { Container } from '@/components/ui/Container'
 import { Empty } from '@/components/ui/Empty'
 import { YearSelector } from '@/components/ui/YearSelector'
@@ -48,6 +50,9 @@ export default async function CabinetPage({ searchParams }: { searchParams: Prom
           hrefFor={(y) => `/kepengurusan?periode=${y}`}
         />
       </Container>
+
+      {/* Filosofi dan lambang kabinet: saat ini hanya Kabinet All Blue (2026) yang materinya sudah ada. */}
+      {period?.year === ALL_BLUE.year && <AllBlueSection />}
 
       {period && groups.length > 0 ? (
         // key memaksa state komponen (tab & indeks) direset saat periode berganti.

@@ -3,7 +3,8 @@
 /*
  * DIUBAH LOKAL dari @atelier/page-transition: impor @react-three/drei (useProgress/useTexture) dibuang
  * karena situs ini tidak memakai WebGL, sementara drei menyeret three.js (~81 KB gzip) ke setiap halaman.
- * Penantian pemuatan tekstur diganti no-op, preload gambar memakai new Image().
+ * Penantian pemuatan tekstur diganti no-op, preload gambar memakai new Image(). CoverAnimation juga menerima
+ * href tujuan (dipakai tirai piksel, components/layout/PixelTransition.tsx).
  * Bila komponen ini dipasang ulang lewat shadcn, terapkan lagi perubahan ini.
  */
 import Link from "next/link"
@@ -21,7 +22,8 @@ import {
     useTransition,
 } from "react"
 
-export type CoverAnimation = (reduced: boolean) => Promise<void>
+/** `href`: tujuan navigasi (hanya untuk coverIn), dipakai tirai untuk menampilkan halaman yang dimuat. */
+export type CoverAnimation = (reduced: boolean, href?: string) => Promise<void>
 type PageComponent = ComponentType<{ children: ReactNode }>
 type TransitionLinkProps = Omit<ComponentProps<typeof Link>, "href"> & {
     href: string
@@ -65,7 +67,7 @@ export function TransitionProvider({ children, coverIn, coverOut, page }: Transi
             router.prefetch(href)
             document.documentElement.setAttribute("data-atelier-transitioning", "")
             reduced.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches
-            await animations.current.coverIn(reduced.current)
+            await animations.current.coverIn(reduced.current, href)
             startTransition(() => router.push(href))
             setCovered(true)
         },
@@ -82,7 +84,7 @@ export function TransitionProvider({ children, coverIn, coverOut, page }: Transi
             document.documentElement.setAttribute("data-atelier-transitioning", "")
             const href = window.location.href
             reduced.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches
-            animations.current.coverIn(reduced.current).then(() => {
+            animations.current.coverIn(reduced.current, href).then(() => {
                 startTransition(() => router.replace(href, { scroll: false }))
                 setCovered(true)
             })

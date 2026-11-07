@@ -33,5 +33,22 @@ export const Articles: CollectionConfig = {
     { name: 'author', type: 'text', label: 'Penulis' },
     { name: 'publishedAt', type: 'date', label: 'Tanggal terbit' },
     { name: 'featured', type: 'checkbox', label: 'Sorotan', defaultValue: false },
+    {
+      name: 'gallery',
+      type: 'array',
+      label: 'Galeri foto',
+      labels: { singular: 'Foto', plural: 'Foto' },
+      fields: [
+        { name: 'image', type: 'upload', relationTo: 'media', label: 'Foto', required: true },
+        { name: 'caption', type: 'text', label: 'Keterangan' },
+      ],
+    },
+    {
+      type: 'row',
+      fields: [
+        { name: 'sourceName', type: 'text', label: 'Sumber berita', admin: { description: 'Bila berita disadur, mis. "Situs Jurusan Teknologi Informasi UNTAD".' } },
+        { name: 'sourceUrl', type: 'text', label: 'Tautan sumber' },
+      ],
+    },
   ],
 }

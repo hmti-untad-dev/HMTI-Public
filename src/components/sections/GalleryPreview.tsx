@@ -15,7 +15,8 @@ const ARSIP = [
 
 export async function GalleryPreview() {
   const { docs } = await getAlbums()
-  const albums = docs.slice(0, 3)
+  // Album yang sudah punya foto sampul (dokumentasi asli) didahulukan dari album kosong.
+  const albums = [...docs].sort((a, b) => Number(Boolean(b.cover)) - Number(Boolean(a.cover))).slice(0, 3)
   return (
     <Section tone="alt" eyebrow="Dokumentasi" title="Galeri" action={{ href: '/galeri', label: 'Lihat galeri' }}>
       <ul className="grid grid-cols-2 items-end gap-4 md:grid-cols-5">

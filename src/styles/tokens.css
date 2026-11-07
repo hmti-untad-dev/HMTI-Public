@@ -48,6 +48,14 @@
 
   /* Galat form (kontras >= 4.5:1 terhadap latar) */
   --danger: #b42318;
+
+  /* Samudra Kabinet All Blue: panel biru laut dalam, sama di kedua tema (teks 15:1, keterangan 8:1). */
+  --ocean: #0b1424;
+  --ocean-raised: #111e35;
+  --ocean-line: #22324d;
+  --ocean-ink: #eaf2ff;
+  --ocean-muted: #9fb3d1;
+  --ocean-glow: #b4d6fe;
 }
 
 :root[data-theme='dark'] {
@@ -109,6 +117,13 @@
   --color-heat-4: var(--heat-4);
   --color-landmark: var(--landmark);
   --color-danger: var(--danger);
+
+  --color-ocean: var(--ocean);
+  --color-ocean-raised: var(--ocean-raised);
+  --color-ocean-line: var(--ocean-line);
+  --color-ocean-ink: var(--ocean-ink);
+  --color-ocean-muted: var(--ocean-muted);
+  --color-ocean-glow: var(--ocean-glow);
 }
 
 @theme {

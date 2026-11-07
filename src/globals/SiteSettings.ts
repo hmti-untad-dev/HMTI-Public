@@ -1,5 +1,6 @@
 import type { GlobalConfig } from 'payload'
 import { anyone, hasRole } from '../access'
+import { CURSORS } from '../lib/cursors'
 
 export const SiteSettings: GlobalConfig = {
   slug: 'site-settings',
@@ -13,6 +14,17 @@ export const SiteSettings: GlobalConfig = {
     { name: 'tagline', type: 'text', label: 'Tagline' },
     { name: 'motto', type: 'text', label: 'Jargon / motto', defaultValue: 'We Make A Better Future', admin: { description: 'Jargon himpunan, tampil di beranda, Tentang, dan footer.' } },
     { name: 'logo', type: 'upload', relationTo: 'media', label: 'Logo' },
+    {
+      name: 'cursor',
+      type: 'select',
+      label: 'Kursor',
+      defaultValue: 'bawaan',
+      options: CURSORS.map((c) => ({ label: c.label, value: c.value })),
+      admin: {
+        description: 'Kursor tetikus untuk semua pengunjung. Arahkan tetikus ke kotak pilihan untuk mencobanya. Di layar sentuh tidak ada kursor, jadi tidak berpengaruh.',
+        components: { Field: '/components/admin/CursorPicker#CursorPicker' },
+      },
+    },
     {
       name: 'hero',
       type: 'group',

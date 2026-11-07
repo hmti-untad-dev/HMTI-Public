@@ -47,6 +47,7 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       { href: '/layanan', label: 'Semua layanan' },
       { href: '/layanan/peminjaman-inventaris', label: 'Peminjaman inventaris' },
+      { href: '/layanan/inventaris', label: 'Daftar inventaris' },
       { href: '/layanan/penyuratan', label: 'Penyuratan' },
       { href: '/layanan/kerja-sama', label: 'Kerja sama' },
       { href: '/layanan/lacak', label: 'Lacak permintaan' },
@@ -59,5 +60,3 @@ export const NAV_GROUPS: NavGroup[] = [
 /** Daftar datar untuk footer. */
 export const NAV_ITEMS = [{ href: '/', label: 'Beranda' }, ...NAV_GROUPS.map(({ href, label }) => ({ href, label }))]
 
-/** Sementara mengarah ke admin Payload; nanti diganti SSO sistem internal. */
-export const LOGIN_HREF = '/admin'

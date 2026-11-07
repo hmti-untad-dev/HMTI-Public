@@ -1,12 +1,13 @@
 import { notFound } from 'next/navigation'
 import Link from '@/components/ui/AppLink'
 
+import { EditionQuotes } from '@/components/sections/EditionQuotes'
 import { Container } from '@/components/ui/Container'
 import { Empty } from '@/components/ui/Empty'
 import { Img } from '@/components/ui/Img'
 import { PageHeader } from '@/components/ui/PageHeader'
-import { formatDate } from '@/lib/format'
-import { getEditions, getProgram, mediaOf } from '@/lib/data'
+import { formatDateRange } from '@/lib/format'
+import { getEditionQuotes, getEditions, getProgram, mediaOf } from '@/lib/data'
 
 export async function generateMetadata({ params }: { params: Promise<{ program: string }> }) {
   const program = await getProgram((await params).program)
@@ -19,6 +20,7 @@ export default async function ProgramPage({ params }: { params: Promise<{ progra
   if (!program) notFound()
 
   const editions = await getEditions(program.id)
+  const quotes = await getEditionQuotes(editions.map((e) => e.id))
   const department = typeof program.department === 'object' ? program.department : null
   const paragraphs = (program.about ?? '').split(/\n{2,}/).map((p) => p.trim()).filter(Boolean)
   const loc = program.location
@@ -125,6 +127,12 @@ export default async function ProgramPage({ params }: { params: Promise<{ progra
         </section>
       )}
 
+      {quotes.length > 0 && (
+        <Container>
+          <EditionQuotes quotes={quotes} />
+        </Container>
+      )}
+
       <Container className="border-t border-line py-12">
         <h2 className="mb-4 font-display text-2xl font-bold">Edisi</h2>
         {editions.length === 0 ? (
@@ -137,7 +145,7 @@ export default async function ProgramPage({ params }: { params: Promise<{ progra
                 <li key={e.id}>
                   <Link href={`/kegiatan/${program.slug}/${year ?? e.id}`} className="lift block rounded-card border border-line p-4 hover:border-brand">
                     <p className="font-display font-semibold">{e.title}</p>
-                    <p className="text-sm text-ink-muted">{[formatDate(e.startDate), e.location].filter(Boolean).join(' · ')}</p>
+                    <p className="text-sm text-ink-muted">{[formatDateRange(e.startDate, e.endDate), e.location].filter(Boolean).join(' · ')}</p>
                   </Link>
                 </li>
               )

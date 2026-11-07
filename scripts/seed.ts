@@ -11,6 +11,10 @@ import { getPayload } from 'payload'
 import sharp from 'sharp'
 
 import config from '../src/payload.config'
+import { createIfest2025 } from './data/ifest-2025'
+import { addKepengurusan2025 } from './data/kepengurusan-2025'
+import { createDies12, documentDies12 } from './data/dies-12'
+import { importInventory } from './data/inventaris'
 
 const payload = await getPayload({ config })
 
@@ -91,8 +95,8 @@ const deptDefs = [
   { name: 'Intelektual', slug: 'intelektual', group: 'internal', description: 'Pengembangan sumber daya manusia dan teknologi: kajian, talkshow, seminar keilmuan, dan pengelolaan komunitas himpunan.' },
   { name: 'Kaderisasi', slug: 'kaderisasi', group: 'internal', description: 'Meningkatkan kualitas dan kompetensi kader melalui pendidikan, pelatihan, pembinaan, dan pemantauan kinerja anggota.' },
   { name: 'Humas', slug: 'humas', group: 'eksternal', description: 'Hubungan masyarakat dan platform digital: dokumentasi, advokasi isu, citra himpunan, dan hubungan antar lembaga.' },
-  { name: 'Ekonomi Kreatif', slug: 'ekonomi-kreatif', group: 'eksternal', formerName: 'Kewirausahaan', description: 'Perencanaan dan pengelolaan kewirausahaan, usaha kreatif, serta kekayaan intelektual HMTI UNTAD.' },
-  { name: 'Riset, Inovasi, dan Karya', slug: 'rinoya', group: 'eksternal', formerName: 'Kreatifitas', description: 'Pengembangan sumber daya gagasan, riset tren teknologi, inkubasi produk inovatif, dan pendampingan delegasi lomba.' },
+  { name: 'Ekonomi Kreatif', slug: 'ekonomi-kreatif', group: 'eksternal', formerName: 'Kewirausahaan', formerNameUntil: 2025, description: 'Perencanaan dan pengelolaan kewirausahaan, usaha kreatif, serta kekayaan intelektual HMTI UNTAD.' },
+  { name: 'Riset, Inovasi, dan Karya', slug: 'rinoya', group: 'eksternal', formerName: 'Kreatifitas', formerNameUntil: 2025, description: 'Pengembangan sumber daya gagasan, riset tren teknologi, inkubasi produk inovatif, dan pendampingan delegasi lomba.' },
 ] as const
 const depts = []
 for (const [i, d] of deptDefs.entries()) {
@@ -137,11 +141,11 @@ async function mediaFrom(dir: string, file: string, alt: string) {
 }
 const dewan2025 = [
   { name: 'Ahmad Afil', position: 'ketua', file: 'ahmad-afil.webp' },
-  { name: 'Muh Afdal Maedja', position: 'ketua1', file: 'muh-afdal-maedja.webp' },
+  { name: 'Moh Afdal Maedja', position: 'ketua1', file: 'muh-afdal-maedja.webp' },
   { name: 'Hidayatul Fatwa', position: 'ketua2', file: 'hidayatul-fatwa.webp' },
   { name: 'Pradigta', position: 'sekum', file: 'pradigta.webp' },
   { name: 'Irma Sitti Rahma', position: 'bendum', file: 'irma-sitti-rahma.webp' },
-  { name: 'Kadek Ardi Septadana', position: 'koordinator', dept: 'humas', file: 'kadek-ardi-septadana.webp' },
+  { name: 'I Kadek Ardi Septadana', position: 'koordinator', dept: 'humas', file: 'kadek-ardi-septadana.webp' },
   { name: 'Rizka Annisa', position: 'koordinator', dept: 'intelektual', file: 'rizka-annisa.webp' },
   { name: 'Hairul', position: 'koordinator', dept: 'kaderisasi', file: 'hairul.webp' },
   { name: 'Andi Amanda A.T', position: 'koordinator', dept: 'kesekretariatan', file: 'andi-amanda.webp' },
@@ -169,7 +173,7 @@ for (const [i, d] of pembina2026.entries()) {
   await payload.create({ collection: 'memberships', data: { person: who.id, period: p2026.id, position: 'pembina', order: i } })
 }
 // BPO 2026 diisi Dewan Eksekutif 2025; tiga di antaranya memakai poster 2025 yang sama.
-const bpo2026 = ['Ahmad Afil', 'Muh Afdal Maedja', 'Hidayatul Fatwa', 'Fahruddin A. Lebe']
+const bpo2026 = ['Ahmad Afil', 'Moh Afdal Maedja', 'Hidayatul Fatwa', 'Fahruddin A. Lebe']
 for (const [i, name] of bpo2026.entries()) {
   const who = await person(name)
   const prev = await payload.find({ collection: 'memberships', where: { person: { equals: who.id }, period: { equals: p2025.id } }, depth: 0, limit: 1 })
@@ -211,6 +215,20 @@ for (const d of depts) {
   }
 }
 
+// Pembina, BPO, dan anggota departemen 2025: data ASLI dari SK susunan kepengurusan 2025 (tanpa NIM).
+await addKepengurusan2025(payload, p2025.id, depts, person)
+{
+  const fizar = await person("Fizar Syafa'at, S.Kom., M.Kom.")
+  const photo = await mediaFrom('pembina', 'fizar-syafaat.jpg', "Foto Fizar Syafa'at, S.Kom., M.Kom.")
+  if (photo) await payload.update({ collection: 'people', id: fizar.id, data: { photo } })
+}
+
+// Berita asli: malam puncak Dies Natalis ke-12 (foto di seed-assets/berita, tidak ikut repo).
+await createDies12(payload, (file, alt) => mediaFrom('berita', file, alt))
+
+// Inventaris asli dari seed-assets/inventaris.json (tidak ikut repo). Dilewati bila berkas tidak ada.
+await importInventory(payload)
+
 // --- Program kerja & edisi ---
 // Nama program dari dokumen MUBES (struktur 2025/2026); TANGGAL dan STATUS adalah data contoh.
 type Seed = { name: string; short?: string; website?: string; slug: string; dept: string; summary: string; start: string; end?: string; status: 'rencana' | 'berjalan' | 'selesai' | 'ditunda'; featured?: boolean; sessions?: ('pagi' | 'siang' | 'sore' | 'malam')[] }
@@ -238,6 +256,8 @@ for (const [i, def] of programDefs.entries()) {
     data: { name: def.name, shortName: def.short, website: def.website, slug: def.slug, summary: def.summary, department: department?.id, featured: Boolean(def.featured), order: i },
   })
   if (def.slug === 'penmas') penmasId = program.id
+  // Edisi 2025 I-FEST: data asli dari laporan kegiatan (kutipan tamu dan mitra ikut dibuat).
+  if (def.slug === 'i-fest') await createIfest2025(payload, program.id, p2025.id)
   await payload.create({
     collection: 'editions',
     data: {
@@ -316,13 +336,7 @@ for (const [i, a] of [
   await payload.create({ collection: 'achievements', data: { ...a, featured: i < 3 } as never })
 }
 
-for (const t of [
-  { authorName: 'Alumni Contoh', authorRole: 'Alumni 2020', quote: 'Testimoni placeholder tentang pengalaman di himpunan.' },
-  { authorName: 'Mitra Contoh', authorRole: 'Mitra', quote: 'Testimoni placeholder dari mitra kerja sama.' },
-  { authorName: 'Anggota Contoh', authorRole: 'Anggota 2024', quote: 'Testimoni placeholder dari anggota aktif.' },
-]) {
-  await payload.create({ collection: 'testimonials', data: t })
-}
+// Testimoni beranda: kutipan tamu I-FEST 2025 (dibuat bersama edisinya di atas).
 
 // Kutipan tokoh untuk bagian Jejak Kepemimpinan. Nama dan isi kutipan MENYUSUL: jangan mengarang ucapan orang
 // sungguhan; isi lewat admin (Testimoni, jenis "Kutipan tokoh") setelah kutipan aslinya diterima.
@@ -392,6 +406,9 @@ for (const [i, a] of [
 ].entries()) {
   await payload.create({ collection: 'albums', data: { ...a, slug: `album-contoh-${i + 1}` } })
 }
+
+// Dokumentasi Dies Natalis ke-12 (proker Rinoya): foto berita jadi sampul program, isi edisi 2026, dan album.
+await documentDies12(payload)
 
 // Foto "The Best of" contoh: gambar gradasi dibuat lokal (belum ada foto asli).
 const tints: [string, string][] = [['#3e4094', '#b4d6fe'], ['#5253ad', '#e3e5f1'], ['#2a2b57', '#9cc4f5'], ['#3e4094', '#cfe3fb'], ['#121212', '#5253ad'], ['#5253ad', '#b4d6fe'], ['#2a2b57', '#cfe3fb']]

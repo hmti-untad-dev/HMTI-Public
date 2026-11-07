@@ -1,9 +1,22 @@
-const dateFormatter = new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
+// Zona WITA (Palu): tanggal kegiatan diisi +08:00; tanpa ini server ber-zona UTC bisa menampilkan hari sebelumnya.
+const dateFormatter = new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Makassar' })
 
 export function formatDate(value?: string | null) {
   if (!value) return ''
   const date = new Date(value)
   return Number.isNaN(date.getTime()) ? '' : dateFormatter.format(date)
+}
+
+/** Rentang tanggal ringkas: "11–12 November 2025", "28 Oktober – 2 November 2025", atau satu tanggal saja. */
+export function formatDateRange(start?: string | null, end?: string | null) {
+  const a = formatDate(start)
+  const b = formatDate(end)
+  if (!a || !b || a === b) return a || b
+  const parts = (v: string) => Object.fromEntries(dateFormatter.formatToParts(new Date(v)).map((p) => [p.type, p.value]))
+  const s = parts(start!)
+  const e = parts(end!)
+  if (s.year === e.year && s.month === e.month) return `${s.day}–${b}`
+  return `${a} – ${b}`
 }
 
 /** 3 -> "03", untuk penomoran gaya editorial (mis. "Vol. 03 / 75"). */

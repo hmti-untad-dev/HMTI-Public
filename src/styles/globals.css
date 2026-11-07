@@ -485,16 +485,24 @@
 
 /* ---------- Layar boot (pasangan: components/boot/BootScreen.tsx) ---------- */
 /*
- * Tirai <= 1 detik, digerakkan CSS sejak paint pertama (tidak menunggu JS/hydration). Tampil pada
- * setiap muat penuh halaman: skrip <head> di layout memberi html[data-intro='boot']. Tanpa itu, tidak dirender sama sekali.
- * Linimasa: 0-0,45s lambang terbentuk dari piksel + log terketik; 0,55-1s tirai larut per sel; 1s hilang total.
+ * Tirai 4 detik, digerakkan CSS sejak paint pertama (tidak menunggu JS/hydration). Tampil pada setiap muat penuh
+ * halaman: skrip <head> di layout memberi html[data-intro='boot']. Tanpa itu, tidak dirender sama sekali.
+ * Linimasa: 0-0,9 dtk lambang tersusun dari piksel; 0,35/1,05/1,75/2,45 dtk empat baris log terketik; 0,2-3,2 dtk
+ * persentase dan bilah naik tidak rata; sel berkedip biru selama memuat; 3,3 dtk inti memudar; 3,4-3,9 dtk tirai
+ * larut per sel; 4 dtk hilang total. Klik/ketuk/gulir: .is-skip memudarkan semuanya 0,22 dtk.
  * Konsol selalu gelap di kedua tema, jadi warnanya ditulis di sini, bukan dari token tema.
  */
+@property --boot-p {
+  syntax: '<integer>';
+  initial-value: 0;
+  inherits: false;
+}
 .boot {
   --boot-bg: #0a0c11;
   --boot-ink: #d7dcec;
   --boot-dim: #8a90a5;
   --boot-blue: #b4d6fe;
+  --boot-brand: #5253ad;
   display: none;
 }
 html[data-intro='boot'] .boot {
@@ -503,13 +511,16 @@ html[data-intro='boot'] .boot {
   z-index: 200;
   display: block;
   overflow: hidden;
+  cursor: pointer;
   font-family: var(--font-mono);
   color: var(--boot-ink);
-  animation: boot-end 0s linear 1s forwards;
+  animation: boot-end 0s linear 4.05s forwards;
 }
-.boot.is-skip {
-  visibility: hidden;
-  animation: none;
+/* Spesifisitas setara dan letaknya setelah html[data-intro='boot'] .boot, jadi animasinya menang. */
+html[data-boot-skip] .boot,
+html .boot.is-skip {
+  pointer-events: none;
+  animation: boot-skip 0.22s ease-out forwards;
 }
 @media (prefers-reduced-motion: reduce) {
   html[data-intro='boot'] .boot {
@@ -526,7 +537,13 @@ html[data-intro='boot'] .boot {
 .boot-cells i {
   background: var(--boot-bg);
   animation: boot-fade 0.16s linear forwards;
-  animation-delay: calc(0.55s + var(--t) * 0.29s);
+  animation-delay: calc(3.4s + var(--t) * 0.45s);
+}
+/* Sebagian kecil sel berkedip biru selama memuat, seperti piksel layar yang menyala. */
+.boot-cells i.tw {
+  animation:
+    boot-twinkle 1.4s steps(1, end) calc(var(--t) * 1.4s) 2,
+    boot-fade 0.16s linear calc(3.4s + var(--t) * 0.45s) forwards;
 }
 .boot-core {
   position: absolute;
@@ -534,13 +551,14 @@ html[data-intro='boot'] .boot {
   display: grid;
   place-content: center;
   justify-items: center;
-  gap: 1.1rem;
-  animation: boot-fade 0.14s linear 0.55s forwards;
+  gap: 1.4rem;
+  padding: 0 1.25rem;
+  animation: boot-fade 0.15s linear 3.3s forwards;
 }
 .boot-mark {
   position: relative;
-  width: 5.5rem;
-  height: 5.5rem;
+  width: 6rem;
+  height: 6rem;
 }
 .boot-mark img {
   width: 100%;
@@ -555,26 +573,56 @@ html[data-intro='boot'] .boot {
 }
 .boot-mark-px i {
   background: var(--boot-bg);
-  animation: boot-fade 0.08s steps(1, end) forwards;
-  animation-delay: calc(0.05s + var(--t) * 0.36s);
+  /* steps(1, start): langsung hilang saat jedanya habis (dengan end, galat pembulatan bisa menahannya). */
+  animation: boot-fade 0.08s steps(1, start) forwards;
+  animation-delay: calc(0.05s + var(--t) * 0.8s);
 }
 .boot-log {
+  display: grid;
+  gap: 0.35rem;
+  min-height: 6.4rem;
   font-size: 0.75rem;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   color: var(--boot-dim);
 }
-.boot-log b {
+.boot-line {
+  white-space: nowrap;
+  opacity: 0;
+  animation: boot-show 0s linear var(--at) forwards;
+}
+.boot-line b {
   display: inline-block;
   overflow: hidden;
-  white-space: nowrap;
   vertical-align: bottom;
   font-weight: 400;
-  color: var(--boot-blue);
+  color: var(--boot-ink);
   width: 0;
-  animation: boot-type 0.35s steps(19, end) 0.1s forwards;
+  animation: boot-type 0.4s steps(var(--n), end) var(--at) forwards;
+}
+.boot-line:last-child b {
+  color: var(--boot-blue);
+}
+.boot-st {
+  display: inline-grid;
+}
+.boot-st > * {
+  grid-area: 1 / 1;
+}
+.boot-wait {
+  animation: boot-fade 0s linear calc(var(--at) + 0.45s) forwards;
+}
+.boot-ok {
+  color: var(--boot-blue);
+  opacity: 0;
+  animation: boot-show 0s linear calc(var(--at) + 0.45s) forwards;
+}
+.boot-meter {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 .boot-bar {
-  width: 9rem;
+  width: 11rem;
   height: 2px;
   background: rgb(255 255 255 / 0.1);
 }
@@ -584,18 +632,74 @@ html[data-intro='boot'] .boot {
   background: var(--boot-blue);
   transform: scaleX(0);
   transform-origin: 0 50%;
-  animation: boot-bar 0.5s cubic-bezier(0.3, 0.7, 0.3, 1) forwards;
+  animation: boot-bar 3s linear 0.2s forwards;
+}
+.boot-pct {
+  min-width: 4ch;
+  font-size: 0.7rem;
+  color: var(--boot-dim);
+  font-variant-numeric: tabular-nums;
+  counter-reset: boot-p var(--boot-p);
+  animation: boot-pct 3s linear 0.2s forwards;
+}
+.boot-pct::after {
+  content: counter(boot-p) '%';
+}
+.boot-hint {
+  margin-top: 0.6rem;
+  text-align: center;
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--boot-dim);
+  opacity: 0;
+  animation:
+    boot-hint 1.6s ease-in-out 0.8s 2 alternate,
+    boot-fade 0.15s linear 3.3s forwards;
 }
 @keyframes boot-fade { to { opacity: 0; } }
-@keyframes boot-type { to { width: 19ch; } }
-@keyframes boot-bar { to { transform: scaleX(1); } }
+@keyframes boot-show { to { opacity: 1; } }
+/* Lebar akhir = jumlah huruf x (lebar huruf mono + letter-spacing .boot-log). */
+@keyframes boot-type { to { width: calc(var(--n) * (1ch + 0.06em)); } }
+/* Naik tidak rata: cepat, tertahan, lalu melonjak. Bilah dan angka memakai titik yang sama. */
+@keyframes boot-bar {
+  0% { transform: scaleX(0); }
+  15% { transform: scaleX(0.12); }
+  30% { transform: scaleX(0.31); }
+  45% { transform: scaleX(0.38); }
+  60% { transform: scaleX(0.64); }
+  75% { transform: scaleX(0.82); }
+  90% { transform: scaleX(0.97); }
+  100% { transform: scaleX(1); }
+}
+@keyframes boot-pct {
+  0% { --boot-p: 0; }
+  15% { --boot-p: 12; }
+  30% { --boot-p: 31; }
+  45% { --boot-p: 38; }
+  60% { --boot-p: 64; }
+  75% { --boot-p: 82; }
+  90% { --boot-p: 97; }
+  100% { --boot-p: 100; }
+}
+@keyframes boot-twinkle {
+  0% { background: var(--boot-bg); }
+  40% { background: #161a3a; }
+  55% { background: var(--boot-brand); }
+  70% { background: #161a3a; }
+}
+@keyframes boot-hint {
+  from { opacity: 0.35; }
+  to { opacity: 0.9; }
+}
+@keyframes boot-skip { to { opacity: 0; visibility: hidden; } }
 @keyframes boot-end { to { visibility: hidden; pointer-events: none; } }
 
 /* ---------- Animasi masuk halaman (Hero) ---------- */
 /* Saat boot tampil (data-intro=boot), masuknya ditunda sampai tirai mulai larut. Atribut ini tidak pernah
    berubah setelah load, jadi linimasa tidak meloncat. */
 :root { --intro: 0s; }
-html[data-intro='boot'] { --intro: 0.62s; }
+html[data-intro='boot'] { --intro: 3.5s; }
 @media (prefers-reduced-motion: no-preference) {
   [data-enter] > * {
     animation: enter-up 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -1815,29 +1919,34 @@ html.lenis {
   50% { opacity: 1; transform: translateY(-3px); }
 }
 
-/* ---------- Teemo berjalan sebelum tidur (pasangan: mascot/SleepyOverlay.tsx, CatWalk di Cat.tsx) ---------- */
+/* ---------- Teemo jalan-jalan sebelum tidur (pasangan: mascot/SleepyOverlay.tsx, CatWalk di Cat.tsx) ---------- */
+/* Satu animasi 8 detik untuk seluruh jalan-jalan; detiknya sama dengan WANDER di SleepyOverlay. */
 .cat-walker {
   will-change: transform;
 }
 @media (prefers-reduced-motion: no-preference) {
-  .cat-walker[data-p='arrive'] { animation: cat-walk-in 2.6s linear both; }
-  .cat-walker[data-p='sniff'] { transform: translateX(0); }
-  .cat-walker[data-p='turn'] { animation: cat-walk-turn 1.3s linear both; }
+  .cat-wander { animation: cat-wander 8s linear both; }
   .cat-walking .cat-leg-a { animation: cat-step 0.44s ease-in-out infinite alternate; }
   .cat-walking .cat-leg-b { animation: cat-step 0.44s ease-in-out -0.44s infinite alternate-reverse; }
   .cat-walking .cat-bob { animation: cat-bob 0.22s ease-in-out infinite alternate; }
   .cat-walking .cat-tail-walk { animation: cat-sway 0.9s ease-in-out infinite; }
   .cat-sniffing .cat-head { animation: cat-sniff 0.26s ease-in-out infinite alternate; }
-  .cat-sniffing .cat-tail-walk { animation: cat-sway 1.6s ease-in-out infinite; }
+  .cat-sniffing .cat-tail-walk,
+  .cat-standing .cat-tail-walk { animation: cat-sway 1.6s ease-in-out infinite; }
+  .cat-standing .cat-head { animation: cat-look 0.6s ease-out both; }
+  .cat-say { animation: cat-say 0.28s cubic-bezier(0.3, 1.4, 0.5, 1) both; }
+  .cat-alert { animation: cat-alert 0.7s cubic-bezier(0.3, 1.6, 0.5, 1) both; }
+  .cat-leave { transform-origin: 50% 100%; animation: cat-leave 0.5s cubic-bezier(0.5, 0, 0.8, 0.4) both; }
 }
-@keyframes cat-walk-in {
-  from { transform: translateX(-120%); }
-  to { transform: translateX(0); }
-}
-@keyframes cat-walk-turn {
-  0% { transform: translateX(0) scaleX(1); }
-  14% { transform: translateX(0) scaleX(-1); }
-  100% { transform: translateX(-18%) scaleX(-1); }
+@keyframes cat-wander {
+  0% { transform: translateX(-150%) scaleX(1); }
+  37.5% { transform: translateX(4%) scaleX(1); }      /* 3,0 dtk: berhenti */
+  52.5% { transform: translateX(4%) scaleX(1); }      /* 4,2 dtk: selesai mengendus */
+  55.6% { transform: translateX(4%) scaleX(-1); }     /* berbalik */
+  77.5% { transform: translateX(-26%) scaleX(-1); }   /* 6,2 dtk: melihat bantal */
+  85% { transform: translateX(-26%) scaleX(-1); }
+  88.1% { transform: translateX(-26%) scaleX(1); }    /* berbalik lagi */
+  100% { transform: translateX(0) scaleX(1); }        /* 8,0 dtk: tiba di bantal */
 }
 @keyframes cat-step {
   from { transform: rotate(-22deg); }
@@ -1849,4 +1958,270 @@ html.lenis {
 @keyframes cat-sniff {
   from { transform: rotate(0); }
   to { transform: rotate(7deg) translateY(2px); }
+}
+@keyframes cat-look {
+  0% { transform: rotate(0); }
+  45% { transform: rotate(-8deg) translateY(-2px); }
+  100% { transform: rotate(-4deg) translateY(-1px); }
+}
+@keyframes cat-say {
+  /* Pergeseran -50% horizontal sudah dari utilitas translate Tailwind (properti terpisah). */
+  from { opacity: 0; transform: translateY(6px) scale(0.92); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes cat-alert {
+  0% { opacity: 0; transform: translateY(8px) scale(0.4); }
+  40% { opacity: 1; transform: translateY(-6px) scale(1.25) rotate(8deg); }
+  100% { opacity: 1; transform: translateY(0) scale(1) rotate(0); }
+}
+@keyframes cat-leave {
+  0% { transform: none; }
+  30% { transform: translateY(4px) scale(1.06, 0.9); }
+  100% { transform: translate(40%, -30px) scale(0.6); opacity: 0; }
+}
+
+/* ---------- Transisi halaman piksel (pasangan: components/layout/PixelTransition.tsx) ---------- */
+/*
+ * Bahasa visual sama dengan layar boot: konsol selalu gelap di kedua tema, sel piksel persegi, log mono, bilah biru.
+ * Masuk: tiap sel berganti biru muda -> biru HMTI -> gelap, berurutan dari titik klik (--d), total ~0,5 dtk.
+ * Keluar: sel larut lewat biru HMTI dari titik yang sama (--o). Durasi harus cocok dengan konstanta di komponen.
+ */
+.pxt {
+  --pxt-bg: #0a0c11;
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  pointer-events: none;
+  visibility: hidden;
+  font-family: var(--font-mono);
+}
+.pxt:not([data-phase='idle']) {
+  visibility: visible;
+}
+.pxt-cells {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(var(--cols), var(--cell));
+  grid-auto-rows: var(--cell);
+}
+.pxt-cells i {
+  background: var(--pxt-bg);
+  opacity: 0;
+}
+.pxt[data-phase='in'] .pxt-cells i {
+  animation: pxt-in 180ms steps(1, end) var(--d) both;
+}
+.pxt[data-phase='out'] .pxt-cells i {
+  opacity: 1;
+  animation: pxt-out 170ms steps(1, end) var(--o) both;
+}
+.pxt-core {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.9rem;
+  padding: 0 1rem;
+}
+.pxt[data-phase='in'] .pxt-core {
+  animation: pxt-core-in 160ms ease-out 240ms both;
+}
+.pxt[data-phase='out'] .pxt-core {
+  animation: pxt-core-out 120ms linear 100ms both;
+}
+.pxt-log {
+  max-width: 88vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: #8a90a5;
+}
+.pxt-log span {
+  color: #b4d6fe;
+}
+.pxt-log b {
+  font-weight: 400;
+  color: #d7dcec;
+}
+.pxt-bar {
+  width: 9rem;
+  height: 2px;
+  overflow: hidden;
+  background: rgb(255 255 255 / 0.1);
+}
+.pxt-bar i {
+  display: block;
+  width: 40%;
+  height: 100%;
+  background: #b4d6fe;
+  animation: pxt-load 0.9s ease-in-out infinite;
+}
+.pxt[data-phase='out'] .pxt-bar i {
+  width: 100%;
+  animation: none;
+}
+/* Gerak dikurangi: tanpa sebaran dan kilau, hanya pudar singkat seluruh tirai. */
+.pxt[data-reduced] .pxt-cells i {
+  opacity: 1;
+  animation: none;
+}
+.pxt[data-reduced][data-phase='in'] {
+  animation: pxt-core-in 160ms linear both;
+}
+.pxt[data-reduced][data-phase='out'] {
+  animation: pxt-core-out 160ms linear both;
+}
+.pxt[data-reduced] .pxt-core,
+.pxt[data-reduced] .pxt-bar i {
+  animation: none;
+}
+/* steps(1): warna berganti patah-patah seperti piksel, tanpa sel setengah transparan yang kusam. */
+@keyframes pxt-in {
+  0% { opacity: 0; }
+  10% { opacity: 1; background: #b4d6fe; }
+  45% { opacity: 1; background: #5253ad; }
+  100% { opacity: 1; background: var(--pxt-bg); }
+}
+@keyframes pxt-out {
+  0% { opacity: 1; background: var(--pxt-bg); }
+  35% { opacity: 1; background: #5253ad; }
+  100% { opacity: 0; background: #5253ad; }
+}
+@keyframes pxt-core-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes pxt-core-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+@keyframes pxt-load {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(250%); }
+}
+
+/* ---------- Kursor kustom (Pengaturan Situs → Kursor; gambar dari scripts/gen-cursors.mjs) ----------
+   Hanya untuk perangkat bertetikus. Kolom teks tetap memakai kursor teks agar mudah mengetik. */
+@media (pointer: fine) {
+  html[data-cursor='piksel'] { --cur: url('/cursors/piksel.png') 0 0, auto; --cur-tunjuk: url('/cursors/piksel-tunjuk.png') 10 0, pointer; }
+  html[data-cursor='teemo'] { --cur: url('/cursors/teemo.png') 0 0, auto; --cur-tunjuk: url('/cursors/teemo-tunjuk.png') 16 14, pointer; }
+  html[data-cursor='allblue'] { --cur: url('/cursors/allblue.png') 14 14, auto; --cur-tunjuk: url('/cursors/allblue-tunjuk.png') 16 14, pointer; }
+  html[data-cursor] body {
+    cursor: var(--cur);
+  }
+  html[data-cursor] :is(a[href], button:not(:disabled), summary, select, label[for], [role='button'], [role='tab'], [role='switch'], [role='radio'], [role='checkbox'], [data-tilt], input:is([type='checkbox'], [type='radio'], [type='submit'], [type='button'], [type='file'], [type='range'])) {
+    cursor: var(--cur-tunjuk);
+  }
+  html[data-cursor] :is(input:not([type='checkbox'], [type='radio'], [type='submit'], [type='button'], [type='file'], [type='range']), textarea, [contenteditable='true']) {
+    cursor: text;
+  }
+}
+
+/* ---------- Kabinet All Blue (components/kabinet) ---------- */
+.ab-mark {
+  color: var(--ocean-ink);
+  overflow: visible;
+}
+.ab-layer {
+  transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), filter 0.45s;
+}
+.ab-layer.is-dim {
+  opacity: 0.16;
+}
+.ab-layer.is-on {
+  filter: drop-shadow(0 0 6px rgb(180 214 254 / 0.55));
+}
+.ab-px {
+  fill: var(--ocean-glow);
+  /* Tepi laut tipis agar piksel tetap terbaca saat melintas di atas lengan ombak. */
+  stroke: var(--ocean);
+  stroke-width: 0.7;
+  paint-order: stroke;
+}
+.ab-bar {
+  fill: var(--ocean-ink);
+}
+.ab-star {
+  fill: #fff;
+}
+.ab-rays line {
+  stroke: var(--ocean-glow);
+  stroke-width: 1.4;
+  stroke-linecap: square;
+  opacity: 0.7;
+}
+.ab-card.is-on {
+  box-shadow: inset 0 2px 0 var(--ocean-glow);
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* Dengan view-box, titik asal transform = (0,0) sistem koordinat viewBox, yaitu pusat lambang. */
+  .ab-vortex,
+  .ab-pixels {
+    transform-box: view-box;
+    transform-origin: 0 0;
+  }
+  /* Ombak berputar searah jarum jam, piksel berlawanan: dua arus yang bertemu. */
+  .ab-vortex {
+    animation: ab-spin 80s linear infinite;
+  }
+  .ab-pixels {
+    animation: ab-spin 140s linear infinite reverse;
+  }
+  .ab-px {
+    animation: ab-blink var(--t, 2s) steps(1, end) var(--d, 0s) infinite;
+  }
+  .ab-star,
+  .ab-halo,
+  .ab-rays {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  .ab-star {
+    animation: ab-pulse 3.2s ease-in-out infinite;
+  }
+  .ab-halo {
+    animation: ab-pulse 3.2s ease-in-out infinite;
+  }
+  .ab-rays {
+    animation: ab-rays 3.2s ease-in-out infinite;
+  }
+}
+@keyframes ab-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes ab-blink {
+  0%,
+  70% {
+    opacity: 1;
+  }
+  71%,
+  86% {
+    opacity: 0.2;
+  }
+}
+@keyframes ab-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+@keyframes ab-rays {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.08);
+  }
 }

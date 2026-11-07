@@ -2,6 +2,7 @@ import config from '@payload-config'
 import { getPayload } from 'payload'
 import { cache } from 'react'
 
+import type { ActiveLoan, PublicItem } from '@/lib/inventory'
 import type { Department, Media, Membership, Period, Person } from '@/payload-types'
 
 /** Satu-satunya pintu halaman publik ke Payload (Local API, tanpa HTTP hop). */
@@ -60,6 +61,11 @@ export type CabinetMember = {
 }
 
 /** Kepengurusan satu periode: BPH (tanpa departemen) + anggota per departemen. */
+/** Nama departemen pada tahun periode tertentu: nama lama bila tahunnya <= formerNameUntil. */
+export function departmentNameAt(d: Pick<Department, 'name' | 'formerName' | 'formerNameUntil'>, year?: number | null) {
+  return d.formerName && d.formerNameUntil && year && year <= d.formerNameUntil ? d.formerName : d.name
+}
+
 export async function getCabinet(period: Period | null) {
   const empty = { bph: [] as CabinetMember[], pembina: [] as CabinetMember[], pengawas: [] as CabinetMember[], coordinators: [] as CabinetMember[], byDepartment: new Map<number, CabinetMember[]>(), departments: [] as Department[], total: 0 }
   if (!period) return empty
@@ -70,10 +76,13 @@ export async function getCabinet(period: Period | null) {
     payload.find({ collection: 'departments', sort: 'order', limit: 100, depth: 1 }),
   ])
 
+  // Nama departemen mengikuti tahun periode (mis. 2025: Kewirausahaan, bukan Ekonomi Kreatif).
+  const named = departments.map((d) => ({ ...d, name: departmentNameAt(d, period.year) }))
   const members: CabinetMember[] = []
   for (const m of memberships) {
     if (typeof m.person !== 'object') continue
-    const department = typeof m.department === 'object' ? m.department : null
+    const raw = typeof m.department === 'object' ? m.department : null
+    const department = raw ? (named.find((d) => d.id === raw.id) ?? raw) : null
     members.push({
       id: m.id,
       person: m.person,
@@ -102,7 +111,7 @@ export async function getCabinet(period: Period | null) {
   const rank = (m: CabinetMember) => departments.findIndex((d) => d.id === m.department?.id)
   coordinators.sort((a, b) => rank(a) - rank(b))
 
-  return { bph, pembina, pengawas, coordinators, byDepartment, departments, total: members.length }
+  return { bph, pembina, pengawas, coordinators, byDepartment, departments: named, total: members.length }
 }
 
 export const getPrograms = cache(async (opts: { featured?: boolean } = {}) => {
@@ -149,7 +158,7 @@ export const getAchievements = cache(async (opts: { featured?: boolean } = {}) =
 
 export const getTestimonials = cache(async () => {
   const payload = await getClient()
-  const { docs } = await payload.find({ collection: 'testimonials', where: { kind: { not_equals: 'tokoh' } }, limit: 12, depth: 1 })
+  const { docs } = await payload.find({ collection: 'testimonials', where: { kind: { not_equals: 'tokoh' } }, sort: 'order', limit: 12, depth: 2 })
   return docs
 })
 
@@ -254,6 +263,55 @@ export async function getService(slug: string) {
   const { docs } = await payload.find({ collection: 'services', where: { slug: { equals: slug } }, limit: 1 })
   return docs[0] ?? null
 }
+
+/** Kutipan tamu yang ditautkan ke edisi kegiatan (halaman edisi dan halaman program). */
+export async function getEditionQuotes(editionIds: number[]) {
+  if (editionIds.length === 0) return []
+  const payload = await getClient()
+  const { docs } = await payload.find({ collection: 'testimonials', where: { edition: { in: editionIds } }, sort: 'order', limit: 24, depth: 0 })
+  return docs
+}
+
+/** Mitra, sponsor, dan media partner sebuah edisi, urut sesuai isian. */
+export async function getEditionPartners(editionId: number) {
+  const payload = await getClient()
+  const { docs } = await payload.find({ collection: 'partners', where: { editions: { in: [editionId] } }, sort: 'order', limit: 200, depth: 1 })
+  return docs
+}
+
+/**
+ * Barang inventaris yang boleh tampil di situs. overrideAccess: false menerapkan aturan akses koleksi, jadi barang
+ * internal dan field tempat penyimpanan tidak ikut terbaca, walau dipanggil dari server.
+ */
+export const getPublicInventory = cache(async (): Promise<PublicItem[]> => {
+  const payload = await getClient()
+  const { docs } = await payload.find({ collection: 'inventory', where: { visibility: { equals: 'publik' } }, sort: 'name', limit: 500, depth: 0, overrideAccess: false })
+  return docs.map((d) => ({
+    id: d.id,
+    name: d.name,
+    category: d.category ?? null,
+    stock: d.stock,
+    unit: d.unit ?? null,
+    quantityText: d.quantityText ?? null,
+    location: d.location ?? null,
+    icon: d.icon ?? null,
+    loanable: Boolean(d.loanable),
+    procurement2025: Boolean(d.procurement2025),
+  }))
+})
+
+/** Peminjaman dijadwalkan/berjalan yang belum lewat (tanpa data peminjam), untuk menghitung jumlah tersedia. */
+export const getActiveLoans = cache(async (): Promise<ActiveLoan[]> => {
+  const payload = await getClient()
+  const since = new Date(Date.now() - 2 * 86_400_000).toISOString()
+  const { docs } = await payload.find({
+    collection: 'loans',
+    where: { and: [{ status: { in: ['dijadwalkan', 'dipinjam'] } }, { to: { greater_than_equal: since } }] },
+    limit: 2000,
+    depth: 0,
+  })
+  return docs.map((l) => ({ item: typeof l.item === 'object' ? l.item.id : l.item, quantity: l.quantity, from: l.from, to: l.to }))
+})
 
 export const getPartners = cache(async () => {
   const payload = await getClient()

@@ -1,7 +1,11 @@
 import type { CollectionConfig } from 'payload'
 import { hasRole, isStaff } from '../access'
 
-/** Peminjaman barang. Cek bentrok jadwal belum diimplementasikan (milestone Layanan). */
+/**
+ * Peminjaman barang inventaris. Dibuat otomatis saat pengajuan Peminjaman Inventaris disetujui (hook di
+ * ServiceRequests), atau manual oleh pengurus. Status dijadwalkan/dipinjam mengurangi jumlah tersedia di katalog
+ * untuk rentang tanggalnya; ubah ke "Dikembalikan" saat barang kembali.
+ */
 export const Loans: CollectionConfig = {
   slug: 'loans',
   typescript: { interface: 'Loan' },

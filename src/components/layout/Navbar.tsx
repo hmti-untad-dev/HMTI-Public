@@ -1,6 +1,6 @@
 import Link from '@/components/ui/AppLink'
 
-import { LOGIN_HREF, NAV_GROUPS, type NavGroup } from '@/lib/nav'
+import { NAV_GROUPS, type NavGroup } from '@/lib/nav'
 import { Container } from '../ui/Container'
 import { BrandLink } from './BrandLink'
 import { Dissolve, Roll } from './Dissolve'
@@ -34,22 +34,16 @@ export function Navbar({ orgName, departments, archivedYears }: Props) {
   const groups = buildGroups({ departments, archivedYears })
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-surface">
-      <Container className="flex h-16 items-stretch justify-between gap-4">
+      <Container className="flex h-16 items-stretch justify-between gap-2 min-[400px]:gap-4">
         <BrandLink orgName={orgName} />
 
         <NavMenu groups={groups} />
 
         <div className="flex items-stretch divide-x divide-line border-x border-line">
           <ThemeToggle />
-          <Link
-            href={LOGIN_HREF}
-            className="dither inline-flex items-center px-4 text-sm font-medium text-link sm:px-6"
-          >
-            <Dissolve w={88} />
-            Login
-          </Link>
+          {/* Tidak ada tombol login: admin dibuka langsung lewat /admin. */}
           <details className="group relative lg:hidden">
-            <summary className="dither flex h-16 cursor-pointer list-none items-center px-4 text-sm">
+            <summary className="dither flex h-16 cursor-pointer list-none items-center px-3 text-sm min-[400px]:px-4">
               <Dissolve w={66} />
               Menu
             </summary>

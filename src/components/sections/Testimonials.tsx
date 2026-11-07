@@ -1,24 +1,29 @@
+import { QuoteCard } from '@/components/ui/QuoteCard'
 import { getTestimonials } from '@/lib/data'
+import type { Testimonial } from '@/payload-types'
 import { Empty } from '../ui/Empty'
 
+/** Tautan ke edisi kegiatan asal kutipan, bila kutipan ditautkan ke edisi. */
+function contextOf(t: Testimonial) {
+  const e = typeof t.edition === 'object' ? t.edition : null
+  const program = e && typeof e.program === 'object' ? e.program : null
+  if (!e || !program) return null
+  const year = e.startDate ? new Date(e.startDate).getFullYear() : e.id
+  return { href: `/kegiatan/${program.slug}/${year}`, label: e.title }
+}
+
 export async function Testimonials() {
-  const items = await getTestimonials()
+  const items = (await getTestimonials()).slice(0, 3)
   return (
     <div>
-      <h2 className="mb-6 font-display text-2xl font-bold sm:text-3xl">Testimoni</h2>
+      <h2 className="mb-6 font-display text-2xl font-bold sm:text-3xl">Kata mereka</h2>
       {items.length === 0 ? (
         <Empty>Belum ada testimoni.</Empty>
       ) : (
-        <ul className="space-y-4">
-          {items.slice(0, 3).map((t) => (
+        <ul className="grid gap-3">
+          {items.map((t, i) => (
             <li key={t.id}>
-              <blockquote className="rounded-card border border-line bg-surface p-4">
-                <p className="text-sm">“{t.quote}”</p>
-                <footer className="mt-3 text-xs text-ink-muted">
-                  <span className="font-semibold text-ink">{t.authorName}</span>
-                  {t.authorRole && ` · ${t.authorRole}`}
-                </footer>
-              </blockquote>
+              <QuoteCard quote={t} size={i === 0 ? 'lg' : 'md'} context={contextOf(t)} />
             </li>
           ))}
         </ul>

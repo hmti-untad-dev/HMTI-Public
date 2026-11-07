@@ -6,7 +6,7 @@ import { Container } from '@/components/ui/Container'
 import { Empty } from '@/components/ui/Empty'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { YearSelector } from '@/components/ui/YearSelector'
-import { getCabinet, getClient, resolvePeriod } from '@/lib/data'
+import { departmentNameAt, getCabinet, getClient, resolvePeriod } from '@/lib/data'
 
 type Props = {
   params: Promise<{ dept: string }>
@@ -26,12 +26,17 @@ export default async function DepartmentPage({ params, searchParams }: Props) {
     payload.find({ collection: 'programs', where: { department: { equals: department.id } }, depth: 1, limit: 20 }),
   ])
   const members = cabinet.byDepartment.get(department.id) ?? []
+  const name = departmentNameAt(department, period?.year)
 
   return (
     <>
-      <PageHeader eyebrow={`Departemen ${department.group}`} title={department.name}>
+      <PageHeader eyebrow={`Departemen ${department.group}`} title={name}>
         {department.description}
-        {department.formerName && <span className="mt-2 block text-sm text-ink-muted">Sebelumnya bernama {department.formerName}.</span>}
+        {name !== department.name ? (
+          <span className="mt-2 block text-sm text-ink-muted">Sejak {(department.formerNameUntil ?? 0) + 1} bernama {department.name}.</span>
+        ) : (
+          department.formerName && <span className="mt-2 block text-sm text-ink-muted">Sebelumnya bernama {department.formerName}.</span>
+        )}
       </PageHeader>
       <Container className="space-y-12 py-12">
         <YearSelector

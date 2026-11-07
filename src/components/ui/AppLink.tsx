@@ -9,7 +9,7 @@ import { TransitionLink } from '@/components/page-transition/page-transition'
 type Props = ComponentProps<typeof Link>
 
 /**
- * Pengganti next/link untuk seluruh situs: pindah halaman memakai transisi garis (StripeTransition di layout).
+ * Pengganti next/link untuk seluruh situs: pindah halaman memakai tirai piksel (PixelTransition di layout).
  * Tautan yang tidak berpindah halaman (jangkar #, halaman yang sama, URL luar, href objek) tetap memakai Link
  * biasa, karena TransitionLink menahan navigasi ke halaman yang sama sehingga jangkar tidak bergulir.
  */

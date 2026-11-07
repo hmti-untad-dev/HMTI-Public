@@ -18,6 +18,19 @@ export const Testimonials: CollectionConfig = {
     { name: 'quote', type: 'textarea', label: 'Kutipan', required: true },
     { name: 'photo', type: 'upload', relationTo: 'media', label: 'Foto' },
     {
+      name: 'sourceUrl',
+      type: 'text',
+      label: 'Sumber kutipan',
+      admin: { description: 'Opsional. Tautan berita atau dokumen tempat kutipan ini dimuat.' },
+    },
+    {
+      name: 'edition',
+      type: 'relationship',
+      relationTo: 'editions',
+      label: 'Edisi kegiatan',
+      admin: { position: 'sidebar', description: 'Opsional. Bila diisi, kutipan juga tampil di halaman edisi dan program kegiatan itu.' },
+    },
+    {
       name: 'kind',
       type: 'select',
       label: 'Jenis',
